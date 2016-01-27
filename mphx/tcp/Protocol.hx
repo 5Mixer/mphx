@@ -2,9 +2,10 @@ package mphx.tcp;
 
 import haxe.io.Input;
 import haxe.io.Bytes;
+import mphx.server.Server;
 
 class Protocol {
-	var events:mphx.core.EventManager;
+	public var events:mphx.core.EventManager;
 	public function new (_events:mphx.core.EventManager){
 		events = _events;
 	}
@@ -16,10 +17,6 @@ class Protocol {
 
 	public var cnx:Connection;
 	private var server:Server;
-
-	private var _packetLength:Int;
-	private var _packetPos:Int;
-	private var _packet:Bytes;
 
 
 	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
