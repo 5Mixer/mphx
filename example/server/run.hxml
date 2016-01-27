@@ -1,0 +1,5 @@
+-lib mphx
+-lib mphx
+-main Main
+
+-x Main.hx

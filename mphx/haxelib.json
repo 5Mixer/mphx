@@ -1,0 +1,14 @@
+{
+	"name": "hxml",
+	"license": "MIT",
+	"tags": ["cross","network","Multiplayer"],
+	"description": "An extention of mphx that allows for easy MP games.",
+	"contributors": ["@5Mixer","Matt Tuttle"],
+	"releasenote": "Initial release",
+	"version": "0.0.1",
+	"url": "",
+	"dependencies":
+	{
+
+	}
+}
