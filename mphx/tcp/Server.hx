@@ -37,14 +37,6 @@ class Server implements mphx.interfaces.Server
 		listener.setBlocking(blocking);
 	}
 
-	public function start()
-	{
-		listen();
-		while (true) {
-			update();
-			Sys.sleep(0.01); // wait for 1 ms
-		}
-	}
 
 	public function update(timeout:Float=0):Void
 	{
