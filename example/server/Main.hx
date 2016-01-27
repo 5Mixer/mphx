@@ -6,6 +6,7 @@ class Main {
 
 		s.events.on("Hello",function(_){
 			trace("Client said hello");
+			s.broadcast("BROADCAST",null);
 		});
 
 		s.start();

@@ -94,7 +94,7 @@ class Server implements mphx.interfaces.Server
 		var success = true;
 		for (client in clients)
 		{
-			if (!client.send(event,data))
+			if (!cast(client.socket.custom,mphx.tcp.Protocol).send(event,data))
 			{
 				success = false;
 			}

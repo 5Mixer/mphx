@@ -9,12 +9,12 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.base.Protocol;
+import mphx.tcp.Protocol;
 
 class Client implements mphx.interfaces.Client
 {
 
-	public var protocol(default, set):mphx.base.Protocol;
+	public var protocol(default, set):mphx.tcp.Protocol;
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 

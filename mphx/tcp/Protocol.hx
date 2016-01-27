@@ -2,6 +2,7 @@ package mphx.tcp;
 
 import mphx.interfaces.Connection;
 import haxe.io.Input;
+import haxe.io.Bytes;
 
 class Protocol extends mphx.base.Protocol {
 	var events:mphx.core.EventManager;
@@ -13,7 +14,7 @@ class Protocol extends mphx.base.Protocol {
 	public function send (event:String,data:Dynamic){
 		var object = {
 			t: event,
-			data:_data
+			data:data
 		};
 		var serialiseObject = haxe.Json.stringify(object);
 

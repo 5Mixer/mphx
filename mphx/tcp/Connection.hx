@@ -51,6 +51,6 @@ class Connection implements mphx.interfaces.Connection
 		socket = null;
 	}
 
-	private var socket:Socket;
+	public var socket:Socket;
 
 }
