@@ -21,14 +21,8 @@ class Client {
 	public function update (){
 		client.update();
 	}
-	public function send (event:String,_data:Dynamic){
-		var object = {
-			t: event,
-			data:_data
-		};
-		var serialiseObject = haxe.Json.stringify(object);
-
-		client.protocol.cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+	public function send (event:String,data:Dynamic){
+		client.protocol.send(event,data);
 	}
 
 

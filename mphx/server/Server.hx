@@ -24,5 +24,9 @@ class Server {
 		}
 	}
 
+	public function broadcast (event:String,data:Dynamic) {
+		server.broadcast(event,data);
+	}
+
 
 }

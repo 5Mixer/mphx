@@ -89,12 +89,12 @@ class Server implements mphx.interfaces.Server
 		}
 	}
 
-	public function broadcast(bytes:Bytes):Bool
+	public function broadcast(event:String,data:Dynamic):Bool
 	{
 		var success = true;
 		for (client in clients)
 		{
-			if (!client.writeBytes(bytes))
+			if (!client.send(event,data))
 			{
 				success = false;
 			}

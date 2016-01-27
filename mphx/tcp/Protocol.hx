@@ -10,6 +10,16 @@ class Protocol extends mphx.base.Protocol {
 		events = _events;
 	}
 
+	public function send (event:String,data:Dynamic){
+		var object = {
+			t: event,
+			data:_data
+		};
+		var serialiseObject = haxe.Json.stringify(object);
+
+		return cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+	}
+
 	override public function dataReceived(input:Input){
 		//Transfer the Input data to a string
 		var line = input.readLine();
@@ -20,6 +30,7 @@ class Protocol extends mphx.base.Protocol {
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.
+		msg.data.connection = this;
 		events.callEvent(msg.t,msg.data);
 
 	}
