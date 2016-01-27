@@ -3,13 +3,14 @@ package mphx.server;
 class Server {
 
 	var server:mphx.tcp.Server;
-	var eventMap:Map<String,Dynamic->Void>;
+	var events:mphx.core.EventManager;
 
 	public function new (ip:String,port:Int){
-		server = new mphx.tcp.Server(port,ip);
 
+		events = new mphx.core.EventManager();
 
-		eventMap = new Map<String,Dynamic->Void>();
+		server = new mphx.tcp.Server(port,ip,events);
+
 	}
 	public function start () {
 
@@ -23,10 +24,5 @@ class Server {
 		}
 	}
 
-	public function on (eventName,event:Dynamic->Void){
-		eventMap.set(eventName,event);
-	}
-	private function callEvent (eventName,data:Dynamic){
-		eventMap.get(eventName)(data);
-	}
+
 }

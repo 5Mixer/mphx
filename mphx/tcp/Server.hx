@@ -15,7 +15,9 @@ class Server implements mphx.interfaces.Server
 	public var port(default, null):Int;
 	public var blocking(default, set):Bool = true;
 
-	public function new(port:Int, ?hostname:String)
+	var events:mphx.core.EventManager;
+
+	public function new(port:Int, ?hostname:String,eventManager:mphx.core.EventManager)
 	{
 		buffer = Bytes.alloc(8192);
 
@@ -23,6 +25,8 @@ class Server implements mphx.interfaces.Server
 
 		this.host = hostname;
 		this.port = port;
+
+		events = eventManager;
 
 		listener = new Socket();
 
@@ -54,7 +58,7 @@ class Server implements mphx.interfaces.Server
 				clients.set(client, connection);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Protocol();
+				client.custom = protocol = new mphx.tcp.Protocol(events);
 				protocol.onAccept(connection, this);
 			}
 			else
