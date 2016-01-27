@@ -1,6 +1,5 @@
 package mphx.tcp;
 
-import mphx.interfaces.Connection;
 import haxe.io.Input;
 import haxe.io.Bytes;
 

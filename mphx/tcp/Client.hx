@@ -11,7 +11,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import mphx.tcp.Protocol;
 
-class Client implements mphx.interfaces.Client
+class Client
 {
 
 	public var protocol(default, set):mphx.tcp.Protocol;

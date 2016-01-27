@@ -7,7 +7,7 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 
-class Connection implements mphx.interfaces.Connection
+class Connection
 {
 
 	public function new(socket:Socket)

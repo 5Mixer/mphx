@@ -6,9 +6,8 @@ import sys.net.Host;
 import sys.net.Socket;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.interfaces.Protocol;
 
-class Server implements mphx.interfaces.Server
+class Server
 {
 
 	public var host(default, null):String;
