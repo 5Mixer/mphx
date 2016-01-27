@@ -12,5 +12,6 @@ class EventManager {
 	}
 	public function callEvent (eventName,data:Dynamic){
 		eventMap.get(eventName)(data);
+		trace(eventName);
 	}
 }

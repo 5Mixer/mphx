@@ -44,7 +44,7 @@ class Server implements mphx.interfaces.Server
 
 	public function update(timeout:Float=0):Void
 	{
-		var protocol:Protocol;
+		var protocol:mphx.tcp.Protocol;
 		var bytesReceived:Int;
 		var select = Socket.select(readSockets, null, null, timeout);
 		for (socket in select.read)
