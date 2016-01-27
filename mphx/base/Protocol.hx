@@ -87,7 +87,7 @@ class Protocol implements mphx.interfaces.Protocol
 
 	public function loseConnection(?reason:String) { this.cnx = null; }
 
-	private var cnx:Connection;
+	public var cnx:Connection;
 	private var server:Server;
 
 	private var _packetLength:Int;

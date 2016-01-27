@@ -34,7 +34,7 @@
 	<!--------------------------------LIBRARIES------------------------------------->
 
 	<haxelib name="flixel"/>
-	<haxelib name="hxnet"/>
+	<haxelib name="mphx"/>
 	<haxelib name="msgpack"/>
 
 	<!--In case you want to use the addons package-->

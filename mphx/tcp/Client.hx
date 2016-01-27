@@ -9,30 +9,37 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.interfaces.Protocol;
+import mphx.base.Protocol;
 
 class Client implements mphx.interfaces.Client
 {
 
-	public var protocol(default, set):Protocol;
+	public var protocol(default, set):mphx.base.Protocol;
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 
-	public function new()
+	var port:Int;
+	var ip:String;
+
+	public function new(_port:Int,_ip:String,events:mphx.core.EventManager)
 	{
 		buffer = Bytes.alloc(8192);
+		protocol = new mphx.tcp.Protocol(events);
+
+		port = _port;
+		ip = _ip;
 	}
 
-	public function connect(?hostname:String, port:Null<Int> = 12800)
+	public function connect()
 	{
 		try
 		{
 			client = new Socket();
 #if flash
-			client.connect(hostname, port);
+			client.connect(ip, port);
 #else
-			if (hostname == null) hostname = Host.localhost();
-			client.connect(new Host(hostname), port);
+			if (ip == null) ip = Host.localhost();
+			client.connect(new Host(ip), port);
 			client.setBlocking(blocking);
 #end
 			// prevent recreation of array on every update

@@ -3,7 +3,7 @@ package mphx.server;
 class Server {
 
 	var server:mphx.tcp.Server;
-	var events:mphx.core.EventManager;
+	public var events:mphx.core.EventManager;
 
 	public function new (ip:String,port:Int){
 

@@ -14,20 +14,18 @@ import org.msgpack.MsgPack;
  */
 class PlayState extends FlxState
 {
-	var clientConnection:hxnet.tcp.Client;
+	var clientConnection:mphx.client.Client;
 	var ownPlayer:FlxSprite;
 	public var allPlayers:FlxGroup;
-	var protocol:ClientProtocol;
 	override public function create():Void
 	{
 		super.create();
 
-		protocol = new ClientProtocol(this);
-		clientConnection = new hxnet.tcp.Client();
+		clientConnection = new mphx.client.Client("127.0.0.1",8000);
 
-		clientConnection.protocol = protocol;
-		clientConnection.blocking = false;
-		clientConnection.connect("127.0.0.1",8000);
+		clientConnection.connect();
+
+		clientConnection.send("Hello",null);
 
 		allPlayers = new FlxGroup();
 
@@ -49,7 +47,7 @@ class PlayState extends FlxState
 
 		add(allPlayers);
 
-		protocol.writeLine( haxe.Json.stringify(newPlayerPacket) );
+		//protocol.writeLine( haxe.Json.stringify(newPlayerPacket) );
 	}
 
 	/**

@@ -13,7 +13,7 @@ class Protocol extends mphx.base.Protocol {
 	override public function dataReceived(input:Input){
 		//Transfer the Input data to a string
 		var line = input.readLine();
-
+		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
 
