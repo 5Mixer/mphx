@@ -1,0 +1,100 @@
+#include <hxcpp.h>
+
+namespace hx {
+const char *__hxcpp_all_files[] = {
+#ifdef HXCPP_DEBUGGER
+"C:\\HaxeToolkit\\haxe\\std/StringTools.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/Lib.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/Date.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/Reflect.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/Std.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/StringBuf.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/Sys.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/Type.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/haxe/Utf8.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/haxe/ds/ObjectMap.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/haxe/ds/StringMap.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/sys/net/Host.hx",
+"C:\\HaxeToolkit\\haxe\\std/cpp/_std/sys/net/Socket.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/Log.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/format/JsonParser.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/format/JsonPrinter.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/io/Bytes.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/io/BytesInput.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/io/Eof.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/io/Input.hx",
+"C:\\HaxeToolkit\\haxe\\std/haxe/io/Output.hx",
+"Main.hx",
+"mphx/core/EventManager.hx",
+"mphx/server/Server.hx",
+"mphx/tcp/Connection.hx",
+"mphx/tcp/Protocol.hx",
+#endif
+ 0 };
+
+const char *__hxcpp_all_files_fullpath[] = {
+#ifdef HXCPP_DEBUGGER
+"C:\\HaxeToolkit\\haxe\\std\\StringTools.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\Lib.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\Date.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\Reflect.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\Std.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\StringBuf.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\Sys.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\Type.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\haxe\\Utf8.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\haxe\\ds\\ObjectMap.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\haxe\\ds\\StringMap.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\sys\\net\\Host.hx",
+"C:\\HaxeToolkit\\haxe\\std\\cpp\\_std\\sys\\net\\Socket.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\Log.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\format\\JsonParser.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\format\\JsonPrinter.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\io\\Bytes.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\io\\BytesInput.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\io\\Eof.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\io\\Input.hx",
+"C:\\HaxeToolkit\\haxe\\std\\haxe\\io\\Output.hx",
+"C:\\Users\\Owner\\Desktop\\mphx\\example\\server\\Main.hx",
+"C:\\Users\\Owner\\Desktop\\mphx\\mphx\\core\\EventManager.hx",
+"C:\\Users\\Owner\\Desktop\\mphx\\mphx\\server\\Server.hx",
+"C:\\Users\\Owner\\Desktop\\mphx\\mphx\\tcp\\Connection.hx",
+"C:\\Users\\Owner\\Desktop\\mphx\\mphx\\tcp\\Protocol.hx",
+#endif
+ 0 };
+
+const char *__hxcpp_all_classes[] = {
+#ifdef HXCPP_DEBUGGER
+"Date",
+"Main",
+"Reflect",
+"Std",
+"StringBuf",
+"StringTools",
+"cpp.Lib",
+"Sys",
+"Type",
+"haxe.Log",
+"haxe.Utf8",
+"haxe.ds.ObjectMap",
+"haxe.ds.StringMap",
+"haxe.format.JsonParser",
+"haxe.format.JsonPrinter",
+"haxe.io.Bytes",
+"haxe.io.Input",
+"haxe.io.BytesInput",
+"haxe.io.Eof",
+"haxe.io.Output",
+"mphx.core.EventManager",
+"mphx.core._EventManager.Either_Impl_",
+"mphx.server.Server",
+"mphx.tcp.Connection",
+"mphx.tcp.Protocol",
+"sys.net.Host",
+"sys.net._Socket.SocketInput",
+"sys.net._Socket.SocketOutput",
+"sys.net.Socket",
+#endif
+ 0 };
+} // namespace hx
+void __files__boot() { __hxcpp_set_debugger_info(hx::__hxcpp_all_classes, hx::__hxcpp_all_files_fullpath); }

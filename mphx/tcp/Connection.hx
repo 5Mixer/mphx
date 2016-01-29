@@ -47,6 +47,7 @@ class Connection
 
 	public function close()
 	{
+		trace("CONNECTION CLOSING!!");
 		socket.close();
 		socket = null;
 	}

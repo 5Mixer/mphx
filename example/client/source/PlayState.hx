@@ -26,6 +26,12 @@ class PlayState extends FlxState
 		clientConnection.connect();
 
 		clientConnection.send("Hello",null);
+		clientConnection.events.on("BROADCAST",function (_,sender){
+			trace("server broadcasted!");
+		});
+		clientConnection.events.on("DM",function (data,sender){
+			trace(data);
+		});
 
 		allPlayers = new FlxGroup();
 

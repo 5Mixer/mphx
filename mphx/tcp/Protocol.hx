@@ -11,12 +11,11 @@ class Protocol {
 	}
 
 	public function onConnect(cnx:Connection) { this.cnx = cnx; }
-	public function onAccept(cnx:Connection, server:Server) { this.cnx = cnx; this.server = server; }
+	public function onAccept(cnx:Connection) { this.cnx = cnx; }
 
-	public function loseConnection(?reason:String) { this.cnx = null; }
+	public function loseConnection(?reason:String) { this.cnx = null; trace("CONNECTION CLOSING!!");}
 
-	public var cnx:Connection;
-	private var server:Server;
+	var cnx:Connection;
 
 
 	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
@@ -29,21 +28,31 @@ class Protocol {
 		};
 		var serialiseObject = haxe.Json.stringify(object);
 
-		return cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+
+		trace("Sending event: "+event);
+
+		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+
+		trace("Sent event: "+event);
+
+		return result;
 	}
 
 	public function dataReceived(input:Input){
 		//Transfer the Input data to a string
 		var line = input.readLine();
-		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
+
+		//msg.data.sender = this;
+
+		//
+		//Reflect.setField(msg.data,"sender",this);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.
-		//msg.data.connection = this;
-		events.callEvent(msg.t,msg.data);
+		events.callEvent(msg.t,msg.data,this);
 
 	}
 }

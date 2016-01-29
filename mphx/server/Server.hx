@@ -39,7 +39,7 @@ class Server
 	{
 		listener.bind(#if flash host #else new Host(host) #end, port);
 		listener.listen(1);
-		listener.setBlocking(blocking);
+		listener.setBlocking(false);
 	}
 
 	public function start () {
@@ -56,9 +56,11 @@ class Server
 
 	public function update(timeout:Float=0):Void
 	{
+		//trace("Start update");
 		var protocol:mphx.tcp.Protocol;
 		var bytesReceived:Int;
 		var select = Socket.select(readSockets, null, null, timeout);
+
 		for (socket in select.read)
 		{
 			if (socket == listener)
@@ -71,34 +73,70 @@ class Server
 
 				client.setBlocking(false);
 				client.custom = protocol = new mphx.tcp.Protocol(events);
-				protocol.onAccept(connection, this);
+				protocol.onAccept(connection);
 			}
 			else
 			{
+				trace("CONNECTION UPDATING!!");
+
 				protocol = socket.custom;
-				try
+
+				var byte:Int = 0,
+				bytesReceived:Int = 0,
+				len = buffer.length;
+				while (bytesReceived < len)
 				{
-					bytesReceived = socket.input.readBytes(buffer, 0, buffer.length);
-					// check that buffer was filled
-					if (bytesReceived > 0)
+					trace("loop");
+					try
 					{
-						protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
+
+						byte = #if flash socket.readByte() #else socket.input.readByte() #end;
 					}
+					catch (e:Dynamic)
+					{
+						trace("CATCH");
+						// end of stream
+						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
+						{
+							trace("EOF");
+
+							readSockets.remove(socket);
+							clients.remove(socket);
+
+							break;
+						}else if (e == haxe.io.Error.Blocked){
+							trace("BLOCKED");
+							//trace("Blocking error. Something would've caused the server to block, and was thrown.
+							//       -  set blocking to true on server!");
+
+
+							//End of message
+							break;
+						}else{
+							trace(e);
+						}
+					}
+					if (byte == 0) break;
+
+					buffer.set(bytesReceived, byte);
+					bytesReceived += 1;
 				}
-				catch (e:Dynamic)
+
+				// check that buffer was filled
+				if (bytesReceived > 0)
 				{
-					protocol.loseConnection("disconnected");
-					socket.close();
-					readSockets.remove(socket);
-					clients.remove(socket);
+					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 				}
 				if (!protocol.isConnected())
 				{
-					readSockets.remove(socket);
-					clients.remove(socket);
+					trace("NOT CONNECTED");
+					//readSockets.remove(socket);
+					//clients.remove(socket);
+					break;
 				}
 			}
 		}
+		//trace("End update");
 	}
 
 	public function broadcast(event:String,data:Dynamic):Bool
@@ -116,6 +154,7 @@ class Server
 
 	public function close()
 	{
+		trace("CLOSED");
 		listener.close();
 	}
 

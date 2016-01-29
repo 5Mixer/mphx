@@ -25,6 +25,8 @@ class Client
 
 	public function new(_ip:String,_port:Int)
 	{
+		events = new mphx.core.EventManager();
+
 		buffer = Bytes.alloc(8192);
 		protocol = new mphx.tcp.Protocol(events);
 
@@ -33,7 +35,6 @@ class Client
 
 		blocking = false;
 
-		events = new mphx.core.EventManager();
 	}
 
 	public function connect()
@@ -66,7 +67,7 @@ class Client
 	{
 		if (!connected) return;
 
-		try
+		///try
 		{
 #if flash
 			readSocket(client);
@@ -85,12 +86,13 @@ class Client
 			}
 #end
 		}
-		catch (e:Dynamic)
-		{
-			protocol.loseConnection("disconnected");
-			client.close();
-			client = null;
-		}
+		// catch (e:Dynamic)
+		// {
+		// 	trace("Disconnected");
+		// 	protocol.loseConnection("disconnected");
+		// 	client.close();
+		// 	client = null;
+		// }
 	}
 
 	private function readSocket(socket:Socket)
@@ -105,13 +107,18 @@ class Client
 
 				byte = #if flash socket.readByte() #else socket.input.readByte() #end;
 			}
-			catch (e:haxe.io.Error)
+			catch (e:Dynamic)
 			{
 				// end of stream
-				if (e == Blocked)
-				{
+				if (Std.is(e, haxe.io.Eof)){
+
 					buffer.set(bytesReceived, byte);
 					break;
+				}else if ( e == haxe.io.Error.Blocked ) {
+					buffer.set(bytesReceived, byte);
+					break;
+					//This error always happens at the end of a message. 
+					//throw "A blocking operation was ran but your blocking mode doesn't let it. :/";
 				}
 			}
 
