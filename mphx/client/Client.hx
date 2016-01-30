@@ -97,7 +97,7 @@ class Client
 
 	private function readSocket(socket:Socket)
 	{
-		var byte:Int = 0,
+	/*	var byte:Int = 0,
 			bytesReceived:Int = 0,
 			len = buffer.length;
 		while (bytesReceived < len)
@@ -117,7 +117,7 @@ class Client
 				}else if ( e == haxe.io.Error.Blocked ) {
 					buffer.set(bytesReceived, byte);
 					break;
-					//This error always happens at the end of a message. 
+					//This error always happens at the end of a message.
 					//throw "A blocking operation was ran but your blocking mode doesn't let it. :/";
 				}
 			}
@@ -128,9 +128,14 @@ class Client
 
 		// check that buffer was filled
 		if (bytesReceived > 0)
+		{*/
+		try
 		{
-			protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
-		}
+			protocol.dataReceived(socket.input);
+		}catch(e:haxe.io.Eof){
+			throw("DISCONNECTED. "+e);
+		};//new BytesInput(buffer, 0, bytesReceived));
+		//}
 	}
 
 	public function close()

@@ -56,7 +56,6 @@ class Server
 
 	public function update(timeout:Float=0):Void
 	{
-		//trace("Start update");
 		var protocol:mphx.tcp.Protocol;
 		var bytesReceived:Int;
 		var select = Socket.select(readSockets, null, null, timeout);
@@ -77,11 +76,10 @@ class Server
 			}
 			else
 			{
-				trace("CONNECTION UPDATING!!");
 
 				protocol = socket.custom;
 
-				var byte:Int = 0,
+				/*var byte:Int = 0,
 				bytesReceived:Int = 0,
 				len = buffer.length;
 				while (bytesReceived < len)
@@ -116,7 +114,6 @@ class Server
 							trace(e);
 						}
 					}
-					if (byte == 0) break;
 
 					buffer.set(bytesReceived, byte);
 					bytesReceived += 1;
@@ -124,14 +121,21 @@ class Server
 
 				// check that buffer was filled
 				if (bytesReceived > 0)
+				{*/
+				try
 				{
-					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
+					protocol.dataReceived(socket.input);
+				}catch(e:haxe.io.Eof){
+					readSockets.remove(socket);
+					clients.remove(socket);
+					trace("DISCONNECT. "+e);
 				}
+				//}
 				if (!protocol.isConnected())
 				{
 					trace("NOT CONNECTED");
-					//readSockets.remove(socket);
-					//clients.remove(socket);
+					readSockets.remove(socket);
+					clients.remove(socket);
 					break;
 				}
 			}

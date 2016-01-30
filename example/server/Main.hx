@@ -6,7 +6,6 @@ class Main {
 
 		s.events.on("Hello",function(data:Dynamic,sender:mphx.tcp.Protocol){
 			//throw "up";
-			trace(Reflect.fields(sender));
 			trace("Client said hello");
 			s.broadcast("BROADCAST",null);
 			sender.send("DM","Hello ya'll!!!");

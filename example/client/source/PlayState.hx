@@ -14,24 +14,36 @@ import org.msgpack.MsgPack;
  */
 class PlayState extends FlxState
 {
-	var clientConnection:mphx.client.Client;
+	var clientSocket:mphx.client.Client;
 	var ownPlayer:FlxSprite;
 	public var allPlayers:FlxGroup;
 	override public function create():Void
 	{
 		super.create();
 
-		clientConnection = new mphx.client.Client("127.0.0.1",8000);
 
-		clientConnection.connect();
 
-		clientConnection.send("Hello",null);
-		clientConnection.events.on("BROADCAST",function (_,sender){
+
+		clientSocket = new mphx.client.Client("127.0.0.1",8000);
+
+		clientSocket.connect();
+
+		clientSocket.send("Hello",null);
+		clientSocket.events.on("BROADCAST",function (_,sender){
 			trace("server broadcasted!");
 		});
-		clientConnection.events.on("DM",function (data,sender){
+		clientSocket.events.on("DM",function (data,sender){
 			trace(data);
 		});
+
+
+
+
+
+
+
+
+
 
 		allPlayers = new FlxGroup();
 
@@ -62,7 +74,7 @@ class PlayState extends FlxState
 	{
 		super.update();
 
-		clientConnection.update();
+		clientSocket.update();
 
 
 	}
