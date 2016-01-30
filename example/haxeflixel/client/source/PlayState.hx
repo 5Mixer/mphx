@@ -30,7 +30,7 @@ class PlayState extends FlxState
 
 		clientSocket.send("Hello",null);
 
-		
+
 		clientSocket.events.on("BROADCAST",function (data){
 			trace("server broadcasted!");
 		});
@@ -56,10 +56,6 @@ class PlayState extends FlxState
 			id: playerID
 		}
 
-		var newPlayerPacket = {
-			packetType: "New Player",
-			data: playerData
-		}
 
 		ownPlayer = new FlxSprite(FlxG.width*Math.random(),FlxG.height*Math.random());
 		ownPlayer.makeGraphic(60,60);
@@ -72,12 +68,17 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
+	 var i = 0;
 	override public function update():Void
 	{
 		super.update();
 
 		clientSocket.update();
 
+		i++;
+		if (i%15 == 0){
+			clientSocket.send("Hello",null);
+		}
 
 	}
 }

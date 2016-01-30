@@ -11,11 +11,15 @@ class Main {
 			//throw "up";
 			trace("Client said hello");
 			sender.send("DM","Hello ya'll!!!");
-			sender.send("DM","Hello ya'll!!!");
-			s.broadcast("BROADCAST",null);
-			s.broadcast("BROADCAST",null);
-			sender.putInRoom(room);
-			room.broadcast("This is a room wide broadcast!",null);
+			//sender.send("DM","Hello ya'll!!!");
+			//s.broadcast("BROADCAST",null);
+			//s.broadcast("BROADCAST",null);
+			//sender.putInRoom(room);
+			//room.broadcast("This is a room wide broadcast!",null);
+		});
+
+		s.events.on("Player Move",function (data,connection){
+
 		});
 
 

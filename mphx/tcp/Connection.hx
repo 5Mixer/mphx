@@ -55,7 +55,7 @@ class Connection {
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
-		trace("Sent event: "+event+" with result "+result);
+		trace("Sent event: "+event);
 		return result;
 	}
 
