@@ -49,7 +49,6 @@ class NetSock
 
 	public function close()
 	{
-		trace("CONNECTION CLOSING!!");
 		socket.close();
 		socket = null;
 	}

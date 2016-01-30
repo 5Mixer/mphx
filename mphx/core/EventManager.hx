@@ -16,15 +16,14 @@ class EventManager {
 		eventMap.set(eventName,event);
 	}
 	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
-		if (eventMap.exists(eventName) == false){
-			trace("Called event "+eventName+". No listener.");
-			//return;
-		}
-		switch(eventMap.get(eventName).type){
-		case Left(eventWithSender): eventWithSender(data,sender);
-		case Right(eventWithoutSender): eventWithoutSender(data);
-		}
 		trace("Event recieved: " + eventName);
+
+		if (eventMap.exists(eventName) == true){
+			switch(eventMap.get(eventName).type){
+			case Left(eventWithSender): eventWithSender(data,sender);
+			case Right(eventWithoutSender): eventWithoutSender(data);
+			}
+		}
 
 	}
 

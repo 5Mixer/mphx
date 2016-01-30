@@ -137,7 +137,6 @@ class Server
 				//}
 				if (!protocol.isConnected())
 				{
-					trace("NOT CONNECTED");
 					readSockets.remove(socket);
 					clients.remove(socket);
 					break;

@@ -53,18 +53,15 @@ class Connection {
 		};
 		var serialiseObject = haxe.Json.stringify(object);
 
-
-		trace("Sending event: "+event);
-
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
+		trace("Sent event: "+event+" with result "+result);
 		return result;
 	}
 
 	public function dataReceived(input:Input){
 		//Transfer the Input data to a string
 		var line = input.readLine();
-		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
 
