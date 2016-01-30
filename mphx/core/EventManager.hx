@@ -15,10 +15,10 @@ class EventManager {
 	public function on (eventName,event:EventFunction){
 		eventMap.set(eventName,event);
 	}
-	public function callEvent (eventName,data,sender){
+	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
 		if (eventMap.exists(eventName) == false){
-			//trace("Called event "+eventName+". No listener.");
-			return;
+			trace("Called event "+eventName+". No listener.");
+			//return;
 		}
 		switch(eventMap.get(eventName).type){
 		case Left(eventWithSender): eventWithSender(data,sender);

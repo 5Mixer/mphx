@@ -8,13 +8,13 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.tcp.Protocol;
+import mphx.tcp.Connection;
 import mphx.tcp.NetSock;
 
 class Client
 {
 
-	public var protocol(default, set):mphx.tcp.Protocol;
+	public var protocol(default, set):mphx.tcp.Connection;
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 
@@ -28,7 +28,7 @@ class Client
 		events = new mphx.core.EventManager();
 
 		buffer = Bytes.alloc(8192);
-		protocol = new mphx.tcp.Protocol(events);
+		protocol = new mphx.tcp.Connection(events);
 
 		port = _port;
 		ip = _ip;
@@ -53,7 +53,7 @@ class Client
 			readSockets = [client];
 			if (protocol != null)
 			{
-				protocol.onConnect(new Connection(client));
+				protocol.onConnect(new NetSock(client));
 			}
 		}
 		catch (e:Dynamic)
@@ -165,11 +165,11 @@ class Client
 		return blocking = value;
 	}
 
-	private function set_protocol(value:Protocol):Protocol
+	private function set_protocol(value:Connection):Connection
 	{
 		if (client != null)
 		{
-			value.onConnect(new Connection(client));
+			value.onConnect(new NetSock(client));
 		}
 		return protocol = value;
 	}

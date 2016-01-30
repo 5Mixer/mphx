@@ -10,10 +10,35 @@ class Connection {
 		events = _events;
 	}
 
+	//WARNING: This is server only. Attempting to use rooms on the client is a bad idea!
+	//This perhaps needs better structuring, but having a client/server 'Connection' is undesirable.
+	public var room:mphx.server.Room = null;
+
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
 
-	public function loseConnection(?reason:String) { this.cnx = null; trace("CONNECTION CLOSING!!");}
+	public function putInRoom (newRoom:mphx.server.Room){
+		if (room != null){
+			room.onLeave(this);
+		}
+
+		room = newRoom;
+		newRoom.onJoin(this);
+	}
+
+	public function loseConnection(?reason:String) {
+		if (cnx != null){
+			cnx.close();
+			this.cnx = null;
+		}
+		if (room != null){
+
+			room.onLeave(this);
+		}
+
+
+		trace("CONNECTION CLOSING!!");
+	}
 
 	var cnx:NetSock;
 
@@ -39,6 +64,7 @@ class Connection {
 	public function dataReceived(input:Input){
 		//Transfer the Input data to a string
 		var line = input.readLine();
+		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
 

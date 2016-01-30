@@ -8,6 +8,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import mphx.tcp.NetSock;
 
+import mphx.server.Room;
 
 class Server
 {
@@ -17,6 +18,8 @@ class Server
 	public var blocking(default, set):Bool = true;
 
 	public var events:mphx.core.EventManager;
+
+	public var rooms:Array<Room>;
 
 	public function new(hostname:String,port:Int)
 	{
@@ -28,6 +31,7 @@ class Server
 		this.port = port;
 
 		events = new mphx.core.EventManager();
+		rooms = new Array<Room>();
 
 		listener = new Socket();
 
@@ -126,9 +130,9 @@ class Server
 				{
 					protocol.dataReceived(socket.input);
 				}catch(e:haxe.io.Eof){
+					protocol.loseConnection("Disconnected");
 					readSockets.remove(socket);
 					clients.remove(socket);
-					trace("DISCONNECT. "+e);
 				}
 				//}
 				if (!protocol.isConnected())
