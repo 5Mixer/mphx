@@ -9,7 +9,7 @@ import sys.net.Socket;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
 import mphx.tcp.Protocol;
-import mphx.tcp.Connection;
+import mphx.tcp.NetSock;
 
 class Client
 {

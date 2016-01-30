@@ -1,57 +1,53 @@
 package mphx.tcp;
 
-#if flash
-import flash.net.Socket;
-#else
-import sys.net.Socket;
-#end
+import haxe.io.Input;
 import haxe.io.Bytes;
+import mphx.server.Server;
 
-class Connection
-{
-
-	public function new(socket:Socket)
-	{
-		this.socket = socket;
+class Connection {
+	public var events:mphx.core.EventManager;
+	public function new (_events:mphx.core.EventManager){
+		events = _events;
 	}
 
-	public function isOpen()
-	{
-		return socket != null;
+	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
+	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
+
+	public function loseConnection(?reason:String) { this.cnx = null; trace("CONNECTION CLOSING!!");}
+
+	var cnx:NetSock;
+
+
+	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
+
+
+	public function send (event:String,data:Dynamic){
+		var object = {
+			t: event,
+			data:data
+		};
+		var serialiseObject = haxe.Json.stringify(object);
+
+
+		trace("Sending event: "+event);
+
+		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+
+		return result;
 	}
 
-	public function writeBytes(bytes:Bytes):Bool
-	{
-		try
-		{
-#if flash
-			// if (writeLength) socket.writeInt(bytes.length);
-			for (i in 0...bytes.length)
-			{
-				socket.writeByte(bytes.get(i));
-			}
-#else
-			// if (writeLength) socket.output.writeInt32(bytes.length);
-			socket.output.writeBytes(bytes, 0, bytes.length);
-#end
-		}
-		catch (e:Dynamic)
-		{
-			#if debug
-			trace("Error writing to socket: " + e);
-			#end
-			return false;
-		}
-		return true;
+	public function dataReceived(input:Input){
+		//Transfer the Input data to a string
+		var line = input.readLine();
+		//Then convert the string to a Dynamic object.
+		var msg = haxe.Json.parse(line);
+
+		//msg.data.sender = this;
+
+		//The message will have a propety of T
+		//This is the event name/type. It is t to reduce wasted banwidth.
+		//call an event called 't' with the msg data.
+		events.callEvent(msg.t,msg.data,this);
+
 	}
-
-	public function close()
-	{
-		trace("CONNECTION CLOSING!!");
-		socket.close();
-		socket = null;
-	}
-
-	public var socket:Socket;
-
 }

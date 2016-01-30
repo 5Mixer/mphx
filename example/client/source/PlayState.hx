@@ -29,11 +29,13 @@ class PlayState extends FlxState
 		clientSocket.connect();
 
 		clientSocket.send("Hello",null);
-		clientSocket.events.on("BROADCAST",function (_,sender){
+
+		
+		clientSocket.events.on("BROADCAST",function (data){
 			trace("server broadcasted!");
 		});
-		clientSocket.events.on("DM",function (data,sender){
-			trace(data);
+		clientSocket.events.on("Direct Message",function (data,sender){
+			trace(data +" ... was sent only to I.");
 		});
 
 

@@ -1,22 +1,24 @@
 package mphx.core;
 
-import mphx.tcp.Protocol;
+import mphx.tcp.Connection;
+
+typedef EventFunction = Either<(Dynamic->Connection->Void), (Dynamic->Void)>;
 
 class EventManager {
 
-	var eventMap:Map<String,Either<(Dynamic->Protocol->Void), (Dynamic->Void)>>;
+	var eventMap:Map<String,EventFunction>;
 
 	public function new () {
-		eventMap = new Map<String,Either<(Dynamic->Protocol->Void), (Dynamic->Void)>>();
+		eventMap = new Map<String,EventFunction>();
 	}
 
-	public function on (eventName,event:Either<(Dynamic->Protocol->Void), (Dynamic->Void)>){
+	public function on (eventName,event:EventFunction){
 		eventMap.set(eventName,event);
 	}
 	public function callEvent (eventName,data,sender){
 		if (eventMap.exists(eventName) == false){
 			//trace("Called event "+eventName+". No listener.");
-			//return;
+			return;
 		}
 		switch(eventMap.get(eventName).type){
 		case Left(eventWithSender): eventWithSender(data,sender);

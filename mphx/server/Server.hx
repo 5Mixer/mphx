@@ -6,7 +6,7 @@ import sys.net.Host;
 import sys.net.Socket;
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.tcp.Connection;
+import mphx.tcp.NetSock;
 
 
 class Server
@@ -32,7 +32,7 @@ class Server
 		listener = new Socket();
 
 		readSockets = [listener];
-		clients = new Map<Socket, Connection>();
+		clients = new Map<Socket, NetSock>();
 	}
 
 	public function listen()
@@ -56,7 +56,7 @@ class Server
 
 	public function update(timeout:Float=0):Void
 	{
-		var protocol:mphx.tcp.Protocol;
+		var protocol:mphx.tcp.Connection;
 		var bytesReceived:Int;
 		var select = Socket.select(readSockets, null, null, timeout);
 
@@ -65,14 +65,14 @@ class Server
 			if (socket == listener)
 			{
 				var client = listener.accept();
-				var connection = new Connection(client);
+				var netsock = new NetSock(client);
 
 				readSockets.push(client);
-				clients.set(client, connection);
+				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Protocol(events);
-				protocol.onAccept(connection);
+				client.custom = protocol = new mphx.tcp.Connection(events);
+				protocol.onAccept(netsock);
 			}
 			else
 			{
@@ -148,7 +148,7 @@ class Server
 		var success = true;
 		for (client in clients)
 		{
-			if (!cast(client.socket.custom,mphx.tcp.Protocol).send(event,data))
+			if (!cast(client.socket.custom,mphx.tcp.Connection).send(event,data))
 			{
 				success = false;
 			}
@@ -170,7 +170,7 @@ class Server
 	}
 
 	private var readSockets:Array<Socket>;
-	private var clients:Map<Socket, Connection>;
+	private var clients:Map<Socket, NetSock>;
 	private var listener:Socket;
 
 	private var buffer:Bytes;
