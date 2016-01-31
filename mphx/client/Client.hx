@@ -133,7 +133,7 @@ class Client
 		{
 			protocol.dataReceived(socket.input);
 		}catch(e:haxe.io.Eof){
-			throw("DISCONNECTED. "+e);
+			//throw("DISCONNECTED. "+e);
 		};//new BytesInput(buffer, 0, bytesReceived));
 		//}
 	}

@@ -9,6 +9,9 @@ import flixel.util.FlxMath;
 import flixel.group.FlxGroup;
 import org.msgpack.MsgPack;
 
+import Player;
+
+
 /**
  * A FlxState which can be used for the actual gameplay.
  */
@@ -17,51 +20,62 @@ class PlayState extends FlxState
 	var clientSocket:mphx.client.Client;
 	var ownPlayer:FlxSprite;
 	public var allPlayers:FlxGroup;
+
+	var player:Player;
+
+	var players = new Map<String,Player>();
 	override public function create():Void
 	{
 		super.create();
 
+		FlxG.autoPause = false;
 
+		allPlayers = new FlxGroup();
+		add(allPlayers);
 
 
 		clientSocket = new mphx.client.Client("127.0.0.1",8000);
-
 		clientSocket.connect();
 
-		clientSocket.send("Hello",null);
+		var playerData:PlayerData = {
+			x: Math.floor(FlxG.width*Math.random()),
+			y: Math.floor(FlxG.height*Math.random()),
+			id: "player"+Math.random()*10000
+		};
+
+		player = new Player(playerData);
+		allPlayers.add(player);
+		players.set(playerData.id,player);
 
 
-		clientSocket.events.on("BROADCAST",function (data){
-			trace("server broadcasted!");
+		clientSocket.send("Join",playerData);
+
+		clientSocket.events.on("New Player", function (data) {
+
+			if (players.exists(data.id)) return;
+
+			var player = new Player(data);
+			allPlayers.add(player);
+
+			players.set(data.id,player);
+
 		});
-		clientSocket.events.on("Direct Message",function (data,sender){
-			trace(data +" ... was sent only to I.");
+
+		clientSocket.events.on("Player Move",function (data){
+			//trace(data);
+			if (players.exists(data.id) == false){
+				var player = new Player(data);
+				allPlayers.add(player);
+
+				players.set(data.id,player);
+			}
+			if (players.get(data.id) == player) return;
+			var player = players.get(data.id);
+			player.data = data;
+
+			player.x = player.data.x;
+			player.y = player.data.y;
 		});
-
-
-
-
-
-
-
-
-
-
-		allPlayers = new FlxGroup();
-
-		var playerID = Math.floor(Math.random()*100000);
-		var playerData = {
-			x: FlxG.width*Math.random(),
-			y: FlxG.height*Math.random(),
-			id: playerID
-		}
-
-
-		ownPlayer = new FlxSprite(FlxG.width*Math.random(),FlxG.height*Math.random());
-		ownPlayer.makeGraphic(60,60);
-		allPlayers.add(ownPlayer);
-
-		add(allPlayers);
 	}
 
 
@@ -75,10 +89,27 @@ class PlayState extends FlxState
 
 		clientSocket.update();
 
-		i++;
-		if (i%15 == 0){
-			clientSocket.send("Hello",null);
+		if (FlxG.keys.pressed.UP)
+		{
+			player.y -= 5;
+			clientSocket.send("Player Move",player.data);
 		}
+		if (FlxG.keys.pressed.DOWN)
+		{
+			player.y += 5;
+			clientSocket.send("Player Move",player.data);
+		}
+		if (FlxG.keys.pressed.LEFT)
+		{
+			player.x -= 5;
+			clientSocket.send("Player Move",player.data);
+		}
+		if (FlxG.keys.pressed.RIGHT)
+		{
+			player.x += 5;
+			clientSocket.send("Player Move",player.data);
+		}
+
 
 	}
 }

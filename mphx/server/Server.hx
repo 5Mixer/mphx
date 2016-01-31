@@ -83,12 +83,11 @@ class Server
 
 				protocol = socket.custom;
 
-				/*var byte:Int = 0,
+				var byte:Int = 0,
 				bytesReceived:Int = 0,
 				len = buffer.length;
 				while (bytesReceived < len)
 				{
-					trace("loop");
 					try
 					{
 
@@ -96,22 +95,16 @@ class Server
 					}
 					catch (e:Dynamic)
 					{
-						trace("CATCH");
 						// end of stream
 						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
 						{
-							trace("EOF");
+							trace("A client disconnected.");
 
 							readSockets.remove(socket);
 							clients.remove(socket);
 
 							break;
 						}else if (e == haxe.io.Error.Blocked){
-							trace("BLOCKED");
-							//trace("Blocking error. Something would've caused the server to block, and was thrown.
-							//       -  set blocking to true on server!");
-
-
 							//End of message
 							break;
 						}else{
@@ -125,16 +118,20 @@ class Server
 
 				// check that buffer was filled
 				if (bytesReceived > 0)
-				{*/
-				try
+				{
+					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
+				}
+
+
+				/*try  VVV - This code is blocking and thus runs slloooowwer.
 				{
 					protocol.dataReceived(socket.input);
 				}catch(e:haxe.io.Eof){
 					protocol.loseConnection("Disconnected");
 					readSockets.remove(socket);
 					clients.remove(socket);
-				}
-				//}
+				}*/
+
 				if (!protocol.isConnected())
 				{
 					readSockets.remove(socket);

@@ -6,8 +6,11 @@ import mphx.server.Server;
 
 class Connection {
 	public var events:mphx.core.EventManager;
+
 	public function new (_events:mphx.core.EventManager){
 		events = _events;
+
+
 	}
 
 	//WARNING: This is server only. Attempting to use rooms on the client is a bad idea!
@@ -55,7 +58,7 @@ class Connection {
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
-		trace("Sent event: "+event);
+		//trace("Sent event: "+event);
 		return result;
 	}
 

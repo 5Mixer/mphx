@@ -16,7 +16,7 @@ class EventManager {
 		eventMap.set(eventName,event);
 	}
 	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
-		trace("Event recieved: " + eventName);
+		//trace("Event recieved: " + eventName);
 
 		if (eventMap.exists(eventName) == true){
 			switch(eventMap.get(eventName).type){
