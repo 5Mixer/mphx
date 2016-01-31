@@ -6,7 +6,7 @@
 	"contributors": ["5Mixer"],
 	"releasenote": "First release - Able to run full multiplayer games.",
 	"version": "0.1.0",
-	"url": "https://twitter.com/5mixer",
+	"url": "https://github.com/5Mixer/mphx",
 	"dependencies":
 	{
 
