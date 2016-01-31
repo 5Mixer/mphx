@@ -1,6 +1,10 @@
 ![#MPHX](Logo.png)
 
-MpHx is a new library made with Haxe to allow for easy creation of multiplayer games. It is an extention/modification of [HxNet](https://github.com/MattTuttle/hxnet), whose code is authored by [Matt Tuttle](https://github.com/MattTuttle). 
+MpHx is a new library made with Haxe to allow for easy creation of multiplayer games. It was based off [HxNet](https://github.com/MattTuttle/hxnet), whose code is authored by [Matt Tuttle](https://github.com/MattTuttle). The code is of a very different structure now.
+
+[**Wiki**](https://github.com/5Mixer/mphx/wiki)
+
+-------------
 
 There are examples in the examples folder, for different libraries. (Basic has no external libraries.)
 
