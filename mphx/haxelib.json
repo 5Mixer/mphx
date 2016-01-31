@@ -1,12 +1,12 @@
 {
-	"name": "hxml",
+	"name": "mphx",
 	"license": "MIT",
 	"tags": ["cross","network","Multiplayer"],
 	"description": "mphx allows for easy creation of MP games.",
-	"contributors": ["@5Mixer","Matt Tuttle"],
-	"releasenote": "Initial release. Allows for executing events on other side.",
+	"contributors": ["5Mixer"],
+	"releasenote": "First release - Able to run full multiplayer games.",
 	"version": "0.1.0",
-	"url": "",
+	"url": "https://twitter.com/5mixer",
 	"dependencies":
 	{
 

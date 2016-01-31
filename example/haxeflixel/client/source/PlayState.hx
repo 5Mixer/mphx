@@ -63,13 +63,15 @@ class PlayState extends FlxState
 
 		clientSocket.events.on("Player Move",function (data){
 			//trace(data);
+			if (data.id == player.data.id) return;
+
 			if (players.exists(data.id) == false){
 				var player = new Player(data);
 				allPlayers.add(player);
 
 				players.set(data.id,player);
 			}
-			if (players.get(data.id) == player) return;
+
 			var player = players.get(data.id);
 			player.data = data;
 

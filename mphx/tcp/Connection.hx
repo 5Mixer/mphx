@@ -21,12 +21,18 @@ class Connection {
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
 
 	public function putInRoom (newRoom:mphx.server.Room){
+
+		if (newRoom.full){
+			return false;
+		}
 		if (room != null){
 			room.onLeave(this);
 		}
 
 		room = newRoom;
 		newRoom.onJoin(this);
+
+		return true;
 	}
 
 	public function loseConnection(?reason:String) {
@@ -40,7 +46,6 @@ class Connection {
 		}
 
 
-		trace("CONNECTION CLOSING!!");
 	}
 
 	var cnx:NetSock;

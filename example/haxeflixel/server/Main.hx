@@ -16,24 +16,24 @@ class Main {
 
 		s.events.on("Join",function(data:Dynamic,sender:mphx.tcp.Connection){
 
+			players.set(sender,data);
 
 			s.broadcast("New Player",data);
 		});
 
 		s.events.on("Player Move",function (data,sender){
-			//trace(data);
-			if (players.exists(sender) == false){
+			/*if (players.exists(sender) == false){
 				var player:Player = {
 					x: data.x,
 					y: data.y,
 					id: data.id
 				};
 				players.set(sender,player);
-			}
+			}*/
 
 			var player = players.get(sender);
-			players.get(sender).x = data.x;
-			players.get(sender).y = data.y;
+			player.x = data.x;
+			player.y = data.y;
 			s.broadcast("Player Move",player);
 		});
 

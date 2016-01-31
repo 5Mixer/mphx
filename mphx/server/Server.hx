@@ -48,8 +48,7 @@ class Server
 
 	public function start () {
 
-		trace("Server active. Anycode after this point will not run, your app will hang.");
-		trace("You can instead call 'update' frequently, and run your code along side it.");
+		trace("Server active. Code after server.start() will not run. ");
 
 		listen();
 		while (true) {
@@ -158,7 +157,6 @@ class Server
 
 	public function close()
 	{
-		trace("CLOSED");
 		listener.close();
 	}
 
