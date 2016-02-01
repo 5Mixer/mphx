@@ -1,0 +1,9 @@
+# build server
+-main Server.hx
+-cpp cpp/
+-cp ../
+-debug
+-lib linc_enet
+-lib msgpack-haxe
+#-D mac
+-D windows

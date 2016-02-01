@@ -6,7 +6,7 @@ class Room {
 	public var full:Bool = false; // inhabitants.length == maxPopulation
 	public var maxConnections = 0; //A max population of 0 will never be full.
 
-	var connections:Array<Connection>;
+	public var connections:Array<Connection>;
 	public function new (){
 		connections = new Array<Connection>();
 	}
