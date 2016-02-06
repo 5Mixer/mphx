@@ -6,6 +6,8 @@ MpHx is a new library made with Haxe to allow for easy creation of multiplayer g
 
 -------------
 
+[![Join the chat at https://gitter.im/5Mixer/mphx](https://badges.gitter.im/5Mixer/mphx.svg)](https://gitter.im/5Mixer/mphx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 There are examples in the examples folder, for different libraries. (Basic has no external libraries.)
 
 This library will not be dependent on any 'graphical' library (ie- Haxeflixel, Open FL, luxe). If you want to, you can make a text based multiplayer game.
