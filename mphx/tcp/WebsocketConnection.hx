@@ -150,10 +150,8 @@ class WebsocketConnection extends mphx.tcp.Connection {
 				   loseConnection("close connection");
 				   //cnx.close();
 			   case Ping: // ping
-			   		trace("Ping");
 				   cnx.writeBytes(createFrame(Pong)); // send pong
 			   case Pong: // pong
-			   		trace("Pong");
 				   // do nothing
 		   }
 	   }
