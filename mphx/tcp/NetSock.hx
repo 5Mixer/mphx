@@ -2,7 +2,7 @@ package mphx.tcp;
 
 #if flash
 import flash.net.Socket;
-#else
+#elseif !js
 import sys.net.Socket;
 #end
 import haxe.io.Bytes;

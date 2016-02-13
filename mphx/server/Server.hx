@@ -74,7 +74,11 @@ class Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Connection(events);
+				#if !websock
+					client.custom = protocol = new mphx.tcp.Connection(events);
+				#else
+					client.custom = protocol = new mphx.tcp.WebsocketConnection(events);
+				#end
 				protocol.onAccept(netsock);
 			}
 			else
@@ -94,6 +98,7 @@ class Server
 					}
 					catch (e:Dynamic)
 					{
+							#if !websock
 						// end of stream
 						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
 						{
@@ -109,6 +114,14 @@ class Server
 						}else{
 							trace(e);
 						}
+							#else
+
+						if (e == haxe.io.Error.Blocked){
+							//End of message
+							//break;
+						}
+						trace(e);
+							#end
 					}
 
 					buffer.set(bytesReceived, byte);

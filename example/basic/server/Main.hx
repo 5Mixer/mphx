@@ -10,8 +10,8 @@ class Main {
 		s.events.on("Hello",function(data:Dynamic,sender:mphx.tcp.Connection){
 			trace("The client sent 'Hello' with data " +data+ " . Replying back a number of ways.");
 
-			sender.send("Direct Message","This is a direct reply to your 'Hello' message!");
-			//sender.send("DM","Hello ya'll!!!");
+			//sender.send("Direct Message","This is a direct reply to your 'Hello' message!");
+			sender.send("DM","Hello ya'll!!!");
 			s.broadcast("Server wide broadcast","BEEPBOOP.");
 			//s.broadcast("BROADCAST",null);
 			//sender.putInRoom(room);

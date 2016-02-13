@@ -36,6 +36,7 @@ class Connection {
 	}
 
 	public function loseConnection(?reason:String) {
+		trace("Client disconnected with code: "+reason);
 		if (cnx != null){
 			cnx.close();
 			this.cnx = null;
@@ -67,9 +68,10 @@ class Connection {
 		return result;
 	}
 
-	public function dataReceived(input:Input){
+	public function recieve(line:String){
 		//Transfer the Input data to a string
-		var line = input.readLine();
+
+		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
 
@@ -81,4 +83,18 @@ class Connection {
 		events.callEvent(msg.t,msg.data,this);
 
 	}
+
+	public function dataReceived(input:Input):Void
+	{
+		//Convert Input to string then process.
+		var line = "";
+		try{
+			line = input.readLine();
+		}catch(e:Dynamic){
+			trace(e);
+			return;
+		}
+		recieve(line);
+	}
+
 }
