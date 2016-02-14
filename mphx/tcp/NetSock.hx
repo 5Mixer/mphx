@@ -7,6 +7,8 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 
+#if !js
+
 //The netsock class is a handeler for the haxe Socket class.
 //Pretty much just for a raw socket that is cross platform.
 class NetSock
@@ -56,3 +58,29 @@ class NetSock
 	public var socket:Socket;
 
 }
+#else
+
+class NetSock
+{
+
+	public function new(socket:Dynamic)
+	{
+	}
+
+	public function isOpen()
+	{
+		return true;
+	}
+
+	public function writeBytes(bytes:Bytes):Bool
+	{
+		return true;
+	}
+
+	public function close(){
+
+	}
+
+
+}
+#end

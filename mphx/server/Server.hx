@@ -77,7 +77,7 @@ class Server
 				#if !websock
 					client.custom = protocol = new mphx.tcp.Connection(events);
 				#else
-					client.custom = protocol = new mphx.tcp.WebsocketConnection(events);
+					client.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
 				#end
 				protocol.onAccept(netsock);
 			}

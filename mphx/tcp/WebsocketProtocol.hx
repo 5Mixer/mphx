@@ -31,7 +31,7 @@ enum Opcode
 * WebSocket protocol (RFC 6455)
 */
 
-class WebsocketConnection extends mphx.tcp.Connection {
+class WebsocketProtocol extends mphx.tcp.Connection {
 	public function new (events){
 		super(events);
 		_headers=new Array<String>();

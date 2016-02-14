@@ -2,7 +2,6 @@ package mphx.tcp;
 
 import haxe.io.Input;
 import haxe.io.Bytes;
-import mphx.server.Server;
 
 class Connection {
 	public var events:mphx.core.EventManager;
