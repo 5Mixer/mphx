@@ -74,11 +74,6 @@ class Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				//#if !websock
-				//	client.custom = protocol = new mphx.tcp.Connection(events);
-				//#else
-				//	client.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
-				//#end
 				client.custom = protocol = new mphx.tcp.Connection(events);
 				protocol.onAccept(netsock);
 			}
@@ -94,7 +89,6 @@ class Server
 				{
 					try
 					{
-
 						byte = #if flash socket.readByte() #else socket.input.readByte() #end;
 					}
 					catch (e:Dynamic)
@@ -124,26 +118,20 @@ class Server
 				// check that buffer was filled
 				if (bytesReceived > 0)
 				{
+					//check, is message an indication of a websocket connection?
 					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1"){
-						trace("Websocket client");
+
+						//If so, recreate a protocol of type websocket, for this specific client.
 						var socket = protocol.cnx.socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
 						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
 						protocol.onAccept(netsock);
 					}
+
+					//Let the protocol process the data.
 					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 				}
-
-
-				/*try  VVV - This code is blocking and thus runs slloooowwer.
-				{
-					protocol.dataReceived(socket.input);
-				}catch(e:haxe.io.Eof){
-					protocol.loseConnection("Disconnected");
-					readSockets.remove(socket);
-					clients.remove(socket);
-				}*/
 
 				if (!protocol.isConnected())
 				{
@@ -153,7 +141,6 @@ class Server
 				}
 			}
 		}
-		//trace("End update");
 	}
 
 	public function broadcast(event:String,data:Dynamic):Bool

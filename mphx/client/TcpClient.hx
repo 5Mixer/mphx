@@ -11,6 +11,8 @@ import haxe.io.BytesInput;
 import mphx.tcp.Connection;
 import mphx.tcp.NetSock;
 
+//The standard tcp client class that is used on native targets.
+
 class TcpClient implements IClient
 {
 

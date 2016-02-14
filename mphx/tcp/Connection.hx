@@ -5,11 +5,10 @@ import haxe.io.Bytes;
 
 class Connection {
 	public var events:mphx.core.EventManager;
+	public var cnx:NetSock;
 
 	public function new (_events:mphx.core.EventManager){
 		events = _events;
-
-
 	}
 
 	//WARNING: This is server only. Attempting to use rooms on the client is a bad idea!
@@ -45,11 +44,7 @@ class Connection {
 			room.onLeave(this);
 		}
 
-
 	}
-
-	public var cnx:NetSock;
-
 
 	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
 
@@ -73,8 +68,6 @@ class Connection {
 		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
-
-		//msg.data.sender = this;
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.

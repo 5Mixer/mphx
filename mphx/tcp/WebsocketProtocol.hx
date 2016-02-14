@@ -35,7 +35,6 @@ class WebsocketProtocol extends mphx.tcp.Connection {
 	public function new (events){
 		super(events);
 		_headers=new Array<String>();
-		trace("Using -Websocket- server");
 	}
 
 	override public function send (event:String,data:Dynamic){
@@ -110,7 +109,6 @@ class WebsocketProtocol extends mphx.tcp.Connection {
 		   var switchProtocols = false;
 		   while((line = input.readLine()) != "")
 		   {
-			   trace(line);
 			   var colon = line.indexOf(":");
 			   if (colon != -1)
 			   {

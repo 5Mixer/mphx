@@ -7,6 +7,8 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 
+//This whole class is killed when using Js. Js using its own websocket, and doesn't use this.
+//This needs to be dealt with better.
 #if !js
 
 //The netsock class is a handeler for the haxe Socket class.

@@ -16,9 +16,9 @@ class EventManager {
 		eventMap.set(eventName,event);
 	}
 	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
-		//trace("Event recieved: " + eventName);
-
+		//If an event with that name exists.
 		if (eventMap.exists(eventName) == true){
+			//See if the event should be called with or without the sender.
 			switch(eventMap.get(eventName).type){
 			case Left(eventWithSender): eventWithSender(data,sender);
 			case Right(eventWithoutSender): eventWithoutSender(data);

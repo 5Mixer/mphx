@@ -1,5 +1,6 @@
 package mphx.client;
 
+//The client class that is used with JS websockets.
 class WebsocketClient implements IClient
 {
 
@@ -18,7 +19,6 @@ class WebsocketClient implements IClient
 
 	public function new(_ip:String,_port:Int)
 	{
-		trace("Using -Websocket- client");
 		events = new mphx.core.EventManager();
 
 		ip = _ip;
