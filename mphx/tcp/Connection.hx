@@ -48,7 +48,7 @@ class Connection {
 
 	}
 
-	var cnx:NetSock;
+	public var cnx:NetSock;
 
 
 	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }

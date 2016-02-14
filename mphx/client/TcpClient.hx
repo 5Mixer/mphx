@@ -11,7 +11,7 @@ import haxe.io.BytesInput;
 import mphx.tcp.Connection;
 import mphx.tcp.NetSock;
 
-class Client
+class TcpClient implements IClient
 {
 
 	public var protocol(default, set):mphx.tcp.Connection;

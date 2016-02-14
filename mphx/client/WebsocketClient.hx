@@ -1,6 +1,7 @@
 package mphx.client;
 
-class WebsocketClient {
+class WebsocketClient implements IClient
+{
 
 	var websocket : js.html.WebSocket;
 
@@ -64,5 +65,9 @@ class WebsocketClient {
 	public function update(timeout:Float=0)
 	{
 		//JS Websockets don't need to be updated.
+	}
+
+	public function close (){
+		websocket.close(0,"Close requested");
 	}
 }

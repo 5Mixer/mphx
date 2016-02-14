@@ -41,7 +41,7 @@ HxOverrides.remove = function(a,obj) {
 	return true;
 };
 var Main = function() {
-	this.clientSocket = new mphx_client_WebsocketClient("127.0.0.1",8000);
+	this.clientSocket = mphx_client_Client.start("127.0.0.1",8000);
 	this.clientSocket.connect();
 	this.clientSocket.send("Hello",123);
 	this.clientSocket.events.on("DM",(function($this) {
@@ -60,7 +60,6 @@ var Main = function() {
 		$r = e1;
 		return $r;
 	}(this)));
-	var quit = false;
 };
 Main.__name__ = true;
 Main.main = function() {
@@ -571,6 +570,20 @@ js_html_compat_Uint8Array._subarray = function(start,end) {
 	a.byteOffset = start;
 	return a;
 };
+var mphx_client_Client = function() {
+};
+mphx_client_Client.__name__ = true;
+mphx_client_Client.start = function(_ip,_port) {
+	return new mphx_client_WebsocketClient(_ip,_port);
+};
+mphx_client_Client.prototype = {
+	__class__: mphx_client_Client
+};
+var mphx_client_IClient = function() { };
+mphx_client_IClient.__name__ = true;
+mphx_client_IClient.prototype = {
+	__class__: mphx_client_IClient
+};
 var mphx_client_WebsocketClient = function(_ip,_port) {
 	this.ready = false;
 	console.log("Using -Websocket- client");
@@ -581,6 +594,7 @@ var mphx_client_WebsocketClient = function(_ip,_port) {
 	this.protocol = new mphx_tcp_Connection(this.events);
 };
 mphx_client_WebsocketClient.__name__ = true;
+mphx_client_WebsocketClient.__interfaces__ = [mphx_client_IClient];
 mphx_client_WebsocketClient.prototype = {
 	connect: function() {
 		var _g = this;
@@ -610,6 +624,9 @@ mphx_client_WebsocketClient.prototype = {
 	}
 	,update: function(timeout) {
 		if(timeout == null) timeout = 0;
+	}
+	,close: function() {
+		this.websocket.close(0,"Close requested");
 	}
 	,__class__: mphx_client_WebsocketClient
 };

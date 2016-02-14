@@ -74,11 +74,12 @@ class Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				#if !websock
-					client.custom = protocol = new mphx.tcp.Connection(events);
-				#else
-					client.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
-				#end
+				//#if !websock
+				//	client.custom = protocol = new mphx.tcp.Connection(events);
+				//#else
+				//	client.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+				//#end
+				client.custom = protocol = new mphx.tcp.Connection(events);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -123,6 +124,14 @@ class Server
 				// check that buffer was filled
 				if (bytesReceived > 0)
 				{
+					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1"){
+						trace("Websocket client");
+						var socket = protocol.cnx.socket;
+						var netsock = new mphx.tcp.NetSock(socket);
+
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+						protocol.onAccept(netsock);
+					}
 					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 				}
 
