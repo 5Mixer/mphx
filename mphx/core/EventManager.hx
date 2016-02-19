@@ -1,8 +1,8 @@
 package mphx.core;
 
-import mphx.tcp.Connection;
+import mphx.tcp.IConnection;
 
-typedef EventFunction = Either<(Dynamic->Connection->Void), (Dynamic->Void)>;
+typedef EventFunction = Either<(Dynamic->IConnection->Void), (Dynamic->Void)>;
 
 class EventManager
 {

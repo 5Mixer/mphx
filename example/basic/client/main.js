@@ -689,11 +689,17 @@ mphx_server_Room.prototype = {
 	}
 	,__class__: mphx_server_Room
 };
+var mphx_tcp_IConnection = function() { };
+mphx_tcp_IConnection.__name__ = true;
+mphx_tcp_IConnection.prototype = {
+	__class__: mphx_tcp_IConnection
+};
 var mphx_tcp_Connection = function(_events) {
 	this.room = null;
 	this.events = _events;
 };
 mphx_tcp_Connection.__name__ = true;
+mphx_tcp_Connection.__interfaces__ = [mphx_tcp_IConnection];
 mphx_tcp_Connection.prototype = {
 	onConnect: function(cnx) {
 		this.cnx = cnx;

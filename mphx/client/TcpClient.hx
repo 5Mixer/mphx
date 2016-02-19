@@ -8,7 +8,7 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
-import mphx.tcp.Connection;
+import mphx.tcp.IConnection;
 import mphx.tcp.NetSock;
 
 //The standard tcp client class that is used on native targets.
@@ -16,7 +16,7 @@ import mphx.tcp.NetSock;
 class TcpClient implements IClient
 {
 
-	public var protocol(default, set):mphx.tcp.Connection;
+	public var protocol(default, set):mphx.tcp.IConnection;
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 
@@ -160,7 +160,7 @@ class TcpClient implements IClient
 		return blocking = value;
 	}
 
-	private function set_protocol(value:Connection):Connection
+	private function set_protocol(value:IConnection):IConnection
 	{
 		if (client != null)
 		{

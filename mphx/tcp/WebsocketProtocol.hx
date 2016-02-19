@@ -1,6 +1,6 @@
 package mphx.tcp;
 
-import mphx.tcp.Connection;
+import mphx.tcp.IConnection;
 
 import haxe.crypto.Base64;
 import haxe.crypto.Sha1;

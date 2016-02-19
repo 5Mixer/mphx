@@ -7,7 +7,7 @@ class Main {
 		var room = new mphx.server.Room();
 		s.rooms.push(room);
 
-		s.events.on("Hello",function(data:Dynamic,sender:mphx.tcp.Connection){
+		s.events.on("Hello",function(data:Dynamic,sender:mphx.tcp.IConnection){
 			trace("The client sent 'Hello' with data " +data+ " . Replying back a number of ways.");
 
 			//sender.send("Direct Message","This is a direct reply to your 'Hello' message!");

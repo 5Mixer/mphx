@@ -7,14 +7,14 @@ typedef PlayerData = {
 
 class Main {
 
-	var players:Map<mphx.tcp.Connection,PlayerData>;
+	var players:Map<mphx.tcp.IConnection,PlayerData>;
 
 	public function new () {
 		var server = new mphx.server.Server("127.0.0.1",8000);
 
-		players = new Map<mphx.tcp.Connection,PlayerData>();
+		players = new Map<mphx.tcp.IConnection,PlayerData>();
 
-		server.events.on("Join",function(data:Dynamic,sender:mphx.tcp.Connection){
+		server.events.on("Join",function(data:Dynamic,sender:mphx.tcp.IConnection){
 			trace("New player with id "+data.id);
 
 			var lobbyRoom:mphx.server.Room = null;
@@ -38,7 +38,7 @@ class Main {
 			players.set(sender,data);
 		});
 
-		server.events.on("Update Position",function(data:Dynamic,sender:mphx.tcp.Connection){
+		server.events.on("Update Position",function(data:Dynamic,sender:mphx.tcp.IConnection){
 			trace("Player with id "+data.id+" moved to Y: "+data.y+" in a room with "+sender.room.connections.length+" people in it.");
 			players.set(sender,data);
 			sender.room.broadcast("Player Moved",data);
