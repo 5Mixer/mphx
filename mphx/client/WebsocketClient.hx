@@ -46,7 +46,8 @@ class WebsocketClient implements IClient
 		websocket.onmessage = function (m) protocol.recieve(m.data);
 	}
 
-	public function send(event:String, data:Dynamic){
+	public function send(event:String, data:Dynamic)
+	{
 		var object = {
 			t: event,
 			data:data

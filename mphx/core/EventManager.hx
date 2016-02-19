@@ -4,18 +4,22 @@ import mphx.tcp.Connection;
 
 typedef EventFunction = Either<(Dynamic->Connection->Void), (Dynamic->Void)>;
 
-class EventManager {
+class EventManager
+{
 
 	var eventMap:Map<String,EventFunction>;
 
-	public function new () {
+	public function new ()
+	{
 		eventMap = new Map<String,EventFunction>();
 	}
 
-	public function on (eventName,event:EventFunction){
+	public function on (eventName,event:EventFunction)
+	{
 		eventMap.set(eventName,event);
 	}
-	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
+	public function callEvent (eventName,data,sender:mphx.tcp.Connection)
+	{
 		//If an event with that name exists.
 		if (eventMap.exists(eventName) == true){
 			//See if the event should be called with or without the sender.

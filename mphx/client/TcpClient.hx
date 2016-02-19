@@ -88,16 +88,9 @@ class TcpClient implements IClient
 			}
 #end
 		}
-		// catch (e:Dynamic)
-		// {
-		// 	trace("Disconnected");
-		// 	protocol.loseConnection("disconnected");
-		// 	client.close();
-		// 	client = null;
-		// }
 	}
 
-	private function readSocket(socket:Socket)
+	function readSocket(socket:Socket)
 	{
 	/*	var byte:Int = 0,
 			bytesReceived:Int = 0,

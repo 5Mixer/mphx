@@ -1,6 +1,7 @@
 package mphx.client;
 
-interface IClient {
+interface IClient
+{
 	public function send(event:String, data:Dynamic):Void;
 	public function close ():Void;
 	public function connect ():Void;
