@@ -96,7 +96,7 @@ class Server
 						// end of stream
 						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
 						{
-							trace("A client disconnected.");
+							protocol.loseConnection("close connection");
 
 							readSockets.remove(socket);
 							clients.remove(socket);

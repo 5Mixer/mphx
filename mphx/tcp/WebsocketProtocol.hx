@@ -104,7 +104,6 @@ class WebsocketProtocol extends mphx.tcp.Connection {
 	{
 	   if (_useHttp) // http protocol
 	   {
-		   trace("http");
 		   var line:String;
 		   var switchProtocols = false;
 		   while((line = input.readLine()) != "")
