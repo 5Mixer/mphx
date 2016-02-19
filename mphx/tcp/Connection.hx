@@ -3,7 +3,8 @@ package mphx.tcp;
 import haxe.io.Input;
 import haxe.io.Bytes;
 
-class Connection {
+class Connection implements mphx.tcp.IConnection
+{
 	public var events:mphx.core.EventManager;
 	public var cnx:NetSock;
 

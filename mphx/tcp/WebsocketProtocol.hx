@@ -31,7 +31,8 @@ enum Opcode
 * WebSocket protocol (RFC 6455)
 */
 
-class WebsocketProtocol extends mphx.tcp.Connection {
+class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnection
+{
 	public function new (events){
 		super(events);
 		_headers=new Array<String>();
@@ -70,7 +71,7 @@ class WebsocketProtocol extends mphx.tcp.Connection {
 
 	}
 
-	private function onHandshake():Void
+	function onHandshake():Void
 	{
 	   _useHttp = false;
 	}
@@ -157,7 +158,7 @@ class WebsocketProtocol extends mphx.tcp.Connection {
 	/**
 	* Overridable functions for receiving text
 	*/
-	private function recvText(text:String):Void { trace(text); super.recieve(text); }
+	private function recvText(text:String):Void { super.recieve(text); }
 
 	/**
 	* Overridable functions for receiving binary data

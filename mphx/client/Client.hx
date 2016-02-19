@@ -1,7 +1,10 @@
 package mphx.client;
 
 
-typedef Client = #if js mphx.client.WebsocketClient; #else mphx.client.TcpClient; #end
+typedef Client =
+#if js mphx.client.WebsocketClient;
+#else mphx.client.TcpClient; #end
+
 /*{
 	public function new (_ip:String,_port:Int):mphx.client.IClient
 	{
