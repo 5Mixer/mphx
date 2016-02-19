@@ -84,7 +84,7 @@ class Connection implements mphx.tcp.IConnection
 		try{
 			line = input.readLine();
 		}catch(e:Dynamic){
-			trace(e);
+			loseConnection("Lost connection to server");
 			return;
 		}
 		recieve(line);
