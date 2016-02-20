@@ -41,7 +41,6 @@ class WebsocketClient implements IClient
 		websocket.onmessage = function (line)
 		{
 			var data = line.data;
-			trace(data);
 			var msg = haxe.Json.parse(data);
 
 			//The message will have a propety of T
