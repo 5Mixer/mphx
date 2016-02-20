@@ -98,9 +98,9 @@ mphx_client_WebsocketClient.prototype = {
 			}
 		};
 		this.websocket.onmessage = function(line) {
-			console.log(line.data);
-			var msg = JSON.parse(line.data);
-			console.log(msg.data);
+			var data = line.data;
+			console.log(data);
+			var msg = JSON.parse(data);
 			_g.events.callEvent(msg.t,msg.data);
 		};
 	}

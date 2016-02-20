@@ -5,7 +5,7 @@
 	"description": "mphx allows for easy creation of MP games.",
 	"contributors": ["5Mixer"],
 	"releasenote": "Breaking! Early work with websocket connections. Structural changes.",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"url": "https://github.com/5Mixer/mphx",
 	"dependencies":
 	{

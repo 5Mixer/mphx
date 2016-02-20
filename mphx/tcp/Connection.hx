@@ -34,7 +34,8 @@ class Connection implements mphx.tcp.IConnection
 		return true;
 	}
 
-	public function loseConnection(?reason:String) {
+	public function loseConnection(?reason:String)
+	{
 		trace("Client disconnected with code: "+reason);
 		if (cnx != null){
 			cnx.close();
@@ -43,7 +44,6 @@ class Connection implements mphx.tcp.IConnection
 		if (room != null){
 			room.onLeave(this);
 		}
-
 	}
 
 	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }

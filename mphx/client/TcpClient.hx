@@ -8,10 +8,13 @@ import sys.net.Socket;
 #end
 import haxe.io.Bytes;
 import haxe.io.BytesInput;
+import haxe.io.Input;
 import mphx.tcp.IConnection;
 import mphx.tcp.NetSock;
 
-//The standard tcp client class that is used on native targets.
+//The TCP client class that is used on native targets.
+//This should not be created by the user! For ultimate cross compatibility
+//Just create a new 'Client'. It will create this class on native targets.
 
 class TcpClient implements IClient
 {
@@ -19,17 +22,16 @@ class TcpClient implements IClient
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 
-
 	public var cnx:NetSock;
 
-	public var events:mphx.core.EventManager;
+	public var events:mphx.client.EventManager;
 
 	var port:Int;
 	var ip:String;
 
 	public function new(_ip:String,_port:Int)
 	{
-		events = new mphx.core.EventManager();
+		events = new mphx.client.EventManager();
 
 		buffer = Bytes.alloc(8192);
 
@@ -98,7 +100,7 @@ class TcpClient implements IClient
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.
-		events.callEvent(msg.t,msg.data,this);
+		events.callEvent(msg.t,msg.data);
 
 	}
 
@@ -151,24 +153,30 @@ class TcpClient implements IClient
 		{*/
 		try
 		{
-			protocol.dataReceived(socket.input);
+			dataReceived(socket.input);
 		}catch(e:haxe.io.Eof){
 			//trace("LOST");
-			protocol.loseConnection("Lost connection to server");
+			loseConnection("Lost connection to server");
 			//throw("DISCONNECTED. "+e);
 		};//new BytesInput(buffer, 0, bytesReceived));
 		//}
 	}
+	public function loseConnection(?reason:String)
+	{
+		trace("Client disconnected with code: "+reason);
+		if (cnx != null){
+			cnx.close();
+			this.cnx = null;
+		}
+	}
 
 	public function close()
 	{
-		trace("Client disconnected with code: "+reason);
 		client.close();
 		if (cnx != null){
 			cnx.close();
 			this.cnx = null;
 		}
-		protocol = null;
 		client = null;
 	}
 
