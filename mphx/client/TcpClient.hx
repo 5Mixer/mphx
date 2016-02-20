@@ -150,16 +150,15 @@ class TcpClient implements IClient
 
 		// check that buffer was filled
 		if (bytesReceived > 0)
-		{*/
+		{
+			new BytesInput(buffer, 0, bytesReceived));
+		}*/
 		try
 		{
 			dataReceived(socket.input);
 		}catch(e:haxe.io.Eof){
-			//trace("LOST");
 			loseConnection("Lost connection to server");
-			//throw("DISCONNECTED. "+e);
-		};//new BytesInput(buffer, 0, bytesReceived));
-		//}
+		};
 	}
 	public function loseConnection(?reason:String)
 	{

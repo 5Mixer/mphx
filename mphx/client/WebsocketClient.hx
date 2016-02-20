@@ -6,7 +6,6 @@ class WebsocketClient implements IClient
 
 	var websocket : js.html.WebSocket;
 
-
 	public var events:mphx.client.EventManager;
 
 	var port:Int;
@@ -31,7 +30,7 @@ class WebsocketClient implements IClient
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
 		websocket.onopen = function (){
-			ready=true;
+			ready = true;
 
 			for (message in messageQueue){
 				send(message.t,message.data);
@@ -59,7 +58,8 @@ class WebsocketClient implements IClient
 			data:data
 		};
 
-		if (ready == true){
+		if (ready == true)
+		{
 			var serialiseObject = haxe.Json.stringify(object);
 
 			websocket.send(serialiseObject + "\r\n");

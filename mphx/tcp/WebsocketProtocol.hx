@@ -33,12 +33,14 @@ enum Opcode
 
 class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnection
 {
-	public function new (events){
+	public function new (events)
+	{
 		super(events);
 		_headers=new Array<String>();
 	}
 
-	override public function send (event:String,data:Dynamic){
+	override public function send (event:String,data:Dynamic)
+	{
 		var object = {
 			t: event,
 			data:data
@@ -140,34 +142,25 @@ class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnect
 		   switch (recvFrame(input))
 		   {
 				case Continue: // continuation
-			   	case Text(text): // text
-				   recvText(text);
-			   case Binary(bytes): // binary
-				   recvBinary(bytes);
-			   case Close: // close
-				   loseConnection("close connection");
+				case Text(text): // text
+					recvText(text);
+				case Binary(bytes): // binary
+					recvBinary(bytes);
+				case Close: // close
+					loseConnection("close connection");
 				   //cnx.close();
-			   case Ping: // ping
-				   cnx.writeBytes(createFrame(Pong)); // send pong
-			   case Pong: // pong
-				   // do nothing
+				case Ping: // ping
+					cnx.writeBytes(createFrame(Pong)); // send pong
+				case Pong: // pong
+					// do nothing
 		   }
 	   }
 	}
 
-	/**
-	* Overridable functions for receiving text
-	*/
-	private function recvText(text:String):Void { super.recieve(text); }
+	function recvText(text:String):Void { super.recieve(text); }
 
-	/**
-	* Overridable functions for receiving binary data
-	*/
-	private function recvBinary(data:Bytes):Void { }
+	function recvBinary(data:Bytes):Void { }
 
-	/**
-	* Sends text over connection
-	*/
 
 	/**
 	* Sends binary data over connection
