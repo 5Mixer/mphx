@@ -16,9 +16,11 @@ import mphx.tcp.NetSock;
 class TcpClient implements IClient
 {
 
-	public var protocol(default, set):mphx.tcp.IConnection;
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
+
+
+	public var cnx:NetSock;
 
 	public var events:mphx.core.EventManager;
 
@@ -30,7 +32,6 @@ class TcpClient implements IClient
 		events = new mphx.core.EventManager();
 
 		buffer = Bytes.alloc(8192);
-		protocol = new mphx.tcp.Connection(events);
 
 		port = _port;
 		ip = _ip;
@@ -53,10 +54,8 @@ class TcpClient implements IClient
 #end
 			// prevent recreation of array on every update
 			readSockets = [client];
-			if (protocol != null)
-			{
-				protocol.onConnect(new NetSock(client));
-			}
+			cnx = new NetSock(client);
+
 		}
 		catch (e:Dynamic)
 		{
@@ -76,7 +75,7 @@ class TcpClient implements IClient
 #else
 			if (blocking)
 			{
-				protocol.dataReceived(client.input);
+				dataReceived(client.input);
 			}
 			else
 			{
@@ -88,6 +87,32 @@ class TcpClient implements IClient
 			}
 #end
 		}
+	}
+
+	public function recieve(line:String){
+		//Transfer the Input data to a string
+
+		//Then convert the string to a Dynamic object.
+		var msg = haxe.Json.parse(line);
+
+		//The message will have a propety of T
+		//This is the event name/type. It is t to reduce wasted banwidth.
+		//call an event called 't' with the msg data.
+		events.callEvent(msg.t,msg.data,this);
+
+	}
+
+	public function dataReceived(input:Input):Void
+	{
+		//Convert Input to string then process.
+		var line = "";
+		try{
+			line = input.readLine();
+		}catch(e:Dynamic){
+			loseConnection("Lost connection to server");
+			return;
+		}
+		recieve(line);
 	}
 
 	function readSocket(socket:Socket)
@@ -137,21 +162,33 @@ class TcpClient implements IClient
 
 	public function close()
 	{
+		trace("Client disconnected with code: "+reason);
 		client.close();
-		protocol.loseConnection();
+		if (cnx != null){
+			cnx.close();
+			this.cnx = null;
+		}
 		protocol = null;
 		client = null;
 	}
 
 	public function send (event:String,data:Dynamic){
-		protocol.send(event,data);
+		var object = {
+			t: event,
+			data:data
+		};
+		var serialiseObject = haxe.Json.stringify(object);
+
+		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 	}
 
 
 	private inline function get_connected():Bool
 	{
-		return client != null && protocol != null;
+		return client != null;
 	}
+	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
+
 
 	private function set_blocking(value:Bool):Bool
 	{
@@ -161,16 +198,6 @@ class TcpClient implements IClient
 #end
 		return blocking = value;
 	}
-
-	private function set_protocol(value:IConnection):IConnection
-	{
-		if (client != null)
-		{
-			value.onConnect(new NetSock(client));
-		}
-		return protocol = value;
-	}
-
 	private var client:Socket;
 	private var readSockets:Array<Socket>;
 	private var buffer:Bytes;

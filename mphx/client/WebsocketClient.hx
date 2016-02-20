@@ -7,7 +7,7 @@ class WebsocketClient implements IClient
 	var websocket : js.html.WebSocket;
 
 
-	public var events:mphx.core.EventManager;
+	public var events:mphx.client.EventManager;
 
 	var port:Int;
 	var ip:String;
@@ -15,19 +15,15 @@ class WebsocketClient implements IClient
 	var ready = false;
 	var messageQueue:Array<Dynamic>;
 
-	public var protocol:mphx.tcp.Connection;
 
 	public function new(_ip:String,_port:Int)
 	{
-		events = new mphx.core.EventManager();
+		events = new mphx.client.EventManager();
 
 		ip = _ip;
 		port = _port;
 
 		messageQueue = new Array<Dynamic>();
-
-		protocol = new mphx.tcp.Connection(events);
-
 
 	}
 	public function connect () {
@@ -43,7 +39,17 @@ class WebsocketClient implements IClient
 			}
 		}
 
-		websocket.onmessage = function (m) protocol.recieve(m.data);
+		websocket.onmessage = function (line)
+		{
+			var data = line.data;
+			trace(data);
+			var msg = haxe.Json.parse(data);
+
+			//The message will have a propety of T
+			//This is the event name/type. It is t to reduce wasted banwidth.
+			//call an event called 't' with the msg data.
+			events.callEvent(msg.t,msg.data);
+		}
 	}
 
 	public function send(event:String, data:Dynamic)

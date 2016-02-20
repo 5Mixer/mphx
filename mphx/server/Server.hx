@@ -17,7 +17,7 @@ class Server
 	public var port(default, null):Int;
 	public var blocking(default, set):Bool = true;
 
-	public var events:mphx.core.EventManager;
+	public var events:mphx.server.EventManager;
 
 	public var rooms:Array<Room>;
 
@@ -30,7 +30,7 @@ class Server
 		this.host = hostname;
 		this.port = port;
 
-		events = new mphx.core.EventManager();
+		events = new mphx.server.EventManager();
 		rooms = new Array<Room>();
 
 		listener = new Socket();

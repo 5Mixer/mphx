@@ -2,14 +2,10 @@ package mphx.tcp;
 
 #if flash
 import flash.net.Socket;
-#elseif !js
+#else
 import sys.net.Socket;
 #end
 import haxe.io.Bytes;
-
-//This whole class is killed when using Js. Js using its own websocket, and doesn't use this.
-//This needs to be dealt with better.
-#if !js
 
 //The netsock class is a handeler for the haxe Socket class.
 //Pretty much just for a raw socket that is cross platform.
@@ -60,29 +56,3 @@ class NetSock
 	public var socket:Socket;
 
 }
-#else
-
-class NetSock
-{
-
-	public function new(socket:Dynamic)
-	{
-	}
-
-	public function isOpen()
-	{
-		return true;
-	}
-
-	public function writeBytes(bytes:Bytes):Bool
-	{
-		return true;
-	}
-
-	public function close(){
-
-	}
-
-
-}
-#end

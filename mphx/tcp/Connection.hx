@@ -5,10 +5,10 @@ import haxe.io.Bytes;
 
 class Connection implements mphx.tcp.IConnection
 {
-	public var events:mphx.core.EventManager;
+	public var events:mphx.server.EventManager;
 	public var cnx:NetSock;
 
-	public function new (_events:mphx.core.EventManager){
+	public function new (_events:mphx.server.EventManager){
 		events = _events;
 	}
 
@@ -41,7 +41,6 @@ class Connection implements mphx.tcp.IConnection
 			this.cnx = null;
 		}
 		if (room != null){
-
 			room.onLeave(this);
 		}
 
@@ -66,7 +65,6 @@ class Connection implements mphx.tcp.IConnection
 	public function recieve(line:String){
 		//Transfer the Input data to a string
 
-		trace(line);
 		//Then convert the string to a Dynamic object.
 		var msg = haxe.Json.parse(line);
 

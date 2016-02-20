@@ -1,4 +1,4 @@
-package mphx.core;
+package mphx.server;
 
 import mphx.tcp.IConnection;
 
@@ -18,7 +18,7 @@ class EventManager
 	{
 		eventMap.set(eventName,event);
 	}
-	public function callEvent (eventName,data,sender:mphx.tcp.Connection)
+	public function callEvent (eventName,data,sender:IConnection)
 	{
 		//If an event with that name exists.
 		if (eventMap.exists(eventName) == true){

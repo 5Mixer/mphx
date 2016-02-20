@@ -12,7 +12,7 @@ class Main
 
 		clientSocket.send("Hello",123);
 
-		clientSocket.events.on("Direct Message",function (data,sender){
+		clientSocket.events.on("Direct Message",function (data){
 			trace("Server sent a 'Direct message' with data " +data);
 		});
 

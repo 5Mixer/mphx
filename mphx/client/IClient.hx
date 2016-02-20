@@ -6,5 +6,5 @@ interface IClient
 	public function close ():Void;
 	public function connect ():Void;
 	public function update(timeout:Float=0):Void;
-	public var events:mphx.core.EventManager;
+	public var events:mphx.client.EventManager;
 }
