@@ -19,7 +19,8 @@ class Connection implements mphx.tcp.IConnection
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
 
-	public function putInRoom (newRoom:mphx.server.Room){
+	public function putInRoom (newRoom:mphx.server.Room)
+	{
 
 		if (newRoom.full){
 			return false;

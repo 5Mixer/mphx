@@ -41,6 +41,9 @@ class PlayState extends FlxState
 	var myPaddle:Paddle;
 	var theirPaddle:Paddle;
 
+	var leftPaddle:Paddle;
+	var rightPaddle:Paddle;
+
 	var playerData:PlayerData;
 
 	/**
@@ -67,6 +70,16 @@ class PlayState extends FlxState
 				theirPaddle.y = data.y;
 			}
 		});
+		clientConnection.events.on("playerSide",function (data){
+			if (data=="right"){
+				myPaddle = rightPaddle;
+				theirPaddle = leftPaddle;
+			}
+		});
+		clientConnection.events.on("updateBall",function (data){
+			ball.setPosition(data.x,data.y);
+			ball.velocity.set(data.vx,data.vy);
+		});
 
 
 		background = new FlxSprite();
@@ -83,8 +96,8 @@ class PlayState extends FlxState
 		winText.visible = false;
 		add(winText);
 
-		paddles.add(myPaddle = new Paddle(30,200));
-		paddles.add(theirPaddle = new Paddle(FlxG.width - 40,200));
+		paddles.add(myPaddle = leftPaddle = new Paddle(30,200));
+		paddles.add(theirPaddle = rightPaddle = new Paddle(FlxG.width - 40,200));
 		add(paddles);
 
 		add(ball = new Ball(FlxG.width/2,FlxG.height/2));

@@ -8,5 +8,7 @@ interface IConnection
 	public function onConnect(cnx:NetSock):Void;
 	public function dataReceived(input:Input):Void;
 	public function loseConnection(?reason:String):Void;
+	public function putInRoom (newRoom:mphx.server.Room):Bool;
+	public var room:mphx.server.Room;
 
 }
