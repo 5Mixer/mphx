@@ -136,7 +136,7 @@ class PlayState extends FlxState
 		}
 
 
-		FlxG.collide(ball,paddles,function (ball:FlxSprite,paddle:FlxSprite){
+		/*FlxG.collide(ball,paddles,function (ball:FlxSprite,paddle:FlxSprite){
 			ball.velocity.y = (ball.getMidpoint().y - paddle.getMidpoint().y)*6;
 
 			FlxG.sound.play("assets/sounds/pop.wav");
@@ -144,7 +144,7 @@ class PlayState extends FlxState
 			FlxG.camera.shake(0.01,0.1);
 
 			background.color = FlxColorUtil.makeFromHSBA(FlxRandom.intRanged(1,360),0.7,0.7);
-		});
+		});*/
 
 		if (ball.x < 0){
 			//Increase right score

@@ -21,23 +21,52 @@ class Ball {
 
 		if (y < 0){
 			vy *= -1;
+			y=0;
 		}
 		if (y+height > Main.clientWindowHeight){
 			vy *= -1;
+			y=Main.clientWindowHeight-height;
+		}
+		if (x < 0){
+			reset();
+		}
+		if (x+width>Main.clientWindowWidth){
+			reset();
 		}
 	}
+	public function reset(){
+		vy=0;
+		vx=-330;
+		x=Math.floor(Main.clientWindowWidth/2);
+		y=Math.floor(Main.clientWindowHeight/2);
+	}
 
-	public function collide(paddle) {
+	public function collide(paddle:{x:Int,y:Int,width:Int,height:Int}) {
+		//trace("x: "+paddle.x);
+		//trace("y: "+paddle.y);
 
-		if (x < paddle.x + 10 &&
-		   x + width > paddle.x &&
-		   y < paddle.y + 50 &&
-		   height + y > paddle.y) {
+			if (x <= paddle.x + paddle.width &&
+                paddle.x <= x + width &&
+                y <= paddle.y + paddle.height &&
+                paddle.y <= y + height){
+			paddle.x = paddle.x;
+			paddle.width = paddle.width;
+			//if (y<paddle.y+height && y>paddle.y && (x<35 || x>Main.clientWindowWidth-35)){
 
-			//Collision
-			trace("COLLIDE!!!!!!!");
-			vy = Math.floor(((y+height/2) - (paddle.y+paddle.height/2))*6);
-			vx *= -1;
+				trace("Collision");
+
+				//Collision
+				vy = Math.floor(((y+(height/2)) - (paddle.y+(paddle.height/2)))*6);
+
+				vx *= -1;
+
+				//Hack! fix!
+				if (x < Main.clientWindowWidth/2){
+					x = 51;
+				}
+				if (x > Main.clientWindowWidth/2){
+					x = Main.clientWindowWidth-51;
+				}
 		}
 	}
 }

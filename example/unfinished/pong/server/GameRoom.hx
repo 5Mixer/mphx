@@ -16,25 +16,25 @@ class GameRoom extends mphx.server.Room {
 
 
 	public function update (elapsed:Float){
+
 		ball.update(elapsed);
-
-
-
-
 		for (connection in connections){
 
 			//IF GAMESTARTED - Fixit.
-			if (ball.vx != 0){
-				trace((server.players.get(connection).left) ? 30 : Main.clientWindowWidth - 40);
-				
+			//if (ball.vx != 0){
+				//trace((server.players.get(connection).left) ? 30 : Main.clientWindowWidth - 40);
+
 				ball.collide({
+					width: 10,
 					height: 50,
 					x: (server.players.get(connection).left) ? 30 : Main.clientWindowWidth - 40,
 					y: server.players.get(connection).y
 				});
-			}
+			//}
 
+		}
 
+		for (connection in connections){
 			connection.send("updateBall",{
 				x:ball.x,
 				y:ball.y,

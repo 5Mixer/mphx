@@ -50,15 +50,17 @@ class Main {
 
 				data.left = true;
 			}
-
+			trace(data.left);
 
 			players.set(sender,data);
 		});
 
 		server.events.on("Update Position",function(data:Dynamic,sender:mphx.tcp.IConnection){
 			//trace("Player with id "+data.id+" moved to Y: "+data.y+" in a room with "+sender.room.connections.length+" people in it.");
-			players.set(sender,data);
-			sender.room.broadcast("Player Moved",data);
+			var newData = players.get(sender);
+			newData.y = data.y;
+			players.set(sender,newData);
+			sender.room.broadcast("Player Moved",newData);
 		});
 
 
