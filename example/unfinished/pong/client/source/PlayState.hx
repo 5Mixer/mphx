@@ -3,14 +3,12 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.util.FlxColorUtil;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxMath;
 import flixel.util.FlxTimer;
-import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import Paddle;
 
 typedef PlayerData = {
@@ -84,7 +82,7 @@ class PlayState extends FlxState
 
 		background = new FlxSprite();
 		background.makeGraphic(FlxG.width,FlxG.height,FlxColor.WHITE);
-		background.color = FlxColorUtil.makeFromHSBA(FlxRandom.intRanged(1,360),0.7,0.7);
+		background.color = FlxColor.fromHSB(FlxG.random.int(1,360),0.7,0.7);
 		add(background);
 
 		scoreText = new FlxText(0,0,FlxG.width,"0|0");
@@ -121,9 +119,9 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
-		super.update();
+		super.update(elapsed);
 		clientConnection.update();
 
 
@@ -136,15 +134,15 @@ class PlayState extends FlxState
 		}
 
 
-		/*FlxG.collide(ball,paddles,function (ball:FlxSprite,paddle:FlxSprite){
+		FlxG.collide(ball,paddles,function (ball:FlxSprite,paddle:FlxSprite){
 			ball.velocity.y = (ball.getMidpoint().y - paddle.getMidpoint().y)*6;
 
 			FlxG.sound.play("assets/sounds/pop.wav");
 
 			FlxG.camera.shake(0.01,0.1);
 
-			background.color = FlxColorUtil.makeFromHSBA(FlxRandom.intRanged(1,360),0.7,0.7);
-		});*/
+			background.color = FlxColor.fromHSB(FlxG.random.int(1,360),0.7,0.7);
+		});
 
 		if (ball.x < 0){
 			//Increase right score
@@ -157,9 +155,9 @@ class PlayState extends FlxState
 				scoreText.text = "Right Player won!";
 				ball.velocity.set();
 
-				new FlxTimer(4, function (timer){
-					FlxG.resetGame();
-				} );
+				//new FlxTimer(4, function (timer){
+				//	FlxG.resetGame();
+				//} );
 			}
 		}
 		if (ball.x+ball.width > FlxG.width){
@@ -173,9 +171,9 @@ class PlayState extends FlxState
 				scoreText.text = "Left Player won!";
 				ball.velocity.set();
 
-				new FlxTimer(4, function (timer){
-					FlxG.resetGame();
-				} );
+				//new FlxTimer(4, function (timer){
+				//	FlxG.resetGame();
+				//} );
 			}
 		}
 	}

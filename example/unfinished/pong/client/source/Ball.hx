@@ -16,8 +16,8 @@ class Ball extends FlxSprite {
 		elasticity = 1;
 	}
 
-	override public function update (){
-		super.update();
+	override public function update (e){
+		super.update(e);
 
 		/*if (y < 0){
 			velocity.y *= -1;
