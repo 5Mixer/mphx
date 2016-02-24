@@ -19,7 +19,7 @@ class Ball extends FlxSprite {
 	override public function update (e){
 		super.update(e);
 
-		/*if (y < 0){
+		if (y < 0){
 			velocity.y *= -1;
 			FlxG.camera.shake(0.01,0.1);
 			FlxG.sound.play("assets/sounds/pop.wav");
@@ -28,7 +28,7 @@ class Ball extends FlxSprite {
 			velocity.y *= -1;
 			FlxG.camera.shake(0.01,0.1);
 			FlxG.sound.play("assets/sounds/pop.wav");
-		}*/
+		}
 	}
 
 	public function resetBall () {

@@ -27,10 +27,10 @@ class Ball {
 			vy *= -1;
 			y=Main.clientWindowHeight-height;
 		}
-		if (x < 0){
+		if (x < -width){
 			reset();
 		}
-		if (x+width>Main.clientWindowWidth){
+		if (x>Main.clientWindowWidth){
 			reset();
 		}
 	}
@@ -42,16 +42,11 @@ class Ball {
 	}
 
 	public function collide(paddle:{x:Int,y:Int,width:Int,height:Int}) {
-		//trace("x: "+paddle.x);
-		//trace("y: "+paddle.y);
 
 			if (x <= paddle.x + paddle.width &&
                 paddle.x <= x + width &&
                 y <= paddle.y + paddle.height &&
                 paddle.y <= y + height){
-			paddle.x = paddle.x;
-			paddle.width = paddle.width;
-			//if (y<paddle.y+height && y>paddle.y && (x<35 || x>Main.clientWindowWidth-35)){
 
 				trace("Collision");
 
@@ -60,12 +55,10 @@ class Ball {
 
 				vx *= -1;
 
-				//Hack! fix!
 				if (x < Main.clientWindowWidth/2){
-					x = 51;
-				}
-				if (x > Main.clientWindowWidth/2){
-					x = Main.clientWindowWidth-51;
+					x = 40;
+				}else{
+					x = Main.clientWindowWidth-50;
 				}
 		}
 	}
