@@ -23,7 +23,7 @@ class Main extends luxe.Game {
         socket = new mphx.client.Client('127.0.0.1', 8001);
 		socket.connect();
 
-        socket.send('join', null);
+        socket.send('join');
 
         socket.events.on('accepted', function (data :{ playerId :String }) {
             myPlayerId = data.playerId;

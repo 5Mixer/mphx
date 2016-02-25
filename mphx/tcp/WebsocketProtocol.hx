@@ -39,7 +39,7 @@ class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnect
 		_headers=new Array<String>();
 	}
 
-	override public function send (event:String,data:Dynamic)
+	override public function send(event:String,?data:Dynamic) :Bool
 	{
 		var object = {
 			t: event,
