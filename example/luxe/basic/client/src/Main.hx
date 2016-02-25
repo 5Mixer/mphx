@@ -37,22 +37,11 @@ class Main extends luxe.Game {
 
     override function onmousedown(e :MouseEvent) {
         if (!joined) return;
-
         socket.send('move', { playerId: myPlayerId, pos: { x: e.pos.x, y: e.pos.y } });
     }
 
     override function onrender() {
-        if (!joined) {
-            Luxe.draw.text({
-                immediate: true,
-                pos: new Vector(Luxe.screen.mid.x, Luxe.screen.mid.y),
-                text: 'Connecting...',
-                align: luxe.Text.TextAlign.center,
-                align_vertical: luxe.Text.TextAlign.center
-            });
-            return;
-        }
-
+        if (!joined) return;
         var sides = 3;
         for (playerId in playerData.keys()) {
             var player = playerData[playerId];
@@ -68,7 +57,7 @@ class Main extends luxe.Game {
             Luxe.draw.text({
                 immediate: true,
                 pos: new Vector(player.x, player.y),
-                text: playerId,
+                text: playerId + (playerId == myPlayerId ? '\n(You)' : ''),
                 align: luxe.Text.TextAlign.center,
                 align_vertical: luxe.Text.TextAlign.center
             });
