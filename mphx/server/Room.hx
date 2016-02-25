@@ -26,12 +26,12 @@ class Room
 		connections.push(client);
 	}
 
-	public function broadcast(event:String,data:Dynamic):Bool
+	public function broadcast(event:String,?data:Dynamic):Bool
 	{
 		var success = true;
 		for (client in connections)
 		{
-			if (client.send(event,data))
+			if (!client.send(event,data))
 			{
 				success = false;
 			}

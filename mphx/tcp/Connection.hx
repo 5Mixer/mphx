@@ -47,10 +47,10 @@ class Connection implements mphx.tcp.IConnection
 		}
 	}
 
-	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
+	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 
 
-	public function send (event:String,data:Dynamic){
+	public function send(event:String,?data:Dynamic):Bool {
 		var object = {
 			t: event,
 			data:data

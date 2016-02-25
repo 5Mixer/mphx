@@ -179,7 +179,7 @@ class TcpClient implements IClient
 		client = null;
 	}
 
-	public function send (event:String,data:Dynamic){
+	public function send(event:String, ?data:Dynamic){
 		var object = {
 			t: event,
 			data:data

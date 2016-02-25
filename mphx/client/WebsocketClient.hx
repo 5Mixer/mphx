@@ -50,7 +50,7 @@ class WebsocketClient implements IClient
 		}
 	}
 
-	public function send(event:String, data:Dynamic)
+	public function send(event:String, ?data:Dynamic)
 	{
 		var object = {
 			t: event,
