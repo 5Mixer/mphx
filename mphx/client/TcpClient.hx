@@ -11,6 +11,7 @@ import haxe.io.BytesInput;
 import haxe.io.Input;
 import mphx.tcp.IConnection;
 import mphx.tcp.NetSock;
+import mphx.serialization.ISerializer;
 
 //The TCP client class that is used on native targets.
 //This should not be created by the user! For ultimate cross compatibility
@@ -22,6 +23,8 @@ class TcpClient implements IClient
 	public var blocking(default, set):Bool = true;
 	public var connected(get, never):Bool;
 
+	public var serializer:ISerializer;
+
 	public var cnx:NetSock;
 
 	public var events:mphx.client.EventManager;
@@ -32,6 +35,8 @@ class TcpClient implements IClient
 	public function new(_ip:String,_port:Int)
 	{
 		events = new mphx.client.EventManager();
+
+		serializer = new mphx.serialization.HaxeSerializer();
 
 		buffer = Bytes.alloc(8192);
 
@@ -95,7 +100,7 @@ class TcpClient implements IClient
 		//Transfer the Input data to a string
 
 		//Then convert the string to a Dynamic object.
-		var msg = haxe.Unserializer.run(line);
+		var msg = serializer.deserialize(line);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
@@ -184,7 +189,7 @@ class TcpClient implements IClient
 			t: event,
 			data:data
 		};
-		var serialiseObject =  haxe.Serializer.run(object);
+		var serialiseObject =  serializer.serialize(object);
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 	}

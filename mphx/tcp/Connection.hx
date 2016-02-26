@@ -2,19 +2,20 @@ package mphx.tcp;
 
 import haxe.io.Input;
 import haxe.io.Bytes;
+import mphx.serialization.ISerializer;
 
 class Connection implements mphx.tcp.IConnection
 {
 	public var events:mphx.server.EventManager;
 	public var cnx:NetSock;
+	public var serializer:ISerializer;
+	public var room:mphx.server.Room = null;
+
 
 	public function new (_events:mphx.server.EventManager){
 		events = _events;
+		serializer = new mphx.serialization.HaxeSerializer();
 	}
-
-	//WARNING: This is server only. Attempting to use rooms on the client is a bad idea!
-	//This perhaps needs better structuring, but having a client/server 'Connection' is undesirable.
-	public var room:mphx.server.Room = null;
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
@@ -55,7 +56,7 @@ class Connection implements mphx.tcp.IConnection
 			t: event,
 			data:data
 		};
-		var serialiseObject =  haxe.Serializer.run(object);
+		var serialiseObject = serializer.serialize(object);
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
@@ -67,7 +68,7 @@ class Connection implements mphx.tcp.IConnection
 		//Transfer the Input data to a string
 
 		//Then convert the string to a Dynamic object.
-		var msg = haxe.Unserializer(line);
+		var msg = serializer.deserialize(line);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.

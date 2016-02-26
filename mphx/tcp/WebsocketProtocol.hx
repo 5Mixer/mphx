@@ -8,6 +8,7 @@ import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import haxe.io.Input;
 import haxe.io.Eof;
+import mphx.serialization.ISerializer;
 
 #if neko
 import neko.Lib;
@@ -33,6 +34,8 @@ enum Opcode
 
 class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnection
 {
+
+
 	public function new (events)
 	{
 		super(events);
@@ -45,7 +48,7 @@ class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnect
 			t: event,
 			data:data
 		};
-		var serialisedObject = haxe.Serializer.run(object);
+		var serialisedObject = serializer.serialize(object);
 
 		var result = cnx.writeBytes(createFrame(Text(serialisedObject)));
 
