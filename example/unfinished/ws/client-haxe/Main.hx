@@ -3,16 +3,16 @@ package;
 
 class Main
 {
-	var clientSocket:mphx.client.Client;
+	var clientSocket:mphx.client.IClient;
 	public function new () {
+
 		clientSocket = new mphx.client.Client("127.0.0.1",8000);
 
 		clientSocket.connect();
 
-
 		clientSocket.send("Hello",123);
 
-		clientSocket.events.on("Direct Message",function (data){
+		clientSocket.events.on("DM",function (data){
 			trace("Server sent a 'Direct message' with data " +data);
 		});
 

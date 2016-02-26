@@ -1,27 +1,31 @@
-package mphx.core;
+package mphx.server;
 
-import mphx.tcp.Connection;
+import mphx.tcp.IConnection;
 
-typedef EventFunction = Either<(Dynamic->Connection->Void), (Dynamic->Void)>;
+typedef EventFunction = Either<(Dynamic->IConnection->Void), (Dynamic->Void)>;
 
-class EventManager {
+class EventManager
+{
 
 	var eventMap:Map<String,EventFunction>;
 
-	public function new () {
+	public function new ()
+	{
 		eventMap = new Map<String,EventFunction>();
 	}
 
-	public function on (eventName,event:EventFunction){
+	public function on (eventName,event:EventFunction)
+	{
 		eventMap.set(eventName,event);
 	}
-	public function callEvent (eventName,data,sender:mphx.tcp.Connection){
-		//trace("Event recieved: " + eventName);
-
+	public function callEvent (eventName,data,sender:IConnection)
+	{
+		//If an event with that name exists.
 		if (eventMap.exists(eventName) == true){
+			//See if the event should be called with or without the sender.
 			switch(eventMap.get(eventName).type){
-			case Left(eventWithSender): eventWithSender(data,sender);
-			case Right(eventWithoutSender): eventWithoutSender(data);
+				case Left(eventWithSender): eventWithSender(data,sender);
+				case Right(eventWithoutSender): eventWithoutSender(data);
 			}
 		}
 

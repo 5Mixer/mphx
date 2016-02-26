@@ -3,14 +3,12 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.util.FlxColorUtil;
-import flixel.util.FlxRandom;
+import flixel.math.FlxRandom;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import flixel.util.FlxMath;
 import flixel.util.FlxTimer;
-import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup;
 import Paddle;
 
 typedef PlayerData = {
@@ -41,6 +39,9 @@ class PlayState extends FlxState
 	var myPaddle:Paddle;
 	var theirPaddle:Paddle;
 
+	var leftPaddle:Paddle;
+	var rightPaddle:Paddle;
+
 	var playerData:PlayerData;
 
 	/**
@@ -67,11 +68,21 @@ class PlayState extends FlxState
 				theirPaddle.y = data.y;
 			}
 		});
+		clientConnection.events.on("playerSide",function (data){
+			if (data=="right"){
+				myPaddle = rightPaddle;
+				theirPaddle = leftPaddle;
+			}
+		});
+		clientConnection.events.on("updateBall",function (data){
+			ball.setPosition(data.x,data.y);
+			ball.velocity.set(data.vx,data.vy);
+		});
 
 
 		background = new FlxSprite();
 		background.makeGraphic(FlxG.width,FlxG.height,FlxColor.WHITE);
-		background.color = FlxColorUtil.makeFromHSBA(FlxRandom.intRanged(1,360),0.7,0.7);
+		background.color = FlxColor.fromHSB(FlxG.random.int(1,360),0.7,0.7);
 		add(background);
 
 		scoreText = new FlxText(0,0,FlxG.width,"0|0");
@@ -83,8 +94,8 @@ class PlayState extends FlxState
 		winText.visible = false;
 		add(winText);
 
-		paddles.add(myPaddle = new Paddle(30,200));
-		paddles.add(theirPaddle = new Paddle(FlxG.width - 40,200));
+		paddles.add(myPaddle = leftPaddle = new Paddle(30,200));
+		paddles.add(theirPaddle = rightPaddle = new Paddle(FlxG.width - 40,200));
 		add(paddles);
 
 		add(ball = new Ball(FlxG.width/2,FlxG.height/2));
@@ -108,9 +119,9 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
-	override public function update():Void
+	override public function update(elapsed:Float):Void
 	{
-		super.update();
+		super.update(elapsed);
 		clientConnection.update();
 
 
@@ -130,7 +141,7 @@ class PlayState extends FlxState
 
 			FlxG.camera.shake(0.01,0.1);
 
-			background.color = FlxColorUtil.makeFromHSBA(FlxRandom.intRanged(1,360),0.7,0.7);
+			background.color = FlxColor.fromHSB(FlxG.random.int(1,360),0.7,0.7);
 		});
 
 		if (ball.x < 0){
@@ -144,9 +155,9 @@ class PlayState extends FlxState
 				scoreText.text = "Right Player won!";
 				ball.velocity.set();
 
-				new FlxTimer(4, function (timer){
-					FlxG.resetGame();
-				} );
+				//new FlxTimer(4, function (timer){
+				//	FlxG.resetGame();
+				//} );
 			}
 		}
 		if (ball.x+ball.width > FlxG.width){
@@ -160,8 +171,8 @@ class PlayState extends FlxState
 				scoreText.text = "Left Player won!";
 				ball.velocity.set();
 
-				new FlxTimer(4, function (timer){
-					FlxG.resetGame();
+				//new FlxTimer(4, function (timer){
+				//	FlxG.resetGame();
 				} );
 			}
 		}

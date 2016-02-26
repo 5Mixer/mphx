@@ -2,15 +2,14 @@ package mphx.tcp;
 
 import haxe.io.Input;
 import haxe.io.Bytes;
-import mphx.server.Server;
 
-class Connection {
-	public var events:mphx.core.EventManager;
+class Connection implements mphx.tcp.IConnection
+{
+	public var events:mphx.server.EventManager;
+	public var cnx:NetSock;
 
-	public function new (_events:mphx.core.EventManager){
+	public function new (_events:mphx.server.EventManager){
 		events = _events;
-
-
 	}
 
 	//WARNING: This is server only. Attempting to use rooms on the client is a bad idea!
@@ -20,7 +19,8 @@ class Connection {
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
 
-	public function putInRoom (newRoom:mphx.server.Room){
+	public function putInRoom (newRoom:mphx.server.Room)
+	{
 
 		if (newRoom.full){
 			return false;
@@ -35,31 +35,27 @@ class Connection {
 		return true;
 	}
 
-	public function loseConnection(?reason:String) {
+	public function loseConnection(?reason:String)
+	{
+		trace("Client disconnected with code: "+reason);
 		if (cnx != null){
 			cnx.close();
 			this.cnx = null;
 		}
 		if (room != null){
-
 			room.onLeave(this);
 		}
-
-
 	}
 
-	var cnx:NetSock;
+	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 
 
-	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
-
-
-	public function send (event:String,data:Dynamic){
+	public function send(event:String,?data:Dynamic):Bool {
 		var object = {
 			t: event,
 			data:data
 		};
-		var serialiseObject = haxe.Json.stringify(object);
+		var serialiseObject =  haxe.Serializer.run(object);
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
@@ -67,13 +63,11 @@ class Connection {
 		return result;
 	}
 
-	public function dataReceived(input:Input){
+	public function recieve(line:String){
 		//Transfer the Input data to a string
-		var line = input.readLine();
-		//Then convert the string to a Dynamic object.
-		var msg = haxe.Json.parse(line);
 
-		//msg.data.sender = this;
+		//Then convert the string to a Dynamic object.
+		var msg = haxe.Unserializer(line);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
@@ -81,4 +75,18 @@ class Connection {
 		events.callEvent(msg.t,msg.data,this);
 
 	}
+
+	public function dataReceived(input:Input):Void
+	{
+		//Convert Input to string then process.
+		var line = "";
+		try{
+			line = input.readLine();
+		}catch(e:Dynamic){
+			loseConnection("Lost connection to server");
+			return;
+		}
+		recieve(line);
+	}
+
 }

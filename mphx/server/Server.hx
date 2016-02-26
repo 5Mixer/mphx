@@ -17,7 +17,7 @@ class Server
 	public var port(default, null):Int;
 	public var blocking(default, set):Bool = true;
 
-	public var events:mphx.core.EventManager;
+	public var events:mphx.server.EventManager;
 
 	public var rooms:Array<Room>;
 
@@ -30,7 +30,7 @@ class Server
 		this.host = hostname;
 		this.port = port;
 
-		events = new mphx.core.EventManager();
+		events = new mphx.server.EventManager();
 		rooms = new Array<Room>();
 
 		listener = new Socket();
@@ -89,7 +89,6 @@ class Server
 				{
 					try
 					{
-
 						byte = #if flash socket.readByte() #else socket.input.readByte() #end;
 					}
 					catch (e:Dynamic)
@@ -97,7 +96,7 @@ class Server
 						// end of stream
 						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
 						{
-							trace("A client disconnected.");
+							protocol.loseConnection("close connection");
 
 							readSockets.remove(socket);
 							clients.remove(socket);
@@ -109,6 +108,7 @@ class Server
 						}else{
 							trace(e);
 						}
+
 					}
 
 					buffer.set(bytesReceived, byte);
@@ -118,18 +118,20 @@ class Server
 				// check that buffer was filled
 				if (bytesReceived > 0)
 				{
+					//check, is message an indication of a websocket connection?
+					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1"){
+
+						//If so, recreate a protocol of type websocket, for this specific client.
+						var socket = protocol.cnx.socket;
+						var netsock = new mphx.tcp.NetSock(socket);
+
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+						protocol.onAccept(netsock);
+					}
+
+					//Let the protocol process the data.
 					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 				}
-
-
-				/*try  VVV - This code is blocking and thus runs slloooowwer.
-				{
-					protocol.dataReceived(socket.input);
-				}catch(e:haxe.io.Eof){
-					protocol.loseConnection("Disconnected");
-					readSockets.remove(socket);
-					clients.remove(socket);
-				}*/
 
 				if (!protocol.isConnected())
 				{
@@ -139,7 +141,6 @@ class Server
 				}
 			}
 		}
-		//trace("End update");
 	}
 
 	public function broadcast(event:String,data:Dynamic):Bool

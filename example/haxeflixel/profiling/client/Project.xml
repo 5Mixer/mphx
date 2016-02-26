@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 
-	<app title="Pong" file="Pong" main="Main" version="0.0.1" company="HaxeFlixel" />
+	<app title="client" file="client" main="Main" version="0.0.1" company="HaxeFlixel" />
 
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
 	<!--or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"!-->
@@ -34,12 +34,14 @@
 	<!--------------------------------LIBRARIES------------------------------------->
 
 	<haxelib name="flixel"/>
-	<haxelib name="flixel-addons"/>
 	<haxelib name="mphx"/>
+	<haxelib name="msgpack"/>
 
+	<!--In case you want to use the addons package-->
+	<!--haxelib name="flixel-addons" /-->
 
 	<!--In case you want to use the ui package-->
-	<haxelib name="flixel-ui"/>
+	<!--haxelib name="flixel-ui"/-->
 
 	<!--In case you want to use nape with flixel-->
 	<!--haxelib name="nape" /-->
@@ -65,7 +67,7 @@
 	<!--haxedef name="FLX_NO_SOUND_TRAY" /-->
 
 	<!--Disable the Flixel sound management code-->
-	<haxedef name="FLX_NO_SOUND_SYSTEM" />
+	<!--haxedef name="FLX_NO_SOUND_SYSTEM" /-->
 
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />

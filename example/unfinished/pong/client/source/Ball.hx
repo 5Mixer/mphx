@@ -16,8 +16,8 @@ class Ball extends FlxSprite {
 		elasticity = 1;
 	}
 
-	override public function update (){
-		super.update();
+	override public function update (e){
+		super.update(e);
 
 		if (y < 0){
 			velocity.y *= -1;
@@ -37,8 +37,8 @@ class Ball extends FlxSprite {
 
 		velocity.set();
 
-		new FlxTimer(2, function (timer){
-			velocity.x = 330;
-		} );
+		//new FlxTimer(2, function (timer){
+		//	velocity.x = 330;
+		//} );
 	}
 }

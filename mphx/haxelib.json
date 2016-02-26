@@ -4,11 +4,11 @@
 	"tags": ["cross","network","Multiplayer"],
 	"description": "mphx allows for easy creation of MP games.",
 	"contributors": ["5Mixer"],
-	"releasenote": "First release - Able to run full multiplayer games.",
-	"version": "0.1.0",
+	"releasenote": "Breaking! Early work with websocket connections. Structural changes.",
+	"version": "0.2.1",
 	"url": "https://github.com/5Mixer/mphx",
 	"dependencies":
 	{
-
+		"msgpack-haxe" : "1.15.1"
 	}
 }
