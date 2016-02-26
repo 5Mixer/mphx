@@ -55,7 +55,7 @@ class Connection implements mphx.tcp.IConnection
 			t: event,
 			data:data
 		};
-		var serialiseObject = haxe.Json.stringify(object);
+		var serialiseObject =  haxe.Serializer.run(object);
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 
@@ -67,7 +67,7 @@ class Connection implements mphx.tcp.IConnection
 		//Transfer the Input data to a string
 
 		//Then convert the string to a Dynamic object.
-		var msg = haxe.Json.parse(line);
+		var msg = haxe.Unserializer(line);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.

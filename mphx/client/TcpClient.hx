@@ -95,7 +95,7 @@ class TcpClient implements IClient
 		//Transfer the Input data to a string
 
 		//Then convert the string to a Dynamic object.
-		var msg = haxe.Json.parse(line);
+		var msg = haxe.Unserializer.run(line);
 
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
@@ -184,7 +184,7 @@ class TcpClient implements IClient
 			t: event,
 			data:data
 		};
-		var serialiseObject = haxe.Json.stringify(object);
+		var serialiseObject =  haxe.Serializer.run(object);
 
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 	}

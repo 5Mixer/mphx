@@ -41,7 +41,7 @@ class WebsocketClient implements IClient
 		websocket.onmessage = function (line)
 		{
 			var data = line.data;
-			var msg = haxe.Json.parse(data);
+			var msg =  haxe.Unserializer.run(data);
 
 			//The message will have a propety of T
 			//This is the event name/type. It is t to reduce wasted banwidth.
@@ -59,7 +59,7 @@ class WebsocketClient implements IClient
 
 		if (ready == true)
 		{
-			var serialiseObject = haxe.Json.stringify(object);
+			var serialiseObject = haxe.Serializer.run(object);
 
 			websocket.send(serialiseObject + "\r\n");
 		}else{
