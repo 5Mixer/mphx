@@ -41,6 +41,7 @@ class Main extends luxe.Game {
     }
 
     override function onrender() {
+        socket.update();
         if (!joined) return;
         var sides = 3;
         for (playerId in playerData.keys()) {
