@@ -86,6 +86,6 @@ class WebsocketClient implements IClient
 	}
 
 	public function close (){
-		websocket.close(0,"Close requested");
+		websocket.close();
 	}
 }
