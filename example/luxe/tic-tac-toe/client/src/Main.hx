@@ -28,9 +28,6 @@ class Main extends luxe.Game {
         });
 
         client = new Client('127.0.0.1', 8000);
-		client.connect();
-
-        client.send('join_game');
 
         client.events.on('game_joined', function(data) {
             room_id = data.room_id;
@@ -66,6 +63,29 @@ class Main extends luxe.Game {
         client.events.on('game_stopped', function(data) {
             statusText.text = 'Game stopped';
         });
+
+        var retry_timer = null;
+        client.onConnectionError = function() {
+            var wait_seconds = 5;
+            statusText.text = 'Connection error!\n\nRetrying in $wait_seconds... ';
+            if (retry_timer != null) retry_timer.stop();
+            retry_timer = Luxe.timer.schedule(1, function() {
+                wait_seconds--;
+                if (wait_seconds == 0) {
+                    statusText.text = 'Connecting...';
+                    client.connect();
+                } else {
+                    statusText.text += wait_seconds + '... ';
+                }
+            }, true);
+        };
+
+        client.onConnectionEstablished = function() {
+            if (retry_timer != null) retry_timer.stop();
+            client.send('join_game');
+        };
+
+        client.connect();
     }
 
     override function onmousedown(e :MouseEvent) {
