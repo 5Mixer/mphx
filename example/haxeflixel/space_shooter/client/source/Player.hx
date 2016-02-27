@@ -27,6 +27,10 @@ class Player extends FlxSprite {
 
 		velocity.set(clientData.speed*Math.cos((angle-90)* Math.PI / 180),clientData.speed*Math.sin((angle-90)* Math.PI / 180));
 		clientData.speed *= elapsed * 0.99;
+
+		//Acount for velocity moving the x and y.
+		clientData.x = Math.floor(x);
+		clientData.y = Math.floor(y);
 		angle = clientData.dir;
 	}
 

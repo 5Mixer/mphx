@@ -33,6 +33,10 @@ class Main {
 			sender.data = data;
 			server.broadcast("Update",data);
 		});
+		server.events.on("Shoot",function(data:Dynamic,sender:mphx.tcp.IConnection)
+		{
+			server.broadcast("NB",data);
+		});
 
 		server.start();
 	}
