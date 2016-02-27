@@ -9,6 +9,7 @@ class GameRoom extends Room {
     static var counter :Int = 0;
     public var id :String;
     var current_player :Int;
+    var turn :Int;
 
     public function new() {
         super();
@@ -29,20 +30,26 @@ class GameRoom extends Room {
         broadcast('game_joined', { room_id: id });
 
 		if (connections.length == required_players) {
+            turn = 0;
             current_player = 0;
             started = true;
             broadcast('game_started');
-            connections[current_player].send('start_turn');
+            connections[current_player].send('start_turn', { remove_symbol: '' });
         } else { // wait for required number of players
             broadcast('game_waiting', { players_missing: (required_players - connections.length) });
         }
         return true;
 	}
 
-    public function take_turn(pos :Dynamic) {
+    public function handle(action :String, pos :Dynamic) {
         var symbols = ['X', 'O'];
-        broadcast('move', { symbol: symbols[current_player], pos: pos });
-        current_player = (current_player + 1) % required_players;
-        connections[current_player].send('start_turn');
+        if (action == 'remove') {
+            broadcast('remove', { pos: pos });
+        } else if (action == 'move') {
+            turn++;
+            broadcast('move', { symbol: symbols[current_player], pos: pos });
+            current_player = (current_player + 1) % required_players;
+            connections[current_player].send('start_turn', { remove_symbol: (turn > 6 ? symbols[current_player] : '') });
+        }
     }
 }

@@ -25,8 +25,7 @@ class Main {
 			client.putInRoom(room);
 		});
 
-        server.events.on('move', function(data :Dynamic, client :IConnection) {
-            var room_id = data.room_id;
+        function handle_action(room_id :String, action :String, ?data :Dynamic) {
             if (room_id == null) {
                 trace('room_id undefined!');
                 return;
@@ -36,7 +35,15 @@ class Main {
                 return;
             }
             var room = rooms[room_id];
-            room.take_turn(data.move);
+            room.handle(action, data);
+        }
+
+        server.events.on('move', function(data :Dynamic, client :IConnection) {
+            handle_action(data.room_id, 'move', data.pos);
+		});
+
+        server.events.on('remove', function(data :Dynamic, client :IConnection) {
+            handle_action(data.room_id, 'remove', data.pos);
 		});
 
 		server.start();

@@ -9,8 +9,11 @@ class Main extends luxe.Game {
     var client :Client = null;
     var my_turn :Bool = false;
     var room_id :String;
+    var boxes :Array<Box>;
 
     var statusText :luxe.Text;
+    var hudScene :luxe.Scene;
+    var removingSymbol :String;
 
     override function config(config :luxe.AppConfig) {
         config.render.antialiasing = 2;
@@ -18,13 +21,15 @@ class Main extends luxe.Game {
     }
 
     override function ready() {
+        hudScene = new luxe.Scene();
         statusText = new luxe.Text({
-            pos: new Vector(Luxe.screen.mid.x, 100),
+            pos: new Vector(Luxe.screen.mid.x, 50),
             text: '',
             point_size: 36,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
-            color: new luxe.Color(0.8, 0.8, 0.8)
+            color: new luxe.Color(0.8, 0.8, 0.8),
+            scene: hudScene
         });
 
         client = new Client('127.0.0.1', 8000);
@@ -34,8 +39,20 @@ class Main extends luxe.Game {
         });
 
         client.events.on('game_started', function(_) {
+            Luxe.scene.empty();
+            boxes = [];
             statusText.text = 'Game started!';
             Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
+
+            for (y in 0 ... 3) {
+                for (x in 0 ... 3) {
+                    var box = new Box(x, y);
+                    box.events.listen('click', function(_) {
+                        click_box(box);
+                    });
+                    boxes.push(box);
+                }
+            }
         });
 
         client.events.on('game_waiting', function(data) {
@@ -44,20 +61,22 @@ class Main extends luxe.Game {
         });
 
         client.events.on('start_turn', function(data) {
-            statusText.text = 'Your turn';
+            removingSymbol = data.remove_symbol;
+            if (removingSymbol.length > 0) {
+                statusText.text = 'Your turn; remove an "$removingSymbol"';
+            } else {
+                statusText.text = 'Your turn; place a symbol';
+            }
             Luxe.renderer.clear_color.tween(0.3, { r: 0.1, b: 0.25 });
             my_turn = true;
         });
 
+        client.events.on('remove', function(data) {
+            set_box_symbol(data.pos.x, data.pos.y, '');
+        });
+
         client.events.on('move', function(data) {
-            trace('client: move');
-            Luxe.draw.text({
-                pos: new Vector(data.pos.x, data.pos.y),
-                text: data.symbol,
-                point_size: 72,
-                align: luxe.Text.TextAlign.center,
-                align_vertical: luxe.Text.TextAlign.center
-            });
+            set_box_symbol(data.pos.x, data.pos.y, data.symbol);
         });
 
         client.events.on('game_stopped', function(data) {
@@ -88,12 +107,29 @@ class Main extends luxe.Game {
         client.connect();
     }
 
-    override function onmousedown(e :MouseEvent) {
+    function set_box_symbol(x :Int, y :Int, symbol :String) {
+        for (box in boxes) {
+            if (box.x == x && box.y == y) {
+                box.assign(symbol);
+            }
+        }
+    }
+
+    function click_box(box :Box) {
         if (!my_turn) return;
-        statusText.text = '';
-        Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
-        client.send('move', { room_id: room_id, move: { x: e.pos.x, y: e.pos.y } });
-        my_turn = false;
+        if (removingSymbol.length > 0) {
+            if (box.get_symbol() == removingSymbol) {
+                client.send('remove', { room_id: room_id, pos: { x: box.x, y: box.y } });
+                statusText.text = 'Your turn; place a symbol';
+                removingSymbol = '';
+            }
+        } else {
+            if (box.has_symbol()) return;
+            statusText.text = '';
+            Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
+            client.send('move', { room_id: room_id, pos: { x: box.x, y: box.y } });
+            my_turn = false;
+        }
     }
 
     override function onrender() {
