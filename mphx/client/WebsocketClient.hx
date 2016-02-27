@@ -17,6 +17,8 @@ class WebsocketClient implements IClient
 	var ready = false;
 	var messageQueue:Array<Dynamic>;
 
+	public var onConnectionError :Void->Void;
+	public var onConnectionEstablished :Void->Void;
 
 	public function new(_ip:String,_port:Int)
 	{
@@ -30,11 +32,16 @@ class WebsocketClient implements IClient
 		messageQueue = new Array<Dynamic>();
 
 	}
-	public function connect () {
 
+	public function connect() {
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
-		websocket.onopen = function (){
+		websocket.onerror = function(e) {
+			if (onConnectionError != null) onConnectionError();
+		}
+
+		websocket.onopen = function() {
+			if (onConnectionEstablished != null) onConnectionEstablished();
 			ready = true;
 
 			for (message in messageQueue){

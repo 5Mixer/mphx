@@ -28,6 +28,8 @@ class TcpClient implements IClient
 	public var cnx:NetSock;
 
 	public var events:mphx.client.EventManager;
+	public var onConnectionError :Void->Void;
+	public var onConnectionEstablished :Void->Void;
 
 	var port:Int;
 	var ip:String;
@@ -49,26 +51,24 @@ class TcpClient implements IClient
 
 	public function connect()
 	{
-		try
-		{
-			client = new Socket();
+		client = new Socket();
+		try {
 #if flash
-			client.connect(ip, port);
+		client.connect(ip, port);
 #else
-			if (ip == null) ip = Host.localhost();
-			client.connect(new Host(ip), port);
-			client.setBlocking(blocking);
+		if (ip == null) ip = Host.localhost();
+		client.connect(new Host(ip), port);
+		client.setBlocking(blocking);
 #end
-			// prevent recreation of array on every update
-			readSockets = [client];
-			cnx = new NetSock(client);
+		} catch (e :Dynamic) {
+			if (onConnectionError != null) onConnectionError();
+			return;
+		}
+		// prevent recreation of array on every update
+		readSockets = [client];
+		cnx = new NetSock(client);
 
-		}
-		catch (e:Dynamic)
-		{
-			trace(e);
-			client = null;
-		}
+		if (onConnectionEstablished != null) onConnectionEstablished();
 	}
 
 	public function update(timeout:Float=0)
