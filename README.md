@@ -12,6 +12,7 @@ There are examples in the examples folder, for different libraries. (Basic has n
 
 This library is not be dependent on any 'graphical' library (eg. Haxeflixel, Open FL or Luxe). If you want to, you can make a text based multiplayer game that runs in the terminal!
 
+[![Join the chat at https://gitter.im/5Mixer/mphx](https://badges.gitter.im/5Mixer/mphx.svg)](https://gitter.im/5Mixer/mphx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 --------------
 
@@ -24,3 +25,6 @@ Features (planned or avaliable):
 -  Highly abstracted server and client, without bloating or taking away control.
 -  Easy creation of 'packets' or data objects.
 -  Ability to share code between server and client.
+
+
+-![](/Pong.gif)
