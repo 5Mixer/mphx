@@ -14,6 +14,7 @@ class Main extends luxe.Game {
     var statusText :luxe.Text;
     var hudScene :luxe.Scene;
     var removingSymbol :String;
+    var gameOver :Bool = false;
 
     override function config(config :luxe.AppConfig) {
         config.render.antialiasing = 2;
@@ -41,6 +42,7 @@ class Main extends luxe.Game {
         client.events.on('game_started', function(_) {
             Luxe.scene.empty();
             boxes = [];
+            gameOver = false;
             statusText.text = 'Game started!';
             Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
 
@@ -79,6 +81,18 @@ class Main extends luxe.Game {
             set_box_symbol(data.pos.x, data.pos.y, data.symbol);
         });
 
+        client.events.on('won', function(data) {
+            Luxe.renderer.clear_color.tween(0.6, { r: 0.2, b: 0.5 });
+            gameOver = true;
+            statusText.text = 'You won!\nClick to play again';
+        });
+
+        client.events.on('lost', function(data) {
+            Luxe.renderer.clear_color.tween(0.6, { r: 0.5, b: 0.2 });
+            gameOver = true;
+            statusText.text = 'You lost!\nClick to play again';
+        });
+
         client.events.on('game_stopped', function(data) {
             statusText.text = 'Game stopped';
         });
@@ -86,7 +100,7 @@ class Main extends luxe.Game {
         var retry_timer = null;
         client.onConnectionError = function() {
             var wait_seconds = 5;
-            statusText.text = 'Connection error!\n\nRetrying in $wait_seconds... ';
+            statusText.text = 'Connection error!\nRetrying in $wait_seconds... ';
             if (retry_timer != null) retry_timer.stop();
             retry_timer = Luxe.timer.schedule(1, function() {
                 wait_seconds--;
@@ -129,6 +143,13 @@ class Main extends luxe.Game {
             Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
             client.send('move', { room_id: room_id, pos: { x: box.x, y: box.y } });
             my_turn = false;
+        }
+    }
+
+    override function onmousedown(_) {
+        if (gameOver) {
+            client.close();
+            client.connect();
         }
     }
 
