@@ -1,7 +1,7 @@
 
 # Luxe Example: Basic
 
-Demonstrates basic client/server interaction with a very simple toy example.
+This example demonstrates basic client/server interaction with a very simple toy example.
 
 ## How to run
 
