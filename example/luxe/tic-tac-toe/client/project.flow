@@ -1,0 +1,23 @@
+{
+  project: {
+    name: 'luxe.mphx_tictactoe',
+    version: '1.0.0',
+    author: 'luxeengine',
+
+    app: {
+      name: 'luxe_test_mphx_tictactoe',
+      package: 'com.luxeengine.test_mphx_tictactoe'
+    },
+
+    build: {
+      dependencies: {
+        luxe: '*',
+        mphx: '*'
+      }
+    },
+
+    files: {
+      assets: 'assets/'
+    }
+  }
+}

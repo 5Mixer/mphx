@@ -1,7 +1,11 @@
 
-# Luxe Example: Basic
+# Luxe Example: Tic-Tac-Toe
 
-This example demonstrates basic client/server interaction with a very simple toy example.
+This example demonstrates the following concepts:
+
+* Rooms; automatic room creation and joining, room size requirements and initiating game when requirements are met
+* Automatic reconnection attempts if server is unavailable
+* Sharing of state, with the majority of game state handling on the server side
 
 ## How to run
 

@@ -3,10 +3,12 @@ package;
 import luxe.Input;
 import luxe.Vector;
 
+import mphx.client.Client;
+
 typedef Position = { x :Float, y :Float };
 
 class Main extends luxe.Game {
-    var socket :mphx.client.Client;
+    var client :Client;
     var playerData :Map<String, Position>;
     var myPlayerId :String;
     var joined :Bool;
@@ -20,28 +22,28 @@ class Main extends luxe.Game {
         joined = false;
         playerData = new Map();
 
-        socket = new mphx.client.Client('127.0.0.1', 8001);
-		socket.connect();
+        client = new Client('127.0.0.1', 8001);
+		client.connect();
 
-        socket.send('join');
+        client.send('join');
 
-        socket.events.on('accepted', function (data :{ playerId :String }) {
+        client.events.on('accepted', function (data :{ playerId :String }) {
             myPlayerId = data.playerId;
             joined = true;
 		});
 
-		socket.events.on('moved', function (data :{ playerId :String, pos :Position }) {
+		client.events.on('moved', function (data :{ playerId :String, pos :Position }) {
             playerData[data.playerId] = data.pos;
 		});
     }
 
     override function onmousedown(e :MouseEvent) {
         if (!joined) return;
-        socket.send('move', { playerId: myPlayerId, pos: { x: e.pos.x, y: e.pos.y } });
+        client.send('move', { playerId: myPlayerId, pos: { x: e.pos.x, y: e.pos.y } });
     }
 
     override function onrender() {
-        socket.update();
+        client.update();
         if (!joined) return;
         var sides = 3;
         for (playerId in playerData.keys()) {

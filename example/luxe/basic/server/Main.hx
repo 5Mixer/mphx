@@ -3,16 +3,16 @@ package;
 class Main {
     public static function main() {
         var players = 0;
-		var socket = new mphx.server.Server('127.0.0.1', 8001);
+		var server = new mphx.server.Server('127.0.0.1', 8001);
 
-        socket.events.on('join', function(data :Dynamic, sender :mphx.tcp.IConnection) {
-            sender.send('accepted', { playerId: 'Player ' + (++players) });
+        server.events.on('join', function(data :Dynamic, client :mphx.tcp.IConnection) {
+            client.send('accepted', { playerId: 'Player ' + (++players) });
 		});
 
-		socket.events.on('move', function(data :Dynamic, sender :mphx.tcp.IConnection) {
-			socket.broadcast('moved', data);
+		server.events.on('move', function(data :Dynamic, client :mphx.tcp.IConnection) {
+			server.broadcast('moved', data);
 		});
 
-		socket.start();
+		server.start();
 	}
 }
