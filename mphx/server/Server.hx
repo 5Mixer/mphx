@@ -31,12 +31,12 @@ class Server
 		this.port = port;
 
 		events = new mphx.server.EventManager();
-		rooms = new Array<Room>();
+		rooms = [];
 
 		listener = new Socket();
 
 		readSockets = [listener];
-		clients = new Map<Socket, NetSock>();
+		clients = new Map();
 	}
 
 	public function listen()
@@ -59,7 +59,7 @@ class Server
 
 	public function update(timeout:Float=0):Void
 	{
-		var protocol:mphx.tcp.Connection;
+		var protocol :mphx.tcp.IConnection;
 		var bytesReceived:Int;
 		var select = Socket.select(readSockets, null, null, timeout);
 
@@ -122,7 +122,7 @@ class Server
 					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1"){
 
 						//If so, recreate a protocol of type websocket, for this specific client.
-						var socket = protocol.cnx.socket;
+						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
 						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
@@ -143,12 +143,12 @@ class Server
 		}
 	}
 
-	public function broadcast(event:String,data:Dynamic):Bool
+	public function broadcast(event:String, ?data:Dynamic):Bool
 	{
 		var success = true;
 		for (client in clients)
 		{
-			if (!cast(client.socket.custom,mphx.tcp.Connection).send(event,data))
+			if (!cast(client.socket.custom, mphx.tcp.IConnection).send(event,data))
 			{
 				success = false;
 			}

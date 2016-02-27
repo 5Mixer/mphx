@@ -23,7 +23,7 @@ class PlayState extends FlxState
 		client = new mphx.client.Client("127.0.0.1",8000);
 		client.connect();
 
-		players = new Map<String,Player>();
+		players = new Map();
 
 		player = new Player({
 			x: Math.floor(Math.random()*600),
@@ -68,7 +68,6 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		client.update();
-
 
 	    if (FlxG.keys.pressed.UP)
 	    {

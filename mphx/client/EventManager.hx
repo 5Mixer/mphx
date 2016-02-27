@@ -6,22 +6,22 @@ class EventManager
 {
 	var eventMap:Map<String,EventFunction>;
 
-	public function new ()
+	public function new()
 	{
-		eventMap = new Map<String,EventFunction>();
+		eventMap = new Map();
 	}
 
-	public function on (eventName,event:EventFunction)
+	public function on(eventName:String, event:EventFunction)
 	{
 		eventMap.set(eventName,event);
 	}
-	public function callEvent (eventName,data)
+
+	public function callEvent(eventName:String, data:Dynamic)
 	{
 		//If an event with that name exists.
-		if (eventMap.exists(eventName) == true){
+		if (eventMap.exists(eventName)) {
 			//See if the event should be called with or without the sender.
 			eventMap.get(eventName)(data);
 		}
-
 	}
 }

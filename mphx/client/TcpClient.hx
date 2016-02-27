@@ -44,7 +44,6 @@ class TcpClient implements IClient
 		ip = _ip;
 
 		blocking = false;
-
 	}
 
 	public function connect()
@@ -75,25 +74,22 @@ class TcpClient implements IClient
 	{
 		if (!connected) return;
 
-		///try
-		{
 #if flash
-			readSocket(client);
+		readSocket(client);
 #else
-			if (blocking)
-			{
-				dataReceived(client.input);
-			}
-			else
-			{
-				var select = Socket.select(readSockets, null, null, timeout);
-				for (socket in select.read)
-				{
-					readSocket(socket);
-				}
-			}
-#end
+		if (blocking)
+		{
+			dataReceived(client.input);
 		}
+		else
+		{
+			var select = Socket.select(readSockets, null, null, timeout);
+			for (socket in select.read)
+			{
+				readSocket(socket);
+			}
+		}
+#end
 	}
 
 	public function recieve(line:String){
@@ -106,7 +102,6 @@ class TcpClient implements IClient
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.
 		events.callEvent(msg.t,msg.data);
-
 	}
 
 	public function dataReceived(input:Input):Void
@@ -124,46 +119,12 @@ class TcpClient implements IClient
 
 	function readSocket(socket:Socket)
 	{
-	/*	var byte:Int = 0,
-			bytesReceived:Int = 0,
-			len = buffer.length;
-		while (bytesReceived < len)
-		{
-			try
-			{
-
-				byte = #if flash socket.readByte() #else socket.input.readByte() #end;
-			}
-			catch (e:Dynamic)
-			{
-				// end of stream
-				if (Std.is(e, haxe.io.Eof)){
-
-					buffer.set(bytesReceived, byte);
-					break;
-				}else if ( e == haxe.io.Error.Blocked ) {
-					buffer.set(bytesReceived, byte);
-					break;
-					//This error always happens at the end of a message.
-					//throw "A blocking operation was ran but your blocking mode doesn't let it. :/";
-				}
-			}
-
-			buffer.set(bytesReceived, byte);
-			bytesReceived += 1;
-		}
-
-		// check that buffer was filled
-		if (bytesReceived > 0)
-		{
-			new BytesInput(buffer, 0, bytesReceived));
-		}*/
 		try
 		{
 			dataReceived(socket.input);
 		}catch(e:haxe.io.Eof){
 			loseConnection("Lost connection to server");
-		};
+		}
 	}
 	public function loseConnection(?reason:String)
 	{
@@ -199,7 +160,7 @@ class TcpClient implements IClient
 	{
 		return client != null;
 	}
-	public function isConnected():Bool { return this.cnx != null && this.cnx.isOpen(); }
+	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 
 
 	private function set_blocking(value:Bool):Bool
@@ -213,5 +174,4 @@ class TcpClient implements IClient
 	private var client:Socket;
 	private var readSockets:Array<Socket>;
 	private var buffer:Bytes;
-
 }
