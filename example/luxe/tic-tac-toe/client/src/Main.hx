@@ -20,7 +20,7 @@ class Main extends luxe.Game {
     override function ready() {
         statusText = new luxe.Text({
             pos: new Vector(Luxe.screen.mid.x, 100),
-            text: 'Connecting...',
+            text: '',
             point_size: 36,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
@@ -38,15 +38,17 @@ class Main extends luxe.Game {
 
         client.events.on('game_started', function(_) {
             statusText.text = 'Game started!';
+            Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
         });
 
         client.events.on('game_waiting', function(data) {
             statusText.text = 'Waiting for ${data.players_missing} player(s)';
+            Luxe.renderer.clear_color.tween(0.3, { r: 0.15, b: 0.15 });
         });
 
         client.events.on('start_turn', function(data) {
             statusText.text = 'Your turn';
-            Luxe.renderer.clear_color.tween(0.3, { r: 0.1, b: 0.3 });
+            Luxe.renderer.clear_color.tween(0.3, { r: 0.1, b: 0.25 });
             my_turn = true;
         });
 
@@ -55,7 +57,7 @@ class Main extends luxe.Game {
             Luxe.draw.text({
                 pos: new Vector(data.pos.x, data.pos.y),
                 text: data.symbol,
-                point_size: 36,
+                point_size: 72,
                 align: luxe.Text.TextAlign.center,
                 align_vertical: luxe.Text.TextAlign.center
             });
@@ -69,7 +71,7 @@ class Main extends luxe.Game {
     override function onmousedown(e :MouseEvent) {
         if (!my_turn) return;
         statusText.text = '';
-        Luxe.renderer.clear_color.tween(0.3, { r: 0.3, b: 0.1 });
+        Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
         client.send('move', { room_id: room_id, move: { x: e.pos.x, y: e.pos.y } });
         my_turn = false;
     }
