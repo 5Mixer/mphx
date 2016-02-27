@@ -10,6 +10,7 @@ class Connection implements mphx.tcp.IConnection
 	public var cnx:NetSock;
 	public var serializer:ISerializer;
 	public var room:mphx.server.Room = null;
+	public var data:Dynamic;
 
 
 	public function new (_events:mphx.server.EventManager){
