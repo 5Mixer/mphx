@@ -33,7 +33,7 @@ class Box extends Visual {
         text = new Text({
             text: '',
             pos: new Vector(SIZE * 0.5, SIZE * 0.5),
-            point_size: 36,
+            point_size: 72,
             align: luxe.Text.TextAlign.center,
             align_vertical: luxe.Text.TextAlign.center,
             color: new luxe.Color(0.2, 0.2, 0.2),

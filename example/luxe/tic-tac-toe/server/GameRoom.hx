@@ -36,7 +36,7 @@ class GameRoom extends Room {
             tiles = [ for (y in 0 ... 3) [ for (x in 0 ... 3) -1 ] ];
             started = true;
             broadcast('game_started');
-            connections[current_player].send('start_turn', { remove_symbol: '' });
+            connections[current_player].send('start_turn', { must_remove: false, symbol: 'X' });
         } else { // wait for required number of players
             broadcast('game_waiting', { players_missing: (required_players - connections.length) });
         }
@@ -59,7 +59,7 @@ class GameRoom extends Room {
                 }
             } else {
                 current_player = (current_player + 1) % required_players;
-                connections[current_player].send('start_turn', { remove_symbol: (turn >= 6 ? symbols[current_player] : '') });
+                connections[current_player].send('start_turn', { must_remove: (turn >= 6), symbol: symbols[current_player] });
             }
         }
     }

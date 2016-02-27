@@ -13,7 +13,8 @@ class Main extends luxe.Game {
 
     var statusText :luxe.Text;
     var hudScene :luxe.Scene;
-    var removingSymbol :String;
+    var removing :Bool;
+    var symbol :String;
     var gameOver :Bool = false;
 
     override function config(config :luxe.AppConfig) {
@@ -43,7 +44,7 @@ class Main extends luxe.Game {
             Luxe.scene.empty();
             boxes = [];
             gameOver = false;
-            statusText.text = 'Game started!';
+            statusText.text = 'Opponent\'s turn';
             Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
 
             for (y in 0 ... 3) {
@@ -63,11 +64,12 @@ class Main extends luxe.Game {
         });
 
         client.events.on('start_turn', function(data) {
-            removingSymbol = data.remove_symbol;
-            if (removingSymbol.length > 0) {
-                statusText.text = 'Your turn; remove an "$removingSymbol"';
+            removing = data.must_remove;
+            symbol = data.symbol;
+            if (removing) {
+                statusText.text = 'Your turn; remove an "$symbol"';
             } else {
-                statusText.text = 'Your turn; place a symbol';
+                statusText.text = 'Your turn; place an "$symbol"';
             }
             Luxe.renderer.clear_color.tween(0.3, { r: 0.1, b: 0.25 });
             my_turn = true;
@@ -78,18 +80,21 @@ class Main extends luxe.Game {
         });
 
         client.events.on('move', function(data) {
+            Luxe.camera.shake(1);
             set_box_symbol(data.pos.x, data.pos.y, data.symbol);
         });
 
         client.events.on('won', function(data) {
             Luxe.renderer.clear_color.tween(0.6, { r: 0.2, b: 0.5 });
             gameOver = true;
+            Luxe.camera.shake(3);
             statusText.text = 'You won!\nClick to play again';
         });
 
         client.events.on('lost', function(data) {
             Luxe.renderer.clear_color.tween(0.6, { r: 0.5, b: 0.2 });
             gameOver = true;
+            Luxe.camera.shake(3);
             statusText.text = 'You lost!\nClick to play again';
         });
 
@@ -131,15 +136,15 @@ class Main extends luxe.Game {
 
     function click_box(box :Box) {
         if (!my_turn) return;
-        if (removingSymbol.length > 0) {
-            if (box.get_symbol() == removingSymbol) {
+        if (removing) {
+            if (box.get_symbol() == symbol) {
                 client.send('remove', { room_id: room_id, pos: { x: box.x, y: box.y } });
-                statusText.text = 'Your turn; place a symbol';
-                removingSymbol = '';
+                statusText.text = 'Your turn; place an "$symbol"';
+                removing = false;
             }
         } else {
             if (box.has_symbol()) return;
-            statusText.text = '';
+            statusText.text = 'Opponent\'s turn';
             Luxe.renderer.clear_color.tween(0.3, { r: 0.25, b: 0.1 });
             client.send('move', { room_id: room_id, pos: { x: box.x, y: box.y } });
             my_turn = false;

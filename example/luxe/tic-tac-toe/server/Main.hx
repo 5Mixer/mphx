@@ -13,13 +13,13 @@ class Main {
         server.events.on('join_game', function(data :Dynamic, client :IConnection) {
             for (room in rooms) {
                 if (!room.started) {
-                    trace('· Joining existing room; ${room.id}');
+                    // trace('· Joining existing room; ${room.id}');
                     client.putInRoom(room);
                     return;
                 }
             }
 
-            trace('· No available room; creating a new room');
+            // trace('· No available room; creating a new room');
             var room = new GameRoom();
             rooms[room.id] = room;
 			client.putInRoom(room);
