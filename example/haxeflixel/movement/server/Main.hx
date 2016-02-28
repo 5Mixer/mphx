@@ -10,7 +10,7 @@ class Main {
 	public var players:Map<mphx.tcp.IConnection,Player>;
 
 	public function new (){
-		players = new Map<mphx.tcp.IConnection,Player>();
+		players = new Map();
 
 		var s = new mphx.server.Server("127.0.0.1",8000);
 
@@ -22,21 +22,11 @@ class Main {
 		});
 
 		s.events.on("Player Move",function (data,sender){
-			/*if (players.exists(sender) == false){
-				var player:Player = {
-					x: data.x,
-					y: data.y,
-					id: data.id
-				};
-				players.set(sender,player);
-			}*/
-
 			var player = players.get(sender);
 			player.x = data.x;
 			player.y = data.y;
 			s.broadcast("Player Move",player);
 		});
-
 
 		s.start();
 	}

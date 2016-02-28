@@ -1,27 +1,27 @@
 package mphx.server;
 
-import mphx.tcp.Connection;
+import mphx.tcp.IConnection;
 
 class Room
 {
 	public var full:Bool = false; // inhabitants.length == maxPopulation
 	public var maxConnections = -1; //A max population of -1 will never be full.
 
-	public var connections:Array<Connection>;
+	public var connections:Array<IConnection>;
 	public function new ()
 	{
-		connections = new Array<Connection>();
+		connections = [];
 	}
 
 	/* Do not remove a client from the room with this message, rather treat it as an event.
 		Remember to call super.onLeave!*/
-	public function onLeave (client:Connection)
+	public function onLeave (client:IConnection)
 	{
 		connections.remove(client);
 	}
 	/* Do not put a client in the room with this message, rather treat it as an event.
 		Remember to call super.onJoin!*/
-	public function onJoin(client:Connection)
+	public function onJoin(client:IConnection)
 	{
 		if (connections.length < maxConnections || maxConnections == -1){
 			connections.push(client);
@@ -30,7 +30,6 @@ class Room
 			return false; //A full room.
 		}
 	}
-
 
 	public function broadcast(event:String,?data:Dynamic):Bool
 	{
