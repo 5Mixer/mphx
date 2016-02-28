@@ -13,7 +13,7 @@ class Main {
 	var server:mphx.server.Server;
 	public function new ()
 	{
-		server = new mphx.server.Server("127.0.0.1",8000);
+		server = new mphx.server.Server("10.0.0.31",8000);
 
 		server.events.on("Join", function(data:Dynamic,sender:mphx.tcp.IConnection)
 		{
@@ -37,7 +37,6 @@ class Main {
 		{
 			server.broadcast("NB",data);
 		});
-
 		server.start();
 	}
 	public static function main ()

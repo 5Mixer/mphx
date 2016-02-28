@@ -39,7 +39,7 @@
 
 
 	<!--In case you want to use the ui package-->
-	<!--<haxelib name="flixel-ui" />-->
+	<haxelib name="flixel-ui" />
 
 	<!--In case you want to use nape with flixel-->
 	<!--<haxelib name="nape" />-->
@@ -62,7 +62,7 @@
 	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
 
 	<!--Disable the Flixel core sound tray-->
-	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->
+	<haxedef name="FLX_NO_SOUND_TRAY" />
 
 	<!--Disable the Flixel sound management code-->
 	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->

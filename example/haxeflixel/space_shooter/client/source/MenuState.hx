@@ -1,21 +1,34 @@
-package;
+package ;
 
+import flixel.addons.ui.FlxInputText;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.text.FlxText;
-import flixel.ui.FlxButton;
-import flixel.math.FlxMath;
 
 class MenuState extends FlxState
 {
 	override public function create():Void
 	{
-		super.create();
-	}
+		var title = new flixel.text.FlxText(0,35,"MPHX Space Demo",32);
+		title.x = FlxG.width/2 - title.width/2;
+		add(title);
 
-	override public function update(elapsed:Float):Void
-	{
-		super.update(elapsed);
+		var instructions = new flixel.text.FlxText(0,100,"Type the server IP below.",16);
+		instructions.x = FlxG.width/2 - instructions.width/2;
+		add(instructions);
+
+		var ipInput = new FlxInputText(0,130,200,"",16);
+		ipInput.x = FlxG.width/2 - ipInput.width/2;
+
+		add(ipInput);
+
+		ipInput.callback = function (text,action)
+		{
+			if (action == "enter"){
+				GameData.ip = text;
+				trace("Connection to IP: "+text);
+				FlxG.switchState(new PlayState());
+			}
+		}
 	}
 }

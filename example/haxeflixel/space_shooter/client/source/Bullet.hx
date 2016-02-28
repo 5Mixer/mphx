@@ -14,7 +14,7 @@ typedef BulletData = {
 class Bullet extends FlxSprite {
 
 	public var clientData:BulletData;
-	var speed = 400;
+	var speed = 450;
 
 	public function new (data:BulletData){
 		super(data.x,data.y);
@@ -22,7 +22,8 @@ class Bullet extends FlxSprite {
 		clientData = data;
 		angle = data.dir;
 
-		makeGraphic(5,10,0xF5D23BFF);
+		loadGraphic("assets/images/Bullet.png");
+		//makeGraphic(5,10,0xF5D23BFF);
 	}
 
 	override public function update (elapsed:Float){

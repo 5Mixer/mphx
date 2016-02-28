@@ -26,7 +26,7 @@ class PlayState extends FlxState
 
 		FlxG.autoPause = false;
 
-		client = new mphx.client.Client("127.0.0.1",8000);
+		client = new mphx.client.Client(GameData.ip,GameData.port);
 		client.connect();
 
 		add(new Stars());
@@ -45,7 +45,8 @@ class PlayState extends FlxState
 			speed: 0,
 			id:"P"+Math.floor(Math.random()*9999)
 		});
-		FlxG.camera.follow(player);
+		player.color = 0xffed5151;
+		//FlxG.camera.follow(player);
 		players.set(player.clientData.id,player);
 		playersGroup.add(player);
 
@@ -130,7 +131,7 @@ class PlayState extends FlxState
 
 		reload += elapsed;
 
-		if (FlxG.keys.pressed.SPACE && reload > .2)
+		if (FlxG.keys.pressed.SPACE && reload > .15)
 	    {
 			reload = 0;
 	        // The space key is pressed, shoot
