@@ -29,6 +29,8 @@ class PlayState extends FlxState
 		client = new mphx.client.Client("127.0.0.1",8000);
 		client.connect();
 
+		add(new Stars());
+
 		players = new Map<String,Player>();
 		bullets = new Map<String,Bullet>();
 		bulletsGroup = new FlxTypedGroup<Bullet>();
