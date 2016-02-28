@@ -14,6 +14,7 @@ class PlayState extends FlxState
 	var players:Map<String,Player>;
 	var bullets:Map<String,Bullet>;
 	var bulletsGroup:FlxTypedGroup<Bullet>;
+	var playersGroup:FlxTypedGroup<Player>;
 	var player:Player;
 
 	//Server does no cheat detection, yet.
@@ -31,17 +32,20 @@ class PlayState extends FlxState
 		players = new Map<String,Player>();
 		bullets = new Map<String,Bullet>();
 		bulletsGroup = new FlxTypedGroup<Bullet>();
+		playersGroup = new FlxTypedGroup<Player>();
 		add(bulletsGroup);
+		add(playersGroup);
 
 		player = new Player({
-			x: Math.floor(Math.random()*600),
-			y: Math.floor(Math.random()*600),
+			x: Math.floor(Math.random()*FlxG.width),
+			y: Math.floor(Math.random()*FlxG.height),
 			dir: 0,
 			speed: 0,
 			id:"P"+Math.floor(Math.random()*9999)
 		});
+		FlxG.camera.follow(player);
 		players.set(player.clientData.id,player);
-		add(player);
+		playersGroup.add(player);
 
 		client.send("Join",player.clientData);
 
@@ -58,7 +62,7 @@ class PlayState extends FlxState
 					//Unrecognised player, create them
 					var newPlayer = new Player(data);
 					players.set(data.id,newPlayer);
-					add(newPlayer);
+					playersGroup.add(newPlayer);
 				}
 			}
 		});
@@ -68,7 +72,7 @@ class PlayState extends FlxState
 				//Unrecognised player, create them
 				var newPlayer = new Player(data);
 				players.set(data.id,newPlayer);
-				add(newPlayer);
+				playersGroup.add(newPlayer);
 			}
 		});
 
@@ -79,7 +83,7 @@ class PlayState extends FlxState
 				//Unrecognised bullet, create them
 				var newBullet = new Bullet(data);
 				bullets.set(data.id,newBullet);
-				add(newBullet);
+				bulletsGroup.add(newBullet);
 			}
 		});
 
@@ -92,7 +96,7 @@ class PlayState extends FlxState
 				//Unrecognised bullet, create it
 				var newBullet = new Bullet(data);
 				bullets.set(data.id,newBullet);
-				add(newBullet);
+				bulletsGroup.add(newBullet);
 			}
 
 		});
@@ -102,6 +106,25 @@ class PlayState extends FlxState
 	{
 		super.update(elapsed);
 		client.update();
+
+		/*FlxG.overlap(player,bulletsGroup,function (hitPlayer,hitBullet){
+			if (hitBullet.clientData.shooter != player.clientData.id){
+				player.clientData.x = 40;
+				player.clientData.y = 40;
+				client.send("Update",player.clientData);
+
+				hitBullet.kill(); //This doesn't apply across the network?
+			}
+		});*/
+		FlxG.overlap(playersGroup,bulletsGroup,function (hitPlayer,hitBullet){
+			if (hitBullet.clientData.shooter != hitPlayer.clientData.id){
+				hitPlayer.clientData.x = 40;
+				hitPlayer.clientData.y = 40;
+				hitPlayer.setPosition(40,40);
+
+				hitBullet.kill(); //This doesn't apply across the network?
+			}
+		});
 
 		reload += elapsed;
 

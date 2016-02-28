@@ -19,7 +19,7 @@ class Player extends FlxSprite {
 
 		clientData = data;
 
-		loadGraphic("assets/images/Player.png",true,16,16);
+		loadGraphic("assets/images/Player.png",true,32,32);
 	}
 
 	override public function update (elapsed:Float){
