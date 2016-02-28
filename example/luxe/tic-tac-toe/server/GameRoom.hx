@@ -1,6 +1,7 @@
 package;
 
 import mphx.server.Room;
+import mphx.tcp.IConnection;
 import mphx.tcp.Connection;
 
 class GameRoom extends Room {
@@ -17,7 +18,7 @@ class GameRoom extends Room {
         id = 'room_' + (++counter);
     }
 
-    override public function onLeave(client :Connection) {
+    override public function onLeave(client : IConnection) {
 		super.onLeave(client);
         if (started) {
             broadcast('game_stopped');
@@ -25,7 +26,7 @@ class GameRoom extends Room {
         }
 	}
 
-	override public function onJoin(client :Connection) {
+	override public function onJoin(client :IConnection) {
         if (!super.onJoin(client)) return false;
 
         broadcast('game_joined', { room_id: id });
