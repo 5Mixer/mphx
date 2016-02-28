@@ -7,7 +7,6 @@ typedef PlayerData = {
 }
 
 class Main {
-
 	public var players:Map<mphx.tcp.IConnection,PlayerData>;
 
 	public static var clientWindowWidth:Int = 640;
@@ -17,11 +16,10 @@ class Main {
 
 	var time:Float=0;
 
-
 	public function new () {
 		server = new mphx.server.Server("127.0.0.1",8000);
 
-		players = new Map<mphx.tcp.IConnection,PlayerData>();
+		players = new Map();
 
 		server.events.on("Join",function(data:Dynamic,sender:mphx.tcp.IConnection){
 			trace("New player with id "+data.id);
@@ -63,7 +61,6 @@ class Main {
 			sender.room.broadcast("Player Moved",newData);
 		});
 
-
 		server.listen();
 		trace("Server started.");
 
@@ -78,13 +75,13 @@ class Main {
 		}
 	}
 
-	public function update (elapsed:Float) {
+	public function update(elapsed:Float) {
 		for (room in server.rooms){
 			cast(room,GameRoom).update(elapsed);
 		}
 	}
 
-	public static function main () {
+	public static function main() {
 		new Main();
 	}
 }

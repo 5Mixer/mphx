@@ -32,14 +32,39 @@ enum Opcode
 * WebSocket protocol (RFC 6455)
 */
 
-class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnection
+class WebsocketProtocol extends Connection
 {
+	var _host:String;
+	var _url:String;
+	var _port:Int;
+	var _key:String;
+	var _origin:String;
+	var _headers:Array<String>;
+	var _useHttp:Bool = true;
 
+	var _payload:Bytes;
+	var _lastPayload:Bytes;
+	var _bytesRead:Int;
+	var _bytesTotal:Int;
+	var _maskKey:Bytes;
+	var _opcode:Int;
+	var _final:Bool;
+
+	static inline var WEBSOCKET_VERSION = "13";
+
+	static inline var OPCODE_CONTINUE = 0x0;
+	static inline var OPCODE_TEXT = 0x1;
+	static inline var OPCODE_BINARY = 0x2;
+	static inline var OPCODE_CLOSE = 0x8;
+	static inline var OPCODE_PING = 0x9;
+	static inline var OPCODE_PONG = 0xA;
+
+	static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
 	public function new (events)
 	{
 		super(events);
-		_headers=new Array<String>();
+		_headers = [];
 	}
 
 	override public function send(event:String,?data:Dynamic) :Bool
@@ -99,7 +124,7 @@ class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnect
 	{
 		_headers.insert(0, http);
 		cnx.writeBytes(Bytes.ofString(_headers.join("\r\n") + "\r\n\r\n"));
-		_headers = new Array<String>();
+		_headers = [];
 	}
 
 	/**
@@ -304,31 +329,4 @@ class WebsocketProtocol extends mphx.tcp.Connection implements mphx.tcp.IConnect
 	{
 		return Base64.encode(Sha1.make(Bytes.ofString(key + MAGIC_STRING)));
 	}
-
-	private var _host:String;
-	private var _url:String;
-	private var _port:Int;
-	private var _key:String;
-	private var _origin:String;
-	private var _headers:Array<String>;
-	private var _useHttp:Bool = true;
-
-	private var _payload:Bytes;
-	private var _lastPayload:Bytes;
-	private var _bytesRead:Int;
-	private var _bytesTotal:Int;
-	private var _maskKey:Bytes;
-	private var _opcode:Int;
-	private var _final:Bool;
-
-	private static inline var WEBSOCKET_VERSION = "13";
-
-	private static inline var OPCODE_CONTINUE = 0x0;
-	private static inline var OPCODE_TEXT = 0x1;
-	private static inline var OPCODE_BINARY = 0x2;
-	private static inline var OPCODE_CLOSE = 0x8;
-	private static inline var OPCODE_PING = 0x9;
-	private static inline var OPCODE_PONG = 0xA;
-
-	private static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 }

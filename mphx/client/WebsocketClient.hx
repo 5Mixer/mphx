@@ -5,7 +5,6 @@ import mphx.serialization.ISerializer;
 //The client class that is used with JS websockets.
 class WebsocketClient implements IClient
 {
-
 	var websocket : js.html.WebSocket;
 
 	public var events:mphx.client.EventManager;
@@ -17,9 +16,6 @@ class WebsocketClient implements IClient
 	var ready = false;
 	var messageQueue:Array<Dynamic>;
 
-	public var onConnectionError :Void->Void;
-	public var onConnectionEstablished :Void->Void;
-
 	public function new(_ip:String,_port:Int)
 	{
 		events = new mphx.client.EventManager();
@@ -29,19 +25,14 @@ class WebsocketClient implements IClient
 		ip = _ip;
 		port = _port;
 
-		messageQueue = new Array<Dynamic>();
+		messageQueue = [];
 
 	}
-
-	public function connect() {
+	public function connect()
+	{
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
-		websocket.onerror = function(e) {
-			if (onConnectionError != null) onConnectionError();
-		}
-
-		websocket.onopen = function() {
-			if (onConnectionEstablished != null) onConnectionEstablished();
+		websocket.onopen = function (){
 			ready = true;
 
 			for (message in messageQueue){
@@ -85,7 +76,8 @@ class WebsocketClient implements IClient
 		//JS Websockets don't need to be updated.
 	}
 
-	public function close (){
-		websocket.close();
+	public function close()
+	{
+		websocket.close(0,"Close requested");
 	}
 }

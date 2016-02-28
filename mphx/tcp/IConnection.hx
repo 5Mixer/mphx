@@ -4,12 +4,14 @@ import haxe.io.Input;
 
 interface IConnection
 {
-	public function send (event:String,?data:Dynamic):Bool;
-	public function onConnect(cnx:NetSock):Void;
-	public function dataReceived(input:Input):Void;
-	public function loseConnection(?reason:String):Void;
-	public function putInRoom (newRoom:mphx.server.Room):Bool;
-	public var room:mphx.server.Room;
-	public var data:Dynamic;
-
+	function send (event:String,?data:Dynamic):Bool;
+	function onConnect(cnx:NetSock):Void;
+	function onAccept(cnx:NetSock):Void;
+	function dataReceived(input:Input):Void;
+	function loseConnection(?reason:String):Void;
+	function putInRoom (newRoom:mphx.server.Room):Bool;
+	function getContext():NetSock;
+	function isConnected():Bool;
+	var room:mphx.server.Room;
+	var data:Dynamic;
 }

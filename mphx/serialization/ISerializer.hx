@@ -6,6 +6,6 @@ package mphx.serialization;
 */
 interface ISerializer
 {
-	public function serialize (object:Dynamic):String;
-	public function deserialize (string:String):Dynamic;
+	function serialize(object:Dynamic):String;
+	function deserialize(string:String):Dynamic;
 }
