@@ -15,8 +15,8 @@ class Player extends flixel.FlxSprite {
 
 		data = _data;
 	}
-	override public function update (){
-		super.update();
+	override public function update (elapsed:Float){
+		super.update(elapsed);
 		data.x = Math.floor(x);
 		data.y = Math.floor(y);
 	}
