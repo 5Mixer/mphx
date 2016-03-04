@@ -2,7 +2,10 @@ package ;
 
 class Main {
 	public function new (){
-		var s = new mphx.server.Server("127.0.0.1",8000);
+		var ip = "127.0.0.1";
+		if (Sys.args()[1] != null) ip = Sys.args()[1];
+
+		var s = new mphx.server.Server(ip,8000);
 
 		var room = new mphx.server.Room();
 		s.rooms.push(room);

@@ -48,7 +48,7 @@ class Server
 
 	public function start () {
 
-		trace("Server active. Code after server.start() will not run. ");
+		trace("Server active on "+host+":"+port+". Code after server.start() will not run. ");
 
 		listen();
 		while (true) {
