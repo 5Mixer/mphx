@@ -12,7 +12,10 @@ class Main {
 	public function new (){
 		players = new Map();
 
-		var s = new mphx.server.Server("127.0.0.1",8000);
+		var ip = "127.0.0.1";
+		if (Sys.args()[0] != null) ip = Sys.args()[0];
+
+		var s = new mphx.server.Server(ip,8000);
 
 		s.events.on("Join",function(data:Dynamic,sender:mphx.tcp.IConnection){
 
