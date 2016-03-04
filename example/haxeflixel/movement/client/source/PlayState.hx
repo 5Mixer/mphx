@@ -33,10 +33,7 @@ class PlayState extends FlxState
 		allPlayers = new FlxGroup();
 		add(allPlayers);
 
-		var ip = "127.0.0.1";
-		if (Sys.args()[0] != null) ip = Sys.args()[0];
-		
-		clientSocket = new mphx.client.Client(ip,8000);
+		clientSocket = new mphx.client.Client(GameData.ip,GameData.port);
 		clientSocket.connect();
 
 		var playerData:PlayerData = {
