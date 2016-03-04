@@ -3,7 +3,7 @@ package ;
 class Main {
 	public function new (){
 		var ip = "127.0.0.1";
-		if (Sys.args()[1] != null) ip = Sys.args()[1];
+		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
 		var s = new mphx.server.Server(ip,8000);
 

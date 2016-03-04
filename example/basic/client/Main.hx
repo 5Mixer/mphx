@@ -5,8 +5,9 @@ class Main
 {
 	var clientSocket:mphx.client.Client;
 	public function new () {
+
 		var ip = "127.0.0.1";
-		if (Sys.args()[1] != null) ip = Sys.args()[1];
+		if (Sys.args()[0] != null) ip = Sys.args()[0];
 		clientSocket = new mphx.client.Client(ip,8000);
 
 		clientSocket.connect();
