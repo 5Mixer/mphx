@@ -12,7 +12,6 @@ class MenuState extends FlxState
 		FlxG.log.redirectTraces = true;
 		haxe.Log.trace = function (data,?pos) FlxG.log.notice(data);
 
-		trace("Start of playstate");
 		var title = new flixel.text.FlxText(0,35,-1,"MPHX Movement Demo",32);
 		title.x = FlxG.width/2 - title.width/2;
 		add(title);

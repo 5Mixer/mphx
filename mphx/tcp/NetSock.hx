@@ -14,6 +14,7 @@ class NetSock
 
 	public function new(socket:Socket)
 	{
+
 		this.socket = socket;
 	}
 
@@ -28,11 +29,11 @@ class NetSock
 		{
 #if flash
 			// if (writeLength) socket.writeInt(bytes.length);
-			// for (i in 0...bytes.length)
-			// {
-			// 	socket.writeByte(bytes.get(i));
-			// }
-			socket.writeBytes(bytes);
+			 for (i in 0...bytes.length)
+			 {
+			 	socket.writeByte(bytes.get(i));
+			 }
+			//socket.writeBytes(bytes);
 			socket.flush();
 #else
 			// if (writeLength) socket.output.writeInt32(bytes.length);

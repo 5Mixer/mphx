@@ -50,7 +50,6 @@ class TcpFlashClient implements IClient
         buffer = Bytes.alloc(8192); //no utility ?
         m_host = host;
         m_port = port;
-		trace("End if new()");
     }
 
     public function isConnected():Bool
@@ -61,7 +60,6 @@ class TcpFlashClient implements IClient
 
     public function connect():Void
     {
-		trace("Start of connect()");
         m_client = new Socket(m_host, m_port);
 
         //add specific handler for connection
@@ -69,24 +67,24 @@ class TcpFlashClient implements IClient
         m_client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEventConnect);
         m_client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
 
-
-		trace("End of connect()");
     }
 
     private function onFlashConnectEvent(event : Event) : Void
     {
         trace("Connection established on : " + m_host +":" + m_port);
 
+
+        // prevent recreation of array on every update
+        m_readSockets = [m_client];
+        cnx = new NetSock(m_client);
+
         ready = true;
 
         //Send queue
-        trace("Beginning to unqueue");
         for (message in messageQueue){
-            trace("Unqueueing "+message.t);
             send(message.t,message.data);
             messageQueue.remove(message);
         }
-
 
         //remove specific handler for connection
         m_client.removeEventListener(Event.CONNECT, onFlashConnectEvent);
@@ -98,10 +96,6 @@ class TcpFlashClient implements IClient
         m_client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEvent);
         m_client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEvent);
         //maybe add : m_client.addEventListener(ProgressEvent.SOCKET_DATA, *insertCallbackHere* ); but actually, done by update()
-
-        // prevent recreation of array on every update
-        m_readSockets = [m_client];
-        cnx = new NetSock(m_client);
 
 
         if (onConnectionEstablished != null)
@@ -150,14 +144,13 @@ class TcpFlashClient implements IClient
 
         if (!ready)
         {
-            trace("Not yet ready - Queueing.");
             messageQueue.push(object);
             return;
         }
 
         var serialisedObject =  serializer.serialize(object);
-        trace("Sending "+event+" "+serialisedObject);
         var result = cnx.writeBytes(Bytes.ofString(serialisedObject + "\r\n"));
+        trace("Result "+result);
     }
 
     private function onFlashServerClose(event : Event) : Void

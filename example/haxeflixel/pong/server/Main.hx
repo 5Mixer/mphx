@@ -48,7 +48,6 @@ class Main {
 
 				data.left = true;
 			}
-			trace(data.left);
 
 			players.set(sender,data);
 		});
