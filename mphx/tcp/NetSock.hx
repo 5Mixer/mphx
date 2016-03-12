@@ -28,10 +28,11 @@ class NetSock
 		{
 #if flash
 			// if (writeLength) socket.writeInt(bytes.length);
-			for (i in 0...bytes.length)
-			{
-				socket.writeByte(bytes.get(i));
-			}
+			// for (i in 0...bytes.length)
+			// {
+			// 	socket.writeByte(bytes.get(i));
+			// }
+			socket.writeBytes(bytes);
 			socket.flush();
 #else
 			// if (writeLength) socket.output.writeInt32(bytes.length);
@@ -40,9 +41,7 @@ class NetSock
 		}
 		catch (e:Dynamic)
 		{
-			#if debug
 			trace("Error writing to socket: " + e);
-			#end
 			return false;
 		}
 		return true;

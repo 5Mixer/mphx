@@ -27,6 +27,8 @@ class TcpFlashClient implements IClient
     public var cnx:NetSock;
     private var m_client:Socket;
 
+	var messageQueue:Array<Dynamic> = new Array<Dynamic>();
+
     private var m_readSockets:Array<Socket>; // utility ?
 
     // all handler for different case (ConnectError, Connect, Server Close, Connection lost for any reason)
@@ -37,6 +39,8 @@ class TcpFlashClient implements IClient
 
     private var m_host:String;
     private var m_port:Int;
+
+    var ready = false;
 
     public function new(host:String, port :Int)
     {
@@ -51,7 +55,7 @@ class TcpFlashClient implements IClient
 
     public function isConnected():Bool
     {
-        return cnx != null && cnx.isOpen();
+        return m_client.connected;//cnx != null && cnx.isOpen();
     }
 
 
@@ -64,12 +68,25 @@ class TcpFlashClient implements IClient
         m_client.addEventListener(Event.CONNECT, onFlashConnectEvent);
         m_client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEventConnect);
         m_client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
+
+
 		trace("End of connect()");
     }
 
     private function onFlashConnectEvent(event : Event) : Void
     {
-        trace("Connection etablished on : " + m_host +":" + m_port);
+        trace("Connection established on : " + m_host +":" + m_port);
+
+        ready = true;
+
+        //Send queue
+        trace("Beginning to unqueue");
+        for (message in messageQueue){
+            trace("Unqueueing "+message.t);
+            send(message.t,message.data);
+            messageQueue.remove(message);
+        }
+
 
         //remove specific handler for connection
         m_client.removeEventListener(Event.CONNECT, onFlashConnectEvent);
@@ -85,6 +102,7 @@ class TcpFlashClient implements IClient
         // prevent recreation of array on every update
         m_readSockets = [m_client];
         cnx = new NetSock(m_client);
+
 
         if (onConnectionEstablished != null)
             onConnectionEstablished();
@@ -122,11 +140,6 @@ class TcpFlashClient implements IClient
 
     public function send(event:String, ?data:Dynamic):Void
     {
-        if (!isConnected())
-        {
-            trace("No connection, ABORT send(" + event + ")");
-            return;
-        }
 
         var object =
         {
@@ -134,8 +147,17 @@ class TcpFlashClient implements IClient
             data:data
         };
 
-        var serialiseObject =  serializer.serialize(object);
-        var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+
+        if (!ready)
+        {
+            trace("Not yet ready - Queueing.");
+            messageQueue.push(object);
+            return;
+        }
+
+        var serialisedObject =  serializer.serialize(object);
+        trace("Sending "+event+" "+serialisedObject);
+        var result = cnx.writeBytes(Bytes.ofString(serialisedObject + "\r\n"));
     }
 
     private function onFlashServerClose(event : Event) : Void
@@ -158,7 +180,6 @@ class TcpFlashClient implements IClient
 
     public function close():Void
     {
-
 
         if (cnx != null)
         {
