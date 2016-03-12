@@ -173,7 +173,7 @@ class PlayState extends FlxState
 
 				//new FlxTimer(4, function (timer){
 				//	FlxG.resetGame();
-				} );
+				//} );
 			}
 		}
 	}

@@ -32,6 +32,7 @@ class NetSock
 			{
 				socket.writeByte(bytes.get(i));
 			}
+			socket.flush();
 #else
 			// if (writeLength) socket.output.writeInt32(bytes.length);
 			socket.output.writeBytes(bytes, 0, bytes.length);
@@ -49,7 +50,6 @@ class NetSock
 
 	public function close()
 	{
-		socket.close();
 		socket = null;
 	}
 

@@ -70,11 +70,12 @@ class Connection implements mphx.tcp.IConnection
 	}
 
 	public function recieve(line:String){
+		trace(line);
 		//Transfer the Input data to a string
 
 		//Then convert the string to a Dynamic object.
 		var msg = serializer.deserialize(line);
-
+		trace(msg);
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.

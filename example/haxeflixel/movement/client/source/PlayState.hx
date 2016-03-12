@@ -28,13 +28,20 @@ class PlayState extends FlxState
 	{
 		super.create();
 
+		trace("Start of playstate");
+
 		FlxG.autoPause = false;
 
 		allPlayers = new FlxGroup();
 		add(allPlayers);
 
-		clientSocket = new mphx.client.Client(GameData.ip,GameData.port);
-		clientSocket.connect();
+		try{
+			clientSocket = new mphx.client.Client(GameData.ip,GameData.port);
+			clientSocket.connect();
+		}catch(e:Dynamic){
+			trace(e);
+		}
+
 
 		var playerData:PlayerData = {
 			x: Math.floor(FlxG.width*Math.random()),
@@ -110,7 +117,5 @@ class PlayState extends FlxState
 			player.x += 5;
 			clientSocket.send("Player Move",player.data);
 		}
-
-
 	}
 }

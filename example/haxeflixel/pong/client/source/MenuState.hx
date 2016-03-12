@@ -20,8 +20,15 @@ class MenuState extends FlxState
 		var ipInput = new FlxInputText(0,130,200,"",16);
 		ipInput.x = FlxG.width/2 - ipInput.width/2;
 
-
-
 		add(ipInput);
+
+		ipInput.callback = function (text,action)
+		{
+			if (action == "enter"){
+				GameData.ip = text;
+				trace("Connection to IP: "+text);
+				FlxG.switchState(new PlayState());
+			}
+		}
 	}
 }
