@@ -3,25 +3,43 @@ package mphx.tcp;
 import haxe.io.Input;
 import haxe.io.Bytes;
 import mphx.serialization.ISerializer;
+import mphx.server.EventManager;
+import mphx.tcp.IConnection;
+import mphx.tcp.NetSock;
+import mphx.utils.PolicyFilesProvider;
 
-class Connection implements mphx.tcp.IConnection
+/**
+ * A modified mphx.tcp.connection for managing flash policy files security
+ * see : http://help.adobe.com/fr_FR/as3/dev/WS5b3ccc516d4fbf351e63e3d118a9b90204-7c60.html#WS5b3ccc516d4fbf351e63e3d118a9b90204-7c63
+ * This will be removed on a update of the mphx library (perhaps)
+ * @author
+ */
+class FlashConnection implements IConnection
 {
-	public var events:mphx.server.EventManager;
+
+	public var events:EventManager;
 	public var cnx:NetSock;
 	public var serializer:ISerializer;
 	public var room:mphx.server.Room = null;
 	public var data:Dynamic;
 
+	private var m_domainAccept : String;
+	private var m_portAccept : Int;
 
-	public function new (_events:mphx.server.EventManager){
+
+	public function new (_events:mphx.server.EventManager, domainAccept : String,  portAccept : Int)
+	{
 		events = _events;
 		serializer = new mphx.serialization.HaxeSerializer();
+		m_domainAccept = domainAccept;
+		m_portAccept  = portAccept;
 	}
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
 	public function onAccept(cnx:NetSock) { this.cnx = cnx; }
 
-	public function getContext() :NetSock {
+	public function getContext() :NetSock
+	{
 		return cnx;
 	}
 
@@ -70,11 +88,21 @@ class Connection implements mphx.tcp.IConnection
 	}
 
 	public function recieve(line:String){
+		trace(line);
 		//Transfer the Input data to a string
+
+		//flash specific, if we receive this, we need to return the policy files
+		if (line == "<policy-file-request/>")
+		{
+			trace("receive policyfile request");
+			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(m_domainAccept,Std.string(m_portAccept)).toString());
+			cnx.socket.output.flush();
+			return;
+		}
 
 		//Then convert the string to a Dynamic object.
 		var msg = serializer.deserialize(line);
-		
+		trace(msg);
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.
@@ -94,5 +122,4 @@ class Connection implements mphx.tcp.IConnection
 		}
 		recieve(line);
 	}
-
 }
