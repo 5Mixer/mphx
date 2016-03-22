@@ -54,7 +54,7 @@ class TcpFlashClient implements IClient
 
     public function isConnected():Bool
     {
-        return m_client.connected;//cnx != null && cnx.isOpen();
+        return m_client!=null && m_client.connected;//cnx != null && cnx.isOpen();
     }
 
 
@@ -150,7 +150,7 @@ class TcpFlashClient implements IClient
 
         var serialisedObject =  serializer.serialize(object);
         var result = cnx.writeBytes(Bytes.ofString(serialisedObject + "\r\n"));
-        trace("Result "+result);
+        //trace("Result "+result);
     }
 
     private function onFlashServerClose(event : Event) : Void
@@ -252,7 +252,7 @@ class TcpFlashClient implements IClient
     public function recieve(line:String) : Void
     {
 
-			trace(line + " was recieved");
+		//trace(line + " was recieved");
         //Then convert the string to a Dynamic object.
         var msg = serializer.deserialize(line);
         //The message will have a propety of T
