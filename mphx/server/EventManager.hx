@@ -11,6 +11,22 @@ class EventManager
 	public function new()
 	{
 		eventMap = new Map();
+
+		callEvent = function(eventName:String, data:Dynamic, sender:IConnection)
+		{
+			//If an event with that name exists.
+			if (eventMap.exists(eventName))
+			{
+				if(eventMap.get(eventName) != null){
+					eventMap.get(eventName)(data, sender);
+				}else{
+					//Event is null.
+					#if debug
+						trace("mphx recieved event type "+eventName+" however no event listener was registered for it.");
+					#end
+				}
+			}
+		}
 	}
 
 	/**
@@ -44,19 +60,5 @@ class EventManager
 	 * @param	data
 	 * @param	sender
 	 */
-	public function callEvent(eventName:String, data:Dynamic, sender:IConnection)
-	{
-		//If an event with that name exists.
-		if (eventMap.exists(eventName))
-		{
-			if(eventMap.get(eventName) != null){
-				eventMap.get(eventName)(data, sender);
-			}else{
-				//Event is null.
-				#if debug
-					trace("mphx recieved event type "+eventName+" however no event listener was registered for it.");
-				#end
-			}
-		}
-	}
+	public var callEvent:String->Dynamic->IConnection->Void;
 }
