@@ -23,14 +23,14 @@ class EventManager
 	{
 		eventMap.set(eventName,event);
 	}
-	
+
 	/**
 	 * Remove an event if exist
 	 * @param	eventName
 	 */
 	public function remove(eventName:String)
 	{
-		if (eventMap.exists(eventName)) 
+		if (eventMap.exists(eventName))
 		{
 			eventMap.set(eventName,null);
 			eventMap.remove(eventName);
@@ -47,10 +47,16 @@ class EventManager
 	public function callEvent(eventName:String, data:Dynamic, sender:IConnection)
 	{
 		//If an event with that name exists.
-		if (eventMap.exists(eventName)) 
+		if (eventMap.exists(eventName))
 		{
-			if(eventMap.get(eventName) != null)
+			if(eventMap.get(eventName) != null){
 				eventMap.get(eventName)(data, sender);
+			}else{
+				//Event is null.
+				#if debug
+					trace("mphx recieved event type "+eventName+" however no event listener was registered for it.");
+				#end
+			}
 		}
 	}
 }
