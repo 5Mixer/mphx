@@ -26,13 +26,16 @@ class FlashConnection implements IConnection
 	private var m_domainAccept : String;
 	private var m_portAccept : Int;
 
+	var server:mphx.server.IServer;
 
-	public function new (_events:mphx.server.EventManager, domainAccept : String,  portAccept : Int)
+	public function new (_events:mphx.server.EventManager, domainAccept : String,  portAccept : Int,_server:mphx.server.IServer)
 	{
 		events = _events;
 		serializer = new mphx.serialization.HaxeSerializer();
 		m_domainAccept = domainAccept;
 		m_portAccept  = portAccept;
+
+		server = _server;
 	}
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
@@ -69,6 +72,7 @@ class FlashConnection implements IConnection
 		if (room != null){
 			room.onLeave(this);
 		}
+		server.onConnectionClose(this);
 	}
 
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }

@@ -17,6 +17,8 @@ class Server
 	public var port(default, null):Int;
 	public var blocking(default, set):Bool = true;
 
+	public var onConnectionClose:IConnection->Void;
+
 	public var events:mphx.server.EventManager;
 
 	public var rooms:Array<Room>;
@@ -74,7 +76,7 @@ class Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Connection(events);
+				client.custom = protocol = new mphx.tcp.Connection(events,this);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -125,7 +127,7 @@ class Server
 						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
-						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events,this);
 						protocol.onAccept(netsock);
 					}
 

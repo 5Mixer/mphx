@@ -61,10 +61,13 @@ class WebsocketProtocol extends Connection
 
 	static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-	public function new (events)
+	var server:mphx.server.IServer;
+
+	public function new (events,_server:mphx.server.IServer)
 	{
 		super(events);
 		_headers = [];
+		server = _server;
 	}
 
 	override public function send(event:String,?data:Dynamic) :Bool
