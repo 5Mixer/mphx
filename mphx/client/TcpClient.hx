@@ -28,8 +28,9 @@ class TcpClient implements IClient
 	public var cnx:NetSock;
 
 	public var events:mphx.client.EventManager;
-	public var onConnectionError :Void->Void;
-	public var onConnectionEstablished :Void->Void;
+	public var onConnectionError:Void->Void;
+	public var onConnectionEstablished:Void->Void;
+	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
 
 	var port:Int;
 	var ip:String;
@@ -133,6 +134,9 @@ class TcpClient implements IClient
 			cnx.close();
 			this.cnx = null;
 		}
+
+		//This is a user set function var, so it may not be overridden.
+		if (onConnectionClose != null) onConnectionClose(reason);
 	}
 
 	public function close()
