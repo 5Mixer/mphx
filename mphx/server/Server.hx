@@ -10,7 +10,9 @@ import mphx.tcp.NetSock;
 
 import mphx.server.Room;
 
-class Server
+import mphx.tcp.IConnection;
+
+class Server implements IServer
 {
 
 	public var host(default, null):String;
@@ -22,6 +24,7 @@ class Server
 	public var events:mphx.server.EventManager;
 
 	public var rooms:Array<Room>;
+
 
 	public function new(hostname:String,port:Int)
 	{
@@ -163,7 +166,7 @@ class Server
 		listener.close();
 	}
 
-	private function set_blocking(value:Bool):Bool
+	function set_blocking(value:Bool):Bool
 	{
 		if (blocking == value) return value;
 		if (listener != null) listener.setBlocking(value);

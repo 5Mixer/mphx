@@ -53,7 +53,8 @@ class Connection implements mphx.tcp.IConnection
 		if (room != null){
 			room.onLeave(this);
 		}
-		server.onConnectionClose(this);
+
+		if (server.onConnectionClose != null) server.onConnectionClose(this);
 	}
 
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }

@@ -21,7 +21,7 @@ class TcpClient implements IClient
 {
 
 	public var blocking(default, set):Bool = true;
-	public var connected(get, never):Bool;
+	public var connected:Bool;
 
 	public var serializer:ISerializer;
 
@@ -55,10 +55,12 @@ class TcpClient implements IClient
 		try {
 #if flash
 		client.connect(ip, port);
+		connected = true;
 #else
 		if (ip == null) ip = Host.localhost();
 		client.connect(new Host(ip), port);
 		client.setBlocking(blocking);
+		connected = true;
 #end
 		} catch (e :Dynamic) {
 			if (onConnectionError != null) onConnectionError();
@@ -134,6 +136,7 @@ class TcpClient implements IClient
 			cnx.close();
 			this.cnx = null;
 		}
+		connected = false;
 
 		//This is a user set function var, so it may not be overridden.
 		if (onConnectionClose != null) onConnectionClose(reason);

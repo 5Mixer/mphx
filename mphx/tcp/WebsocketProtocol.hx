@@ -61,13 +61,10 @@ class WebsocketProtocol extends Connection
 
 	static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-	var server:mphx.server.IServer;
-
 	public function new (events,_server:mphx.server.IServer)
 	{
-		super(events);
+		super(events,_server);
 		_headers = [];
-		server = _server;
 	}
 
 	override public function send(event:String,?data:Dynamic) :Bool
@@ -178,7 +175,7 @@ class WebsocketProtocol extends Connection
 				case Binary(bytes): // binary
 					recvBinary(bytes);
 				case Close: // close
-					loseConnection("close connection");
+					loseConnection("close connection"); //Calls loseConnection which is implemented in Connection.hx
 					//cnx.close();
 				case Ping: // ping
 					cnx.writeBytes(createFrame(Pong)); // send pong
