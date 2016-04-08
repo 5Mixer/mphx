@@ -61,21 +61,16 @@ class WebsocketProtocol extends Connection
 
 	static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-	public function new (events,_server:mphx.server.IServer)
+	public function new (abstractionFactory,_server:mphx.server.IServer)
 	{
-		super(events,_server);
 		_headers = [];
+		super(abstractionFactory,_server);
 	}
 
-	override public function send(event:String,?data:Dynamic) :Bool
+	override public function send(data:String) :Bool
 	{
-		var object = {
-			t: event,
-			data:data
-		};
-		var serialisedObject = serializer.serialize(object);
 
-		var result = cnx.writeBytes(createFrame(Text(serialisedObject)));
+		var result = cnx.writeBytes(createFrame(Text(data)));
 
 		return result;
 	}
@@ -185,7 +180,7 @@ class WebsocketProtocol extends Connection
 		}
 	}
 
-	function recvText(text:String):Void { super.recieve(text); }
+	function recvText(text:String):Void { abstraction.onData(text); }
 
 	function recvBinary(data:Bytes):Void { }
 

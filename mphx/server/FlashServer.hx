@@ -34,7 +34,6 @@ class FlashServer extends Server implements IServer
 		this.host = hostname;
 		this.port = port;
 
-		events = new mphx.server.EventManager();
 		rooms = [];
 
 		listener = new Socket();
@@ -42,6 +41,7 @@ class FlashServer extends Server implements IServer
 		readSockets = [listener];
 		clients = new Map();
 
+		//Hacks?? wip code.
 		super("0",0);
 	}
 
@@ -70,7 +70,7 @@ class FlashServer extends Server implements IServer
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new FlashConnection(events,this.host, this.port,this);
+				client.custom = protocol = new FlashConnection(abstractConnectionFactory(),this.host, this.port,this);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -120,7 +120,7 @@ class FlashServer extends Server implements IServer
 						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
-						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events,this);
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(abstractConnectionFactory(),this);
 						protocol.onAccept(netsock);
 					}
 

@@ -21,7 +21,7 @@ class Server implements IServer
 
 	public var onConnectionClose:IConnection->Void;
 
-	public var events:mphx.server.EventManager;
+	public var abstractConnectionFactory:IConnection->mphx.tcp.ConnectionAbstraction;
 
 	public var rooms:Array<Room>;
 
@@ -35,7 +35,11 @@ class Server implements IServer
 		this.host = hostname;
 		this.port = port;
 
-		events = new mphx.server.EventManager();
+		//By default use the string based event connection abstraction. A good base for basic networking.
+		abstractConnectionFactory = function (connection:IConnection) {
+			return new mphx.tcp.ConnectionAbstraction(connection);
+		}
+
 		rooms = [];
 
 		listener = new Socket();
@@ -79,7 +83,7 @@ class Server implements IServer
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Connection(events,this);
+				client.custom = protocol = new mphx.tcp.Connection(abstractConnectionFactory,this);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -130,7 +134,7 @@ class Server implements IServer
 						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
-						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events,this);
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(abstractConnectionFactory,this);
 						protocol.onAccept(netsock);
 					}
 
@@ -149,7 +153,7 @@ class Server implements IServer
 	}
 
 	public function broadcast(event:String, ?data:Dynamic):Bool
-	{
+	{/*
 		var success = true;
 		for (client in clients)
 		{
@@ -159,6 +163,8 @@ class Server implements IServer
 			}
 		}
 		return success;
+	*/
+		return false;
 	}
 
 	public function close()

@@ -2,10 +2,10 @@
 	"name": "mphx",
 	"license": "MIT",
 	"tags": ["cross","network","Multiplayer"],
-	"description": "mphx allows for easy creation of MP games.",
-	"contributors": ["5Mixer","anissen"],
-	"releasenote": "Structural changes, more websocket stability, better examples and stronger codebase.",
-	"version": "0.2.2",
+	"description": "mphx allows for easy creation of multiplayer games.",
+	"contributors": ["5Mixer","anissen","yannsucc"],
+	"releasenote": "More stability, more control, and the start of work on new targets.",
+	"version": "0.2.3",
 	"url": "https://github.com/5Mixer/mphx",
 	"dependencies":
 	{

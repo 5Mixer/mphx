@@ -4,7 +4,7 @@ import haxe.io.Input;
 
 interface IConnection
 {
-	function send (event:String,?data:Dynamic):Bool;
+	function send(data:String):Bool;
 	function onConnect(cnx:NetSock):Void;
 	function onAccept(cnx:NetSock):Void;
 	function dataReceived(input:Input):Void;

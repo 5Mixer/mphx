@@ -17,7 +17,7 @@ import mphx.utils.PolicyFilesProvider;
 class FlashConnection implements IConnection
 {
 
-	public var events:EventManager;
+	public var abstraction:mphx.tcp.ConnectionAbstraction;
 	public var cnx:NetSock;
 	public var serializer:ISerializer;
 	public var room:mphx.server.Room = null;
@@ -28,14 +28,14 @@ class FlashConnection implements IConnection
 
 	var server:mphx.server.IServer;
 
-	public function new (_events:mphx.server.EventManager, domainAccept : String,  portAccept : Int,_server:mphx.server.IServer)
+	public function new (abstractConnectionFactory:IConnection->mphx.tcp.ConnectionAbstraction,, domainAccept : String,  portAccept : Int,_server:mphx.server.IServer)
 	{
-		events = _events;
 		serializer = new mphx.serialization.HaxeSerializer();
 		m_domainAccept = domainAccept;
 		m_portAccept  = portAccept;
 
 		server = _server;
+		abstraction = abstractConnectionFactory(this);
 	}
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
@@ -105,14 +105,7 @@ class FlashConnection implements IConnection
 			return;
 		}
 
-		//Then convert the string to a Dynamic object.
-		var msg = serializer.deserialize(line);
-		trace(msg);
-		//The message will have a propety of T
-		//This is the event name/type. It is t to reduce wasted banwidth.
-		//call an event called 't' with the msg data.
-		events.callEvent(msg.t,msg.data,this);
-
+		abstraction.onData(line);
 	}
 
 	public function dataReceived(input:Input):Void

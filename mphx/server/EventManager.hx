@@ -1,8 +1,9 @@
 package mphx.server;
 
 import mphx.tcp.IConnection;
+import mphx.tcp.ConnectionAbstraction;
 
-typedef EventFunction = Dynamic->IConnection->Void;
+typedef EventFunction = Dynamic->ConnectionAbstraction->Void;
 
 class EventManager
 {
@@ -12,7 +13,7 @@ class EventManager
 	{
 		eventMap = new Map();
 
-		callEvent = function(eventName:String, data:Dynamic, sender:IConnection)
+		callEvent = function(eventName:String, data:Dynamic, sender:ConnectionAbstraction)
 		{
 			//If an event with that name exists.
 			if (eventMap.exists(eventName))
@@ -60,5 +61,5 @@ class EventManager
 	 * @param	data
 	 * @param	sender
 	 */
-	public var callEvent:String->Dynamic->IConnection->Void;
+	public var callEvent:String->Dynamic->ConnectionAbstraction->Void;
 }

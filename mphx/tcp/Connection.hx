@@ -8,16 +8,16 @@ class Connection implements mphx.tcp.IConnection
 {
 	public var events:mphx.server.EventManager;
 	public var cnx:NetSock;
-	public var serializer:ISerializer;
 	public var room:mphx.server.Room = null;
 	public var data:Dynamic;
 
+	public var abstraction:mphx.tcp.ConnectionAbstraction;
+
 	var server:mphx.server.IServer;
 
-	public function new (_events:mphx.server.EventManager,_server:mphx.server.IServer){
-		events = _events;
-		serializer = new mphx.serialization.HaxeSerializer();
+	public function new (abstractConnectionFactory:IConnection->mphx.tcp.ConnectionAbstraction,_server:mphx.server.IServer){
 		server = _server;
+		abstraction = abstractConnectionFactory(this);
 	}
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
@@ -61,30 +61,12 @@ class Connection implements mphx.tcp.IConnection
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 
 
-	public function send(event:String,?data:Dynamic):Bool {
-		var object = {
-			t: event,
-			data:data
-		};
-		var serialiseObject = serializer.serialize(object);
+	public function send(data:String):Bool {
 
-		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+		var result = cnx.writeBytes(Bytes.ofString(data + "\r\n"));
 
 		//trace("Sent event: "+event);
 		return result;
-	}
-
-	public function recieve(line:String){
-		//Transfer the Input data to a string
-
-		//Then convert the string to a Dynamic object.
-		var msg = serializer.deserialize(line);
-
-		//The message will have a propety of T
-		//This is the event name/type. It is t to reduce wasted banwidth.
-		//call an event called 't' with the msg data.
-		events.callEvent(msg.t,msg.data,this);
-
 	}
 
 	public function dataReceived(input:Input):Void
@@ -97,7 +79,7 @@ class Connection implements mphx.tcp.IConnection
 			loseConnection("Lost connection to server");
 			return;
 		}
-		recieve(line);
+		abstraction.onData(line);
 	}
 
 }

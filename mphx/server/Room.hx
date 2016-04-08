@@ -33,7 +33,7 @@ class Room
 
 	public function broadcast(event:String,?data:Dynamic):Bool
 	{
-		var success = true;
+		/*var success = true;
 		for (client in connections)
 		{
 			if (!client.send(event,data))
@@ -41,6 +41,7 @@ class Room
 				success = false;
 			}
 		}
-		return success;
+		return success;*/
+		return false;
 	}
 }
