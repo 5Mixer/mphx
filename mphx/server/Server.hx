@@ -180,7 +180,7 @@ class Server implements IServer
 	}
 
 	private var readSockets:Array<Socket>;
-	private var clients:Map<Socket, NetSock>;
+	public var clients:Map<Socket, NetSock>;
 	private var listener:Socket;
 
 	private var buffer:Bytes;

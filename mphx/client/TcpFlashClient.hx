@@ -19,9 +19,6 @@ import mphx.tcp.NetSock;
  */
 class TcpFlashClient implements IClient
 {
-
-    public var serializer:ISerializer;
-    public var events:EventManager;
     private var buffer:Bytes;
 
     public var cnx:NetSock;
@@ -42,11 +39,14 @@ class TcpFlashClient implements IClient
 
     var ready = false;
 
+    var abstraction:mphx.client.ConnectionAbstraction;
+
+
     public function new(host:String, port :Int)
     {
 		trace("Start of new()");
-        serializer = new HaxeSerializer();
-        events = new EventManager();
+        abstraction = new mphx.client.ConnectionAbstraction(this);
+
         buffer = Bytes.alloc(8192); //no utility ?
         m_host = host;
         m_port = port;
@@ -132,24 +132,16 @@ class TcpFlashClient implements IClient
         loseConnection(event.toString());
     }
 
-    public function send(event:String, ?data:Dynamic):Void
+    public function send(data:Dynamic):Void
     {
-
-        var object =
-        {
-            t: event,
-            data:data
-        };
-
 
         if (!ready)
         {
-            messageQueue.push(object);
+            messageQueue.push(data);
             return;
         }
 
-        var serialisedObject =  serializer.serialize(object);
-        var result = cnx.writeBytes(Bytes.ofString(serialisedObject + "\r\n"));
+        var result = cnx.writeBytes(Bytes.ofString(data + "\r\n"));
         //trace("Result "+result);
     }
 
@@ -257,14 +249,7 @@ class TcpFlashClient implements IClient
 
     public function recieve(line:String) : Void
     {
-
-		//trace(line + " was recieved");
-        //Then convert the string to a Dynamic object.
-        var msg = serializer.deserialize(line);
-        //The message will have a propety of T
-        //This is the event name/type. It is t to reduce wasted banwidth.
-        //call an event called 't' with the msg data.
-        events.callEvent(msg.t,msg.data);
+        abstraction.onData(line);
     }
 }
 #end

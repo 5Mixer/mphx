@@ -11,7 +11,7 @@ class Connection implements mphx.tcp.IConnection
 	public var room:mphx.server.Room = null;
 	public var data:Dynamic;
 
-	public var abstraction:mphx.tcp.ConnectionAbstraction;
+	public var abstraction:mphx.tcp.IConnectionAbstraction;
 
 	var server:mphx.server.IServer;
 

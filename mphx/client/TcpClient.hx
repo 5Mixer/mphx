@@ -23,11 +23,9 @@ class TcpClient implements IClient
 	public var blocking(default, set):Bool = true;
 	public var connected:Bool;
 
-	public var serializer:ISerializer;
-
 	public var cnx:NetSock;
 
-	public var events:mphx.client.EventManager;
+	public var abstraction:mphx.client.ConnectionAbstraction;
 	public var onConnectionError:Void->Void;
 	public var onConnectionEstablished:Void->Void;
 	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
@@ -35,11 +33,10 @@ class TcpClient implements IClient
 	var port:Int;
 	var ip:String;
 
+
 	public function new(_ip:String,_port:Int)
 	{
-		events = new mphx.client.EventManager();
-
-		serializer = new mphx.serialization.HaxeSerializer();
+		abstraction = new mphx.client.ConnectionAbstraction(this);
 
 		buffer = Bytes.alloc(8192);
 
@@ -96,15 +93,7 @@ class TcpClient implements IClient
 	}
 
 	public function recieve(line:String){
-		//Transfer the Input data to a string
-
-		//Then convert the string to a Dynamic object.
-		var msg = serializer.deserialize(line);
-
-		//The message will have a propety of T
-		//This is the event name/type. It is t to reduce wasted banwidth.
-		//call an event called 't' with the msg data.
-		events.callEvent(msg.t,msg.data);
+		abstraction.onData(line);
 	}
 
 	public function dataReceived(input:Input):Void
@@ -152,14 +141,9 @@ class TcpClient implements IClient
 		client = null;
 	}
 
-	public function send(event:String, ?data:Dynamic){
-		var object = {
-			t: event,
-			data:data
-		};
-		var serialiseObject =  serializer.serialize(object);
+	public function send(data:String){
 
-		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
+		cnx.writeBytes(Bytes.ofString(data + "\r\n"));
 	}
 
 

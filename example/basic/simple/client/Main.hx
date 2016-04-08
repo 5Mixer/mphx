@@ -12,16 +12,19 @@ class Main
 
 		clientSocket.connect();
 
+		var connectionAbstraction = new mphx.client.ConnectionAbstraction(clientSocket);
 
-		clientSocket.send("Hello",123);
+		connectionAbstraction.send("Hello",123);
 
-		clientSocket.events.on("Direct Message",function (data){
+		connectionAbstraction.events.on("DM",function (data){
 			trace("Server sent a 'Direct message' with data " +data);
 		});
 
-		clientSocket.events.on("Server wide broadcast",function (data){
+		connectionAbstraction.events.on("Server wide broadcast",function (data){
 			trace("server broadcasted a server wide message. Data was "+data);
 		});
+
+		clientSocket.abstraction = connectionAbstraction;
 
 		#if !js
 		var quit = false;

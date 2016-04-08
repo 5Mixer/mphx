@@ -11,7 +11,7 @@ import mphx.serialization.ISerializer;
 	Connections contain a factory, which creates these. The factory can pass extra data to the connection abstraction.
 
 */
-class ConnectionAbstraction {
+class ConnectionAbstraction implements mphx.tcp.IConnectionAbstraction {
 
 	public var serializer:ISerializer;
 	public var connection:IConnection;

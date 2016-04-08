@@ -12,6 +12,7 @@ interface IConnection
 	function putInRoom (newRoom:mphx.server.Room):Bool;
 	function getContext():NetSock;
 	function isConnected():Bool;
+	var abstraction:mphx.tcp.IConnectionAbstraction;
 	var room:mphx.server.Room;
 	var data:Dynamic;
 }

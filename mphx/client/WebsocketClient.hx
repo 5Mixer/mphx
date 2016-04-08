@@ -8,9 +8,6 @@ class WebsocketClient implements IClient
 
 	var websocket : js.html.WebSocket;
 
-	public var events:mphx.client.EventManager;
-	public var serializer:ISerializer;
-
 	var port:Int;
 	var ip:String;
 
@@ -20,17 +17,16 @@ class WebsocketClient implements IClient
 	public var onConnectionError :Void->Void;
 	public var onConnectionEstablished :Void->Void;
 
+	var abstraction:mphx.client.ConnectionAbstraction;
+
 	public function new(_ip:String,_port:Int)
 	{
-		events = new mphx.client.EventManager();
-
-		serializer = new mphx.serialization.HaxeSerializer();
-
 		ip = _ip;
 		port = _port;
 
 		messageQueue = new Array<Dynamic>();
 
+        abstraction = new mphx.client.ConnectionAbstraction(this);
 	}
 
 	public function connect() {
@@ -53,26 +49,15 @@ class WebsocketClient implements IClient
 		websocket.onmessage = function (line)
 		{
 			var data = line.data; //It's inside the JSON websocket request
-			var msg = serializer.deserialize(data); //Is the serialized message.
-
-			//The message will have a propety of T
-			//This is the event name/type. It is t to reduce wasted banwidth.
-			//call an event called 't' with the msg data.
-			events.callEvent(msg.t,msg.data);
+			abstraction.onData(data);
 		}
 	}
 
-	public function send(event:String, ?data:Dynamic)
+	public function send(data:String)
 	{
-		var object = {
-			t: event,
-			data:data
-		};
 
 		if (ready == true)
 		{
-			var serialiseObject = serializer.serialize(object);
-
 			websocket.send(serialiseObject + "\r\n");
 		}else{
 			messageQueue.push(object);
