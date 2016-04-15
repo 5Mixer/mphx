@@ -16,8 +16,9 @@ class WebsocketClient implements IClient
 
 	public var onConnectionError :Void->Void;
 	public var onConnectionEstablished :Void->Void;
+	public var onConnectionClose:String->Void; //String is the reason for the close.
 
-	var abstraction:mphx.client.ConnectionAbstraction;
+	public var abstraction:mphx.client.ConnectionAbstraction;
 
 	public function new(_ip:String,_port:Int)
 	{
@@ -41,7 +42,7 @@ class WebsocketClient implements IClient
 			ready = true;
 
 			for (message in messageQueue){
-				send(message.t,message.data);
+				send(message);
 				messageQueue.remove(message);
 			}
 		}
@@ -58,9 +59,9 @@ class WebsocketClient implements IClient
 
 		if (ready == true)
 		{
-			websocket.send(serialiseObject + "\r\n");
+			websocket.send(data + "\r\n");
 		}else{
-			messageQueue.push(object);
+			messageQueue.push(data);
 		}
 
 	}
@@ -72,5 +73,6 @@ class WebsocketClient implements IClient
 
 	public function close (){
 		websocket.close();
+		onConnectionClose("Websocket connection was closed.");
 	}
 }
