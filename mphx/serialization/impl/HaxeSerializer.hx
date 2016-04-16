@@ -1,4 +1,4 @@
-package mphx.serialization;
+package mphx.serialization.impl ;
 
 /*
 	HaxeSerializer currently uses the static serialization methods provided by Haxe.

@@ -1,6 +1,6 @@
-package mphx.server;
+package mphx.server.room ;
 
-import mphx.tcp.IConnection;
+import mphx.connection.IConnection;
 
 class Room
 {

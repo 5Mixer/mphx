@@ -7,7 +7,7 @@ typedef Player = {
 }
 
 class Main {
-	public var players:Map<mphx.tcp.IConnection,Player>;
+	public var players:Map<mphx.connection.IConnection,Player>;
 
 	public function new (){
 		players = new Map();
@@ -15,9 +15,9 @@ class Main {
 		var ip = "127.0.0.1";
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
-		var s = new mphx.server.Server(ip,8000);
+		var s = new mphx.server.impl.Server(ip,8000);
 
-		s.events.on("Join",function(data:Dynamic,sender:mphx.tcp.IConnection){
+		s.events.on("Join",function(data:Dynamic,sender:mphx.connection.IConnection){
 
 			players.set(sender,data);
 

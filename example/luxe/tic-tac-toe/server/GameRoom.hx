@@ -1,8 +1,8 @@
 package;
 
-import mphx.server.Room;
-import mphx.tcp.IConnection;
-import mphx.tcp.Connection;
+import mphx.server.room.Room;
+import mphx.connection.IConnection;
+import mphx.connection.impl.Connection;
 
 class GameRoom extends Room {
     var required_players :Int = 2;

@@ -1,8 +1,8 @@
-package mphx.server;
+package mphx.utils.flash ;
 import haxe.macro.Expr.Error;
 import sys.net.Host;
 import sys.net.Socket;
-import mphx.utils.PolicyFilesProvider;
+import mphx.utils.flash.PolicyFilesProvider;
 
 /**
  * ...
@@ -28,8 +28,7 @@ class PolicyFilesServer
 	{
 		if (m_host == null || m_host == "")
 		{
-
-			trace("PolicyFilesServer : can't start because of invalid host", "server", "policy");
+			trace("PolicyFilesServer : can't start because of invalid host");
 			return;
 		}
 
@@ -41,36 +40,34 @@ class PolicyFilesServer
 			m_socket.setBlocking(false);
 		} catch (e:Dynamic)
 		{
-			trace("PolicyFileServer : start failed on : " + m_host + ":" + m_port + " because : " + e, "server", "policy");
+			trace("PolicyFileServer : start failed on : " + m_host + ":" + m_port + " because : " + e);
 			return;
 		}
 
-		trace("PolicyFileServer : start on : " + m_host + ":" + m_port, "server", "policy");
+		trace("PolicyFileServer : start on : " + m_host + ":" + m_port);
 	}
 
 	public function update() : Void
 	{
-
 		var cnx : Socket = null;
-
+		
 		try
 		{
 			cnx = m_socket.accept();
-		}catch (e : Dynamic)
+		}
+		catch (e : Dynamic)
 		{
 			cnx = null ;
 		}
 
 		if (cnx!=null)
 		{
-			//L.verbose("===\nClient (" + cnx.peer().host + ":" + cnx.peer().port + ") try to get a policy file xml", "server", "policy");
+			cnx.waitForRead();
 
 			//sending by default by adobe on Flash.net.socket.connect();
 			if (cnx.input.readString(22) == "<policy-file-request/>")
 			{
 				var result = PolicyFilesProvider.generateXmlPolicyFile(m_domainAllowed, m_toPort).toString();
-				//L.verbose("PolicyFileServer : xml sended : \n" + result, "server", "policy");
-				//L.verbose("===", "server", "policy");
 				cnx.output.writeString(result);
 				cnx.output.flush();
 			}
@@ -82,5 +79,4 @@ class PolicyFilesServer
 	{
 		m_socket.close();
 	}
-
 }

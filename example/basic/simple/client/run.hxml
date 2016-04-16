@@ -1,4 +1,4 @@
--lib mphx
+-cp C:\GitHubLocal\mphx
 -main Main
 
 -x Main.hx

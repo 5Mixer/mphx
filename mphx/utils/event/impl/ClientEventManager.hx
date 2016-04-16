@@ -1,14 +1,17 @@
-package mphx.client;
+package mphx.utils.event.impl ;
 
 typedef EventFunction = Dynamic->Void;
 
-class EventManager
+class ClientEventManager
 {
+	public var callEvent : String->Dynamic->Void;
+	
 	var eventMap:Map<String,EventFunction>;
 
 	public function new()
 	{
 		eventMap = new Map();
+		callEvent = callEventCallback;
 	}
 
 	/**
@@ -41,7 +44,7 @@ class EventManager
 	 * @param	eventName
 	 * @param	data
 	 */
-	public function callEvent(eventName:String, data:Dynamic)
+	public function callEventCallback(eventName:String, data:Dynamic)
 	{
 		//If an event with that name exists.
 		if (eventMap.exists(eventName)) 

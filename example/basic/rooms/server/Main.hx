@@ -5,19 +5,19 @@ class Main {
 		var ip = "127.0.0.1";
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
-		var server = new mphx.server.Server(ip,8000);
+		var server = new mphx.server.impl.Server(ip,8000);
 
 
-		var roomA = new mphx.server.Room();
+		var roomA = new mphx.server.room.Room();
 		server.rooms.push(roomA);
 
-		var roomB = new mphx.server.Room();
+		var roomB = new mphx.server.room.Room();
 		server.rooms.push(roomB);
 
-		var roomC = new mphx.server.Room();
+		var roomC = new mphx.server.room.Room();
 		server.rooms.push(roomC);
 
-		server.events.on("MoveIntoRoom",function(data:Dynamic,sender:mphx.tcp.IConnection){
+		server.events.on("MoveIntoRoom",function(data:Dynamic,sender:mphx.connection.IConnection){
 			trace("Recieved a message from the client.");
 			trace("Placing the client in room "+data);
 

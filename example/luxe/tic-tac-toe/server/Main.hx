@@ -1,8 +1,8 @@
 package;
 
-import mphx.server.Server;
-import mphx.tcp.IConnection;
-import mphx.tcp.Connection;
+import mphx.server.impl.Server;
+import mphx.connection.IConnection;
+import mphx.connection.impl.Connection;
 // import GameRoom;
 
 class Main {
