@@ -12,10 +12,12 @@ class Connection implements mphx.tcp.IConnection
 	public var room:mphx.server.Room = null;
 	public var data:Dynamic;
 
+	var server:mphx.server.IServer;
 
-	public function new (_events:mphx.server.EventManager){
+	public function new (_events:mphx.server.EventManager,_server:mphx.server.IServer){
 		events = _events;
 		serializer = new mphx.serialization.HaxeSerializer();
+		server = _server;
 	}
 
 	public function onConnect(cnx:NetSock) { this.cnx = cnx; }
@@ -51,6 +53,9 @@ class Connection implements mphx.tcp.IConnection
 		if (room != null){
 			room.onLeave(this);
 		}
+
+		if (server.onConnectionClose != null)
+			server.onConnectionClose(this);
 	}
 
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
@@ -74,7 +79,7 @@ class Connection implements mphx.tcp.IConnection
 
 		//Then convert the string to a Dynamic object.
 		var msg = serializer.deserialize(line);
-		
+
 		//The message will have a propety of T
 		//This is the event name/type. It is t to reduce wasted banwidth.
 		//call an event called 't' with the msg data.

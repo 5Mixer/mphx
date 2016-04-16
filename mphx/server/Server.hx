@@ -10,16 +10,21 @@ import mphx.tcp.NetSock;
 
 import mphx.server.Room;
 
-class Server
+import mphx.tcp.IConnection;
+
+class Server implements IServer
 {
 
 	public var host(default, null):String;
 	public var port(default, null):Int;
 	public var blocking(default, set):Bool = true;
 
+	public var onConnectionClose:IConnection->Void;
+
 	public var events:mphx.server.EventManager;
 
 	public var rooms:Array<Room>;
+
 
 	public function new(hostname:String,port:Int)
 	{
@@ -74,7 +79,7 @@ class Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new mphx.tcp.Connection(events);
+				client.custom = protocol = new mphx.tcp.Connection(events,this);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -125,7 +130,7 @@ class Server
 						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
-						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events,this);
 						protocol.onAccept(netsock);
 					}
 
@@ -161,7 +166,7 @@ class Server
 		listener.close();
 	}
 
-	private function set_blocking(value:Bool):Bool
+	function set_blocking(value:Bool):Bool
 	{
 		if (blocking == value) return value;
 		if (listener != null) listener.setBlocking(value);

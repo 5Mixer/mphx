@@ -10,16 +10,18 @@ import mphx.tcp.NetSock;
 import mphx.tcp.FlashConnection;
 
 import mphx.server.Room;
+import mphx.server.IServer;
 
 /**
  * to use flashconnection.hx instead of mphx.tcp.Connection because of security files
  *  This will perhaps be removed on a update of the mphx library
  * @author yannsucc
  */
-class FlashServer extends Server
+class FlashServer extends Server implements IServer
 {
 
 	private var m_policyServerRef : PolicyFilesServer;
+	public var onConnectionClose:String->mphx.tcp.Connection->Void;
 
 	public function new(hostname : String, port : Int)
 	{
@@ -68,7 +70,7 @@ class FlashServer extends Server
 				clients.set(client, netsock);
 
 				client.setBlocking(false);
-				client.custom = protocol = new FlashConnection(events,this.host, this.port);
+				client.custom = protocol = new FlashConnection(events,this.host, this.port,this);
 				protocol.onAccept(netsock);
 			}
 			else
@@ -118,7 +120,7 @@ class FlashServer extends Server
 						var socket = protocol.getContext().socket;
 						var netsock = new mphx.tcp.NetSock(socket);
 
-						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events);
+						socket.custom = protocol = new mphx.tcp.WebsocketProtocol(events,this);
 						protocol.onAccept(netsock);
 					}
 

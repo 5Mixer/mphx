@@ -17,6 +17,24 @@ This library is not be dependent on any 'graphical' library (eg. Haxeflixel, Ope
 
 [![Join the chat at https://gitter.im/5Mixer/mphx](https://badges.gitter.im/5Mixer/mphx.svg)](https://gitter.im/5Mixer/mphx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+-------------
+
+###Supported Targets
+Client
+
+- [x] Native targets (C++)
+- [x] Web (JS with websockets)
+- [x] Neko
+- [ ] Flash (In progress - See issues.)
+- [ ] Mobile (Should work, however never tested) 
+
+Server
+
+- [x] Native targets (C++)
+- [x] Neko
+- [ ] Node JS
+
+
 --------------
 
 Features (planned or avaliable):

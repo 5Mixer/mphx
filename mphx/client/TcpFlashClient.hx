@@ -34,7 +34,7 @@ class TcpFlashClient implements IClient
     // all handler for different case (ConnectError, Connect, Server Close, Connection lost for any reason)
     public var onConnectionError : Void->Void;
     public var onConnectionEstablished : Void->Void;
-    public var onServerClose : Void->Void;
+    public var onConnectionClose:String->Void; //String is the reason for the close.
     public var onConnectionLost : Void->Void;
 
     private var m_host:String;
@@ -158,6 +158,9 @@ class TcpFlashClient implements IClient
         trace("server close connection : " + event.toString());
         this.close();
 
+        if (onConnectionClose != null)
+            onConnectionClose("Flash connection shut by server.");
+
         if (onServerClose != null)
             onServerClose();
     }
@@ -166,6 +169,9 @@ class TcpFlashClient implements IClient
     {
         trace("Client disconnected with code : " + reason);
         this.close();
+
+        if (onConnectionClose != null)
+            onConnectionClose(reason);
 
         if (onConnectionLost != null)
             onConnectionLost();

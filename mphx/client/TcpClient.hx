@@ -21,15 +21,16 @@ class TcpClient implements IClient
 {
 
 	public var blocking(default, set):Bool = true;
-	public var connected(get, never):Bool;
+	public var connected:Bool;
 
 	public var serializer:ISerializer;
 
 	public var cnx:NetSock;
 
 	public var events:mphx.client.EventManager;
-	public var onConnectionError :Void->Void;
-	public var onConnectionEstablished :Void->Void;
+	public var onConnectionError:Void->Void;
+	public var onConnectionEstablished:Void->Void;
+	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
 
 	var port:Int;
 	var ip:String;
@@ -54,10 +55,12 @@ class TcpClient implements IClient
 		try {
 #if flash
 		client.connect(ip, port);
+		connected = true;
 #else
 		if (ip == null) ip = Host.localhost();
 		client.connect(new Host(ip), port);
 		client.setBlocking(blocking);
+		connected = true;
 #end
 		} catch (e :Dynamic) {
 			if (onConnectionError != null) onConnectionError();
@@ -133,6 +136,10 @@ class TcpClient implements IClient
 			cnx.close();
 			this.cnx = null;
 		}
+		connected = false;
+
+		//This is a user set function var, so it may not be overridden.
+		if (onConnectionClose != null) onConnectionClose(reason);
 	}
 
 	public function close()
