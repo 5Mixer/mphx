@@ -1,19 +1,18 @@
-package mphx.tcp;
-
-import mphx.tcp.IConnection;
+package mphx.connection.impl ;
 
 import haxe.crypto.Base64;
 import haxe.crypto.Sha1;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 import haxe.io.Input;
-import haxe.io.Eof;
 import mphx.serialization.ISerializer;
+import mphx.server.IServer;
+import mphx.utils.event.impl.ServerEventManager;
+
 
 #if neko
 import neko.Lib;
 #elseif cpp
-import cpp.Lib;
 #end
 
 using StringTools;
@@ -61,9 +60,14 @@ class WebsocketProtocol extends Connection
 
 	static inline var MAGIC_STRING:String = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
-	public function new (events,_server:mphx.server.IServer)
+	public function new ()
 	{
-		super(events,_server);
+		super();	
+	}
+	
+	override public function configure(_events:ServerEventManager, _server:IServer, _serializer:ISerializer = null):Void 
+	{
+		super.configure(_events, _server, _serializer);
 		_headers = [];
 	}
 
@@ -133,7 +137,7 @@ class WebsocketProtocol extends Connection
 	*/
 	override public function dataReceived(input:Input):Void
 	{
-		if (_useHttp) // http protocol
+		if (_useHttp)
 		{
 			var line:String;
 			var switchProtocols = false;

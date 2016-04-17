@@ -1,4 +1,4 @@
-package mphx.serialization;
+package mphx.serialization.impl ;
 
 class JSONSerializer implements ISerializer
 {

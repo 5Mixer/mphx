@@ -1,4 +1,4 @@
-package mphx.utils;
+package mphx.utils.flash ;
 
 /**
  * @author yannsucc
