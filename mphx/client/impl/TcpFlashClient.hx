@@ -83,8 +83,9 @@ class TcpFlashClient implements IClient
         //Send queue
         for (message in messageQueue){
             send(message.t,message.data);
-            messageQueue.remove(message);
-        }			
+        }	
+		
+		messageQueue = [];
     }
 
     private function onFlashIoErrorEventConnect(event : IOErrorEvent) : Void
@@ -127,6 +128,7 @@ class TcpFlashClient implements IClient
 		
         if (!ready)
         {
+			trace("Stock message : " + object);
             messageQueue.push(object);
             return;
         }

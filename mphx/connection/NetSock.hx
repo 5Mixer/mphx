@@ -29,15 +29,11 @@ class NetSock
 		try
 		{
 			#if flash
-			
 				 for (i in 0...bytes.length)
 					socket.writeByte(bytes.get(i));
 				socket.flush();
-				
 			#else
-			
 				socket.output.writeBytes(bytes, 0, bytes.length);
-				
 			#end
 		}
 		catch (e:Dynamic)

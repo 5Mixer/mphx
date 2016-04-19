@@ -87,18 +87,19 @@ class FlashConnection implements IConnection
 
 	public function loseConnection(?reason:String)
 	{
-		trace("Client disconnected with code: "+reason);
+		trace("Client disconnected with code: " + reason);
+		
+		if (m_server.onConnectionClose != null)
+			m_server.onConnectionClose(reason, this);	
+			
+		if (room != null)
+			room.onLeave(this);
+			
 		if (cnx != null)
 		{
 			cnx.clean();
 			this.cnx = null;
 		}
-		
-		if (room != null)
-			room.onLeave(this);
-			
-		if (m_server.onConnectionClose != null)
-			m_server.onConnectionClose(reason, this);
 	}
 
 	public function send(event:String, ?data:Dynamic):Bool
@@ -131,13 +132,18 @@ class FlashConnection implements IConnection
 	{
 		//Convert Input to string then process.
 		var line = "";
-		try{
-			line = input.readLine();
-		}catch (e:Dynamic)
+		var done : Bool = false;
+		
+		while (!done)
 		{
-			loseConnection("Lost connection to server");
-			return;
-		}
-		recieve(line);
+			try
+			{
+				recieve(input.readLine());
+			}
+			catch (e:Dynamic)
+			{
+				done = true;
+			}
+		}	
 	}
 }
