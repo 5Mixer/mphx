@@ -1,7 +1,9 @@
 package mphx.connection.impl ;
 
 import haxe.io.Bytes;
+import haxe.io.Eof;
 import haxe.io.Input;
+import haxe.io.Error;
 import mphx.connection.IConnection;
 import mphx.connection.NetSock;
 import mphx.serialization.impl.HaxeSerializer;
@@ -133,17 +135,38 @@ class FlashConnection implements IConnection
 		//Convert Input to string then process.
 		var line = "";
 		var done : Bool = false;
-		
+		var data : String = "";
 		while (!done)
 		{
 			try
 			{
-				recieve(input.readLine());
+				data = input.readLine();
+				
+				try
+				{
+					recieve(data);
+				}
+				catch (e:Dynamic)
+				{
+					trace("CRITICAL - can't use data : " + data);
+					trace("because : " + e);
+					throw Error.Blocked;
+				}					
 			}
-			catch (e:Dynamic)
+			catch (e : Eof)
 			{
 				done = true;
 			}
-		}	
+			catch (e : Error)
+			{
+				//nothing special, continue.
+			}
+			catch (e:Dynamic)
+			{
+				trace("CRITICAL - data can't be read");
+				trace("" + e);
+				trace("Skip Data");
+			}
+		}
 	}
 }
