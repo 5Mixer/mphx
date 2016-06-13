@@ -14,23 +14,23 @@ import mphx.utils.flash.PolicyFilesServer;
  */
 class FlashServer extends Server implements IServer
 {
-	private var m_policyServerRef : PolicyFilesServer;
+	private var policyServerRef : PolicyFilesServer;
 
 	public function new(hostname : String, port : Int, _serializer : ISerializer = null, buffer : Int = 8)
 	{
-		m_policyServerRef = new PolicyFilesServer(hostname);
+		policyServerRef = new PolicyFilesServer(hostname);
 		super(hostname, port, new FlashConnection(hostname, port), _serializer, buffer);
 	}
 
 	override public function start(maxPendingConnection : Int = 1, blocking : Bool = true)
 	{
-		m_policyServerRef.start();
+		policyServerRef.start();
 		super.start(maxPendingConnection, blocking);
 	}
 
 	override public function update(timeout:Float=0):Void
 	{
-		m_policyServerRef.update();
+		policyServerRef.update();
 		super.update(timeout);
 	}
 }

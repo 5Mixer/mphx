@@ -26,27 +26,27 @@ class FlashConnection implements IConnection
 	public var room : Room = null;
 	public var data : Dynamic;
 
-	private var m_domainAccept : String;
-	private var m_portAccept : Int;
+	private var domainAccept : String;
+	private var portAccept : Int;
 
-	var m_server:IServer;
+	var server:IServer;
 
-	public function new (domainAccept : String,  portAccept : Int)
+	public function new (_domainAccept : String,  _portAccept : Int)
 	{
-		m_domainAccept = domainAccept;
-		m_portAccept  = portAccept;
+		domainAccept = _domainAccept;
+		portAccept  = _portAccept;
 	}
-	
+
 	public function clone() : IConnection
 	{
-		return new FlashConnection(m_domainAccept, m_portAccept);
+		return new FlashConnection(domainAccept, portAccept);
 	}
-	
+
 	public function configure(_events : ServerEventManager, _server:IServer, _serializer : ISerializer = null) : Void
 	{
 		events = _events;
-		m_server = _server;
-		
+		server = _server;
+
 		if (_serializer == null)
 			this.serializer = new HaxeSerializer();
 		else
@@ -61,42 +61,42 @@ class FlashConnection implements IConnection
 	{
 		if (newRoom.full)
 			return false;
-			
+
 		if (room != null)
 			room.onLeave(this);
-			
+
 		room = newRoom;
 		newRoom.onJoin(this);
 		return true;
 	}
-	
+
 	public function onAccept(cnx:NetSock) : Void
-	{ 
+	{
 		this.cnx = cnx;
-		
-		if (m_server.onConnectionAccepted != null)
-			m_server.onConnectionAccepted("accept : " + this.getContext().peerToString(), this);
+
+		if (server.onConnectionAccepted != null)
+			server.onConnectionAccepted("accept : " + this.getContext().peerToString(), this);
 	}
-	
+
 	//difference with onAccept ?
 	public function onConnect(cnx:NetSock) : Void
-	{ 
-		this.cnx = cnx; 
-		
-		//if (m_server.onConnectionAccepted != null)
-			//m_server.onConnectionAccepted("connect : " + this.getContext().peerToString(), this);
-	}	
+	{
+		this.cnx = cnx;
+
+		//if (server.onConnectionAccepted != null)
+			//server.onConnectionAccepted("connect : " + this.getContext().peerToString(), this);
+	}
 
 	public function loseConnection(?reason:String)
 	{
 		trace("Client disconnected with code: " + reason);
-		
-		if (m_server.onConnectionClose != null)
-			m_server.onConnectionClose(reason, this);	
-			
+
+		if (server.onConnectionClose != null)
+			server.onConnectionClose(reason, this);
+
 		if (room != null)
 			room.onLeave(this);
-			
+
 		if (cnx != null)
 		{
 			cnx.clean();
@@ -110,7 +110,7 @@ class FlashConnection implements IConnection
 			t: event,
 			data:data
 		};
-		
+
 		var serialiseObject = serializer.serialize(object);
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 		return result;
@@ -122,7 +122,7 @@ class FlashConnection implements IConnection
 		if (line == "<policy-file-request/>")
 		{
 			trace("receive policyfile request");
-			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(m_domainAccept,Std.string(m_portAccept)).toString());
+			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(domainAccept,Std.string(portAccept)).toString());
 			cnx.socket.output.flush();
 			return;
 		}
@@ -141,7 +141,7 @@ class FlashConnection implements IConnection
 			try
 			{
 				data = input.readLine();
-				
+
 				try
 				{
 					recieve(data);
@@ -151,7 +151,7 @@ class FlashConnection implements IConnection
 					trace("CRITICAL - can't use data : " + data);
 					trace("because : " + e);
 					throw Error.Blocked;
-				}					
+				}
 			}
 			catch (e : Eof)
 			{

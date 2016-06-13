@@ -20,7 +20,7 @@ class Server implements IServer
 
 	private var listener:Socket;
 
-	private var m_buffer:Bytes;
+	private var buffer:Bytes;
 
 	public var host(default, null):String;
 
@@ -36,9 +36,9 @@ class Server implements IServer
 
 	public var rooms:Array<Room>;
 
-	private var m_connectionTemplate : IConnection;
+	private var connectionTemplate : IConnection;
 
-	private var m_serializer : ISerializer;
+	private var serializer : ISerializer;
 
 	/**
 	 * @param	hostname
@@ -54,14 +54,14 @@ class Server implements IServer
 
 		this.host = hostname;
 		this.port = port;
-		m_connectionTemplate = connectionTemplate;
+		this.connectionTemplate = connectionTemplate;
 
 		if (_serializer == null)
-			m_serializer = new HaxeSerializer();
+			serializer = new HaxeSerializer();
 		else
-			m_serializer = _serializer;
+			serializer = _serializer;
 
-		m_buffer = Bytes.alloc(1024 * buffer);
+		buffer = Bytes.alloc(1024 * buffer);
 		listener = new Socket();
 		readSockets = [listener];
 		clients = new Map();
@@ -110,12 +110,12 @@ class Server implements IServer
 				clients.set(client, netsock);
 				client.setBlocking(false);
 
-				if (m_connectionTemplate != null)
-					protocol = m_connectionTemplate.clone();
+				if (connectionTemplate != null)
+					protocol = connectionTemplate.clone();
 				else
 					protocol = new Connection(); // default
 
-				protocol.configure(this.events, this, m_serializer);
+				protocol.configure(this.events, this, serializer);
 				client.custom = protocol;
 				protocol.onAccept(netsock);
 
@@ -125,7 +125,7 @@ class Server implements IServer
 				protocol = socket.custom;
 				var byte:Int = 0,
 				bytesReceived:Int = 0,
-				len = m_buffer.length;
+				len = buffer.length;
 
 
 				while (bytesReceived < len)
@@ -133,10 +133,10 @@ class Server implements IServer
 					if (bytesReceived == len - 1){
 						//We have reached maximum buffer size! We have not allocated enough buffer space.
 						trace('Warning: Recieved message too large to fit into buffer; Automatically increasing buffer size to '+len+1024);
-						var oldBuffer = m_buffer;
-						m_buffer = Bytes.alloc(len + 1024); //Add an extra 1024 bytes space.
-						m_buffer.blit(0,oldBuffer,0,len);
-						len = m_buffer.length;
+						var oldBuffer = buffer;
+						buffer = Bytes.alloc(len + 1024); //Add an extra 1024 bytes space.
+						buffer.blit(0,oldBuffer,0,len);
+						len = buffer.length;
 
 					}
 
@@ -162,7 +162,7 @@ class Server implements IServer
 							trace(e);
 						}
 					}
-					m_buffer.set(bytesReceived, byte);
+					buffer.set(bytesReceived, byte);
 					bytesReceived += 1;
 				}
 
@@ -170,19 +170,19 @@ class Server implements IServer
 				if (bytesReceived > 0)
 				{
 					//check, is message an indication of a websocket connection?
-					if (new BytesInput(m_buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1")
+					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1")
 					{
 						//If so, recreate a protocol of type websocket, for this specific client.
 						var socket = protocol.getContext().socket;
 						var netsock = new NetSock(socket);
 						protocol = new WebsocketProtocol();
-						protocol.configure(this.events, this, m_serializer);
+						protocol.configure(this.events, this, serializer);
 						socket.custom = protocol;
 						protocol.onAccept(netsock);
 					}
 
 					//Let the protocol process the data.
-					protocol.dataReceived(new BytesInput(m_buffer, 0, bytesReceived));
+					protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 				}
 
 				if (!protocol.isConnected())
