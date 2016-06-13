@@ -40,6 +40,8 @@ class Server implements IServer
 
 	private var serializer : ISerializer;
 
+	public var maximumBufferSize = 10240;
+
 	/**
 	 * @param	hostname
 	 * @param	port
@@ -127,10 +129,19 @@ class Server implements IServer
 				bytesReceived:Int = 0,
 				len = buffer.length;
 
-
-				while (bytesReceived < len)
+				var error = false;
+				while (true) //Reaching the end of the message or an error will break the loop
 				{
 					if (bytesReceived == len - 1){
+						if (bytesReceived > maximumBufferSize){
+							trace("Attention: A client has exceeded maximum memory. This could be an attack on the server. The server can be allowed more space by increasing it's maximumBufferSize. Client disconnected.");
+							protocol.loseConnection("Connection exceeded allocated memory");
+							readSockets.remove(socket);
+							clients.remove(socket);
+
+							error = true;
+							break; //Continue to recieve messages from other clients
+						}
 						//We have reached maximum buffer size! We have not allocated enough buffer space.
 						trace('Warning: Recieved message too large to fit into buffer; Automatically increasing buffer size to '+len+1024);
 						var oldBuffer = buffer;
@@ -152,11 +163,12 @@ class Server implements IServer
 							protocol.loseConnection("close connection");
 							readSockets.remove(socket);
 							clients.remove(socket);
+							error = true;
 
 							break;
 						}else if (e == haxe.io.Error.Blocked)
 						{
-							//End of message
+							//End of message. Not an error - This is still a connected, valid client.
 							break;
 						}else{
 							trace(e);
@@ -167,7 +179,7 @@ class Server implements IServer
 				}
 
 				// check that buffer was filled
-				if (bytesReceived > 0)
+				if (bytesReceived > 0 && error == false) //If some data was recieved and the client is valid still
 				{
 					//check, is message an indication of a websocket connection?
 					if (new BytesInput(buffer, 0, bytesReceived).readLine() == "GET / HTTP/1.1")
