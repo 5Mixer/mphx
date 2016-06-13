@@ -1,5 +1,6 @@
 package mphx.connection.impl ;
 
+import haxe.io.Eof;
 import haxe.io.Input;
 import haxe.io.Bytes;
 import mphx.serialization.impl.HaxeSerializer;
@@ -8,6 +9,7 @@ import mphx.connection.IConnection;
 import mphx.server.IServer;
 import mphx.server.room.Room;
 import mphx.utils.event.impl.ServerEventManager;
+import haxe.io.Error;
 
 class Connection implements IConnection
 {
@@ -75,17 +77,19 @@ class Connection implements IConnection
 	
 	public function loseConnection(?reason:String)
 	{
-		trace("Client disconnected with code: "+reason);
-		if (cnx != null){
+		trace("Client disconnected with code: " + reason);
+		if (m_server.onConnectionClose != null)
+			m_server.onConnectionClose(reason, this);		
+		
+		if (room != null){
+			room.onLeave(this);
+		}			
+			
+		if (cnx != null)
+		{
 			cnx.clean();
 			this.cnx = null;
 		}
-		if (room != null){
-			room.onLeave(this);
-		}
-
-		if (m_server.onConnectionClose != null)
-			m_server.onConnectionClose(reason, this);
 	}
 	
 	public function send(event:String, ?data:Dynamic):Bool 
@@ -108,13 +112,41 @@ class Connection implements IConnection
 
 	public function dataReceived(input:Input):Void
 	{
+		//Convert Input to string then process.
 		var line = "";
-		try{
-			line = input.readLine();
-		}catch(e:Dynamic){
-			loseConnection("Lost connection to server");
-			return;
+		var done : Bool = false;
+		var data : String = "";
+		while (!done)
+		{
+			try
+			{
+				data = input.readLine();
+				
+				try
+				{
+					recieve(data);
+				}
+				catch (e:Dynamic)
+				{
+					trace("CRITICAL - can't use data : " + data);
+					trace("because : " + e);
+					throw Error.Blocked;
+				}					
+			}
+			catch (e : Eof)
+			{
+				done = true;
+			}
+			catch (e : Error)
+			{
+				//nothing special, continue.
+			}
+			catch (e:Dynamic)
+			{
+				trace("CRITICAL - data can't be read");
+				trace("" + e);
+				trace("Skip Data");
+			}
 		}
-		recieve(line);
 	}
 }

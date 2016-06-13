@@ -83,8 +83,9 @@ class TcpFlashClient implements IClient
         //Send queue
         for (message in messageQueue){
             send(message.t,message.data);
-            messageQueue.remove(message);
-        }			
+        }	
+		
+		messageQueue = [];
     }
 
     private function onFlashIoErrorEventConnect(event : IOErrorEvent) : Void
@@ -127,6 +128,7 @@ class TcpFlashClient implements IClient
 		
         if (!ready)
         {
+			trace("Stock message : " + object);
             messageQueue.push(object);
             return;
         }
@@ -185,22 +187,27 @@ class TcpFlashClient implements IClient
         var buf = new StringBuf();
         var last : Int;
         var line : String = "";
+		var done : Bool = false;
 
         //try to get RT/LF line
         try
         {
-            while((last = m_client.readByte()) != 10)
-                buf.addChar(last);
+			while (!done)
+			{
+				while((last = m_client.readByte()) != 10)
+					buf.addChar(last);
 
-            line = buf.toString();
+				line = buf.toString();
 
-            if (line.charCodeAt(line.length - 1) == 13)
-                line = line.substr(0, -1);
+				if (line.charCodeAt(line.length - 1) == 13)
+					line = line.substr(0, -1);
 
-            recieve(line);
+				recieve(line);
+			}
 
         } catch ( e : EOFError )
         {
+			done = true;
             //nothing special ?
             //trace("no data on socket");
             //line = buf.toString();
@@ -208,6 +215,7 @@ class TcpFlashClient implements IClient
                 //throw (new Eof());
         } catch (e : Dynamic)
         {
+			done = true;
             trace("unknown error : " + e);
         }
     }

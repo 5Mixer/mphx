@@ -2,7 +2,7 @@ package mphx.utils.event.impl ;
 
 import mphx.connection.IConnection;
 
-typedef EventFunction = Dynamic->IConnection->Void;
+typedef ServerEventFunction = Dynamic->IConnection->Void;
 
 class ServerEventManager 
 {
@@ -16,7 +16,7 @@ class ServerEventManager
 	 */
 	public var callEvent:String->Dynamic->IConnection->Void;	
 	
-	private var eventMap:Map<String,EventFunction>;
+	private var eventMap:Map<String,ServerEventFunction>;
 
 	public function new()
 	{
@@ -31,7 +31,7 @@ class ServerEventManager
 	 * @param	eventName
 	 * @param	event
 	 */
-	public function on(eventName:String, event:EventFunction)
+	public function on(eventName:String, event:ServerEventFunction)
 	{
 		eventMap.set(eventName,event);
 	}
