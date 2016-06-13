@@ -4,18 +4,15 @@ import sys.net.Host;
 import sys.net.Socket;
 import mphx.utils.flash.PolicyFilesProvider;
 
-/**
- * ...
- * @author
- */
+
 class PolicyFilesServer
 {
-	private static var socket : Socket;
+	private var socket : Socket;
 
-	private static var host : String = ""; //my domain
-	private static var port : Int = 843;
-	private static var domainAllowed : String = "*";
-	private static var toPort : String = "*";
+	private var host : String = ""; //my domain
+	private var port : Int = 843;
+	private var domainAllowed : String = "*";
+	private var toPort : String = "*";
 
 	public function new(host : String, domainAllowed : String = "*", toPort : String = "*")
 	{
