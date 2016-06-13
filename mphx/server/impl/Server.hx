@@ -15,27 +15,27 @@ import sys.net.Socket;
 class Server implements IServer
 {
 	private var readSockets:Array<Socket>;
-	
+
 	private var clients:Map<Socket, NetSock>;
-	
+
 	private var listener:Socket;
 
-	private var m_buffer:Bytes;	
-	
+	private var m_buffer:Bytes;
+
 	public var host(default, null):String;
-	
+
 	public var port(default, null):Int;
-	
+
 	public var blocking(default, set):Bool = true;
 
 	public var onConnectionAccepted : String->IConnection->Void;
-	
+
 	public var onConnectionClose : String->IConnection->Void;
 
 	public var events : ServerEventManager;
 
 	public var rooms:Array<Room>;
-	
+
 	private var m_connectionTemplate : IConnection;
 
 	private var m_serializer : ISerializer;
@@ -49,36 +49,36 @@ class Server implements IServer
 	 */
 	public function new(hostname:String, port:Int, connectionTemplate : IConnection = null, _serializer : ISerializer = null, buffer : Int = 8)
 	{
-		if (hostname == null) 
+		if (hostname == null)
 			hostname = Host.localhost();
-			
+
 		this.host = hostname;
 		this.port = port;
 		m_connectionTemplate = connectionTemplate;
-		
+
 		if (_serializer == null)
 			m_serializer = new HaxeSerializer();
 		else
 			m_serializer = _serializer;
-		
+
 		m_buffer = Bytes.alloc(1024 * buffer);
 		listener = new Socket();
 		readSockets = [listener];
-		clients = new Map();		
+		clients = new Map();
 		events = new ServerEventManager();
 		rooms = [];
 	}
-	
-	public function start (maxPendingConnection : Int = 1, blocking : Bool = true) 
+
+	public function start (maxPendingConnection : Int = 1, blocking : Bool = true)
 	{
 		trace("Server active on "+host+":"+port+". Code after server.start() will not run. ");
 		listen(maxPendingConnection, blocking);
-		while (true) 
+		while (true)
 		{
 			update();
 			Sys.sleep(0.01); // wait for 1 ms
 		}
-	}	
+	}
 
 	private function listen(maxPendingConnection : Int = 1, blocking : Bool = true)
 	{
@@ -91,36 +91,55 @@ class Server implements IServer
 	{
 		var protocol : IConnection;
 		var bytesReceived:Int;
+
+		//Select waits until a socket can be read.
+		//The two null parameters allow waiting for a sockets write/exception, and are unneeded.
 		var select = Socket.select(readSockets, null, null, timeout);
 
 		for (socket in select.read)
 		{
 			if (socket == listener)
 			{
+				//If the socket that has data to read is the listener socket,
+				//allocate a new netsock/protocol for this client to be processed with.
+
 				var client = listener.accept();
 				var netsock = new NetSock(client);
 
 				readSockets.push(client);
 				clients.set(client, netsock);
 				client.setBlocking(false);
-				
+
 				if (m_connectionTemplate != null)
 					protocol = m_connectionTemplate.clone();
 				else
 					protocol = new Connection(); // default
-					
+
 				protocol.configure(this.events, this, m_serializer);
-				client.custom = protocol; 
+				client.custom = protocol;
 				protocol.onAccept(netsock);
-			}
-			else
-			{
+
+			}else{
+				//The server has recieved data from an already established client.
+
 				protocol = socket.custom;
 				var byte:Int = 0,
 				bytesReceived:Int = 0,
 				len = m_buffer.length;
+
+
 				while (bytesReceived < len)
 				{
+					if (bytesReceived == len - 1){
+						//We have reached maximum buffer size! We have not allocated enough buffer space.
+						trace('Warning: Recieved message too large to fit into buffer; Automatically increasing buffer size to '+len+1024);
+						var oldBuffer = m_buffer;
+						m_buffer = Bytes.alloc(len + 1024); //Add an extra 1024 bytes space.
+						m_buffer.blit(0,oldBuffer,0,len);
+						len = m_buffer.length;
+
+					}
+
 					try
 					{
 						byte = #if flash socket.readByte() #else socket.input.readByte() #end;
@@ -146,7 +165,7 @@ class Server implements IServer
 					m_buffer.set(bytesReceived, byte);
 					bytesReceived += 1;
 				}
-					
+
 				// check that buffer was filled
 				if (bytesReceived > 0)
 				{
@@ -201,4 +220,3 @@ class Server implements IServer
 		return blocking = value;
 	}
 }
-
