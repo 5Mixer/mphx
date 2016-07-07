@@ -60,14 +60,36 @@ class PolicyFilesServer
 		if (cnx!=null)
 		{
 			cnx.waitForRead();
+			var read = "";
+			var error = "";
+			
+			while (true)
+			{
+				
+				try
+				{
+					read += cnx.input.readString(1);
+				}
+				catch (e : Dynamic)
+				{
+					error += e;
+					break;
+				}
+				
+			}
+			
+			//trace("PolicyfilesServer read : " + read);
+			//trace("PolicyfilesServer error : " + error);
 
 			//sending by default by adobe on Flash.net.socket.connect();
-			if (cnx.input.readString(22) == "<policy-file-request/>")
+			if (read.indexOf("<policy-file-request/>") !=-1)
 			{
 				var result = PolicyFilesProvider.generateXmlPolicyFile(domainAllowed, toPort).toString();
 				cnx.output.writeString(result);
 				cnx.output.flush();
 			}
+			
+			Sys.sleep(0.05);//wait before close for flush
 			cnx.close();
 		}
 	}

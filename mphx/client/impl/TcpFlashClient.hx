@@ -1,5 +1,6 @@
 #if flash
 package mphx.client.impl ;
+import haxe.Timer;
 import flash.errors.EOFError;
 import flash.events.Event;
 import flash.events.IOErrorEvent;
@@ -52,13 +53,20 @@ class TcpFlashClient implements IClient
 
     public function connect():Void
     {
-        client = new Socket(host, port);
+        client = new Socket();
         //add specific handler for connection
         client.addEventListener(Event.CONNECT, onFlashConnectEvent);
         client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEventConnect);
         client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
+		client.connect(host, port);
     }
 
+	//temporisation to wait the policyFiles from the server
+	private function waitForPolicyFiles(e: Event)
+	{
+		Timer.delay(onFlashConnectEvent.bind(e), 100);
+	}
+	
     private function onFlashConnectEvent(event : Event) : Void
     {
         trace("Connection established on : " + host +":" + port);
