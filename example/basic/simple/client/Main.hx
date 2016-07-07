@@ -9,15 +9,15 @@ import flash.Lib;
 class Main
 {
 	var clientSocket:Client;
-	
-	public function new () 
+
+	public function new ()
 	{
 		var ip = "127.0.0.1";
-		
+
 		#if !flash
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 		#end
-		
+
 		clientSocket = new Client(ip, 8000);
 		clientSocket.connect();
 		clientSocket.send("Hello",123);
@@ -37,7 +37,7 @@ class Main
 		{
 			clientSocket.update();
 		});
-		
+
 		#else
 		var quit = false;
 		while (quit == false){

@@ -1,4 +1,4 @@
-package mphx.client.impl ;
+package mphx.client.impl;
 
 import haxe.io.Bytes;
 import haxe.io.Input;
@@ -21,8 +21,8 @@ class TcpClient implements IClient
 	public var cnx:NetSock;
 	public var events:ClientEventManager;
 	private var client:Socket;
-	private var readSockets:Array<Socket>;	
-	
+	private var readSockets:Array<Socket>;
+
 	public var onConnectionError:String->Void;
 	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
 	public var onConnectionEstablished:Void->Void;
@@ -33,33 +33,33 @@ class TcpClient implements IClient
 	public function new(_ip:String, _port:Int, _serializer : ISerializer = null, _blocking : Bool = false)
 	{
 		port = _port;
-		ip = _ip;		
+		ip = _ip;
 		events = new ClientEventManager();
-		
+
 		if (_serializer != null)
 			serializer = _serializer;
 		else
 			serializer = new HaxeSerializer();
-			
+
 		this.blocking = _blocking;
 	}
 
 	public function connect()
 	{
 		client = new Socket();
-		try 
+		try
 		{
-			if (ip == null) 
+			if (ip == null)
 				ip = Host.localhost();
-				
+
 			client.connect(new Host(ip), port);
 			client.setBlocking(this.blocking);
 			connected = true;
 
-		} 
-		catch (e :Dynamic) 
+		}
+		catch (e :Dynamic)
 		{
-			if (onConnectionError != null) 
+			if (onConnectionError != null)
 				onConnectionError("error : " + e);
 			return;
 		}
@@ -67,7 +67,7 @@ class TcpClient implements IClient
 		readSockets = [client];
 		cnx = new NetSock(client);
 
-		if (onConnectionEstablished != null) 
+		if (onConnectionEstablished != null)
 			onConnectionEstablished();
 	}
 
@@ -80,7 +80,7 @@ class TcpClient implements IClient
 		else
 		{
 			var select = Socket.select(readSockets, null, null, timeout);
-			
+
 			for (socket in select.read)
 				readSocket(socket);
 		}
@@ -124,7 +124,7 @@ class TcpClient implements IClient
 		connected = false;
 
 		//This is a user set function var, so it may not be overridden.
-		if (onConnectionClose != null) 
+		if (onConnectionClose != null)
 			onConnectionClose(reason);
 	}
 

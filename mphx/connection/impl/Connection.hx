@@ -13,7 +13,7 @@ import haxe.io.Error;
 
 class Connection implements IConnection
 {
-	private var m_server:IServer;
+	private var server:IServer;
 	public var cnx:NetSock;
 	public var serializer:ISerializer;
 	public var events:ServerEventManager;
@@ -23,23 +23,23 @@ class Connection implements IConnection
 	public function new ()
 	{
 	}
-	
+
 	public function clone() : IConnection
 	{
 		return new Connection();
 	}
-	
+
 	public function configure(_events : ServerEventManager, _server:IServer, _serializer : ISerializer = null) : Void
 	{
 		events = _events;
-		m_server = _server;
-		
+		server = _server;
+
 		if (_serializer == null)
 			this.serializer = new HaxeSerializer();
 		else
 			serializer = _serializer;
 	}
-	
+
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 	public function getContext() :NetSock {return cnx;}
 
@@ -59,46 +59,46 @@ class Connection implements IConnection
 	}
 
 	public function onAccept(cnx:NetSock) : Void
-	{ 
+	{
 		this.cnx = cnx;
-		
-		if (m_server.onConnectionAccepted != null)
-			m_server.onConnectionAccepted("accept : " + this.getContext().peerToString(), this);
+
+		if (server.onConnectionAccepted != null)
+			server.onConnectionAccepted("accept : " + this.getContext().peerToString(), this);
 	}
-	
+
 	//difference with onAccept ?
 	public function onConnect(cnx:NetSock) : Void
-	{ 
-		this.cnx = cnx; 
-		
-		//if (m_server.onConnectionAccepted != null)
-			//m_server.onConnectionAccepted("connect : " + this.getContext().peerToString(), this);
+	{
+		this.cnx = cnx;
+
+		//if (server.onConnectionAccepted != null)
+			//server.onConnectionAccepted("connect : " + this.getContext().peerToString(), this);
 	}
-	
+
 	public function loseConnection(?reason:String)
 	{
 		trace("Client disconnected with code: " + reason);
-		if (m_server.onConnectionClose != null)
-			m_server.onConnectionClose(reason, this);		
-		
+		if (server.onConnectionClose != null)
+			server.onConnectionClose(reason, this);
+
 		if (room != null){
 			room.onLeave(this);
-		}			
-			
+		}
+
 		if (cnx != null)
 		{
 			cnx.clean();
 			this.cnx = null;
 		}
 	}
-	
-	public function send(event:String, ?data:Dynamic):Bool 
+
+	public function send(event:String, ?data:Dynamic):Bool
 	{
 		var object = {
 			t: event,
 			data:data
 		}
-		
+
 		var serialiseObject = serializer.serialize(object);
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 		return result;
@@ -121,7 +121,7 @@ class Connection implements IConnection
 			try
 			{
 				data = input.readLine();
-				
+
 				try
 				{
 					recieve(data);
@@ -131,7 +131,7 @@ class Connection implements IConnection
 					trace("CRITICAL - can't use data : " + data);
 					trace("because : " + e);
 					throw Error.Blocked;
-				}					
+				}
 			}
 			catch (e : Eof)
 			{

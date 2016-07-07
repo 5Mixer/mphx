@@ -1,15 +1,15 @@
-Alpha. Rough edges everywhere, but they're being refined.
+mphx is alpha and has rough edges, but they're being refined.
 
 
-![#MPHX](Logo.png)
+![#mphx](Logo.png)
 
-MpHx is a new library made with Haxe to allow for easy creation of multiplayer games. It was based off [HxNet](https://github.com/MattTuttle/hxnet), whose code is authored by [Matt Tuttle](https://github.com/MattTuttle). The code is of a very different structure now. MPHX is still 'alpha' and things might break. But give it a try, it will only make the library better. Feel free to contribute or create issues, even if your changes seem small!
+mphx is a new library made with Haxe to allow for easy creation of multiplayer games. It was based off [HxNet](https://github.com/MattTuttle/hxnet), whose code is authored by [Matt Tuttle](https://github.com/MattTuttle). The code is of a very different structure now. mphx is still 'alpha' and things might break. But give it a try, it will only make the library better. Feel free to contribute or create issues, even if your changes seem small!
 
 [**Wiki**](https://github.com/5Mixer/mphx/wiki)
 
 -------------
 
-MpHx allows for creation of both servers and clients, which connect to each other, sending messages. For the client, it works both natively and in the browser, with websockets, without you having to change a thing.
+mphx allows for creation of both servers and clients, which connect to each other, sending messages. For the client, it works both natively and in the browser, with websockets, without you having to change a thing.
 
 There are examples in the examples folder, for different libraries. (Basic has no external libraries.)
 
