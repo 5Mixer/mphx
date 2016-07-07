@@ -40,7 +40,14 @@ class Server implements IServer
 
 	private var m_serializer : ISerializer;
 
-	public function new(hostname:String, port:Int, connectionTemplate : IConnection = null, _serializer : ISerializer = null)
+	/**
+	 * @param	hostname
+	 * @param	port
+	 * @param	connectionTemplate
+	 * @param	_serializer
+	 * @param	buffer : set the max read buffer (default = 8Kb) the buffer size is set with buffer * 1024
+	 */
+	public function new(hostname:String, port:Int, connectionTemplate : IConnection = null, _serializer : ISerializer = null, buffer : Int = 8)
 	{
 		if (hostname == null) 
 			hostname = Host.localhost();
@@ -54,7 +61,7 @@ class Server implements IServer
 		else
 			m_serializer = _serializer;
 		
-		m_buffer = Bytes.alloc(8192);
+		m_buffer = Bytes.alloc(1024 * buffer);
 		listener = new Socket();
 		readSockets = [listener];
 		clients = new Map();		
@@ -139,7 +146,7 @@ class Server implements IServer
 					m_buffer.set(bytesReceived, byte);
 					bytesReceived += 1;
 				}
-
+					
 				// check that buffer was filled
 				if (bytesReceived > 0)
 				{

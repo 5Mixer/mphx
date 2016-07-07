@@ -1,7 +1,9 @@
 package mphx.connection.impl ;
 
 import haxe.io.Bytes;
+import haxe.io.Eof;
 import haxe.io.Input;
+import haxe.io.Error;
 import mphx.connection.IConnection;
 import mphx.connection.NetSock;
 import mphx.serialization.impl.HaxeSerializer;
@@ -87,18 +89,19 @@ class FlashConnection implements IConnection
 
 	public function loseConnection(?reason:String)
 	{
-		trace("Client disconnected with code: "+reason);
+		trace("Client disconnected with code: " + reason);
+		
+		if (m_server.onConnectionClose != null)
+			m_server.onConnectionClose(reason, this);	
+			
+		if (room != null)
+			room.onLeave(this);
+			
 		if (cnx != null)
 		{
 			cnx.clean();
 			this.cnx = null;
 		}
-		
-		if (room != null)
-			room.onLeave(this);
-			
-		if (m_server.onConnectionClose != null)
-			m_server.onConnectionClose(reason, this);
 	}
 
 	public function send(event:String, ?data:Dynamic):Bool
@@ -131,13 +134,39 @@ class FlashConnection implements IConnection
 	{
 		//Convert Input to string then process.
 		var line = "";
-		try{
-			line = input.readLine();
-		}catch (e:Dynamic)
+		var done : Bool = false;
+		var data : String = "";
+		while (!done)
 		{
-			loseConnection("Lost connection to server");
-			return;
+			try
+			{
+				data = input.readLine();
+				
+				try
+				{
+					recieve(data);
+				}
+				catch (e:Dynamic)
+				{
+					trace("CRITICAL - can't use data : " + data);
+					trace("because : " + e);
+					throw Error.Blocked;
+				}					
+			}
+			catch (e : Eof)
+			{
+				done = true;
+			}
+			catch (e : Error)
+			{
+				//nothing special, continue.
+			}
+			catch (e:Dynamic)
+			{
+				trace("CRITICAL - data can't be read");
+				trace("" + e);
+				trace("Skip Data");
+			}
 		}
-		recieve(line);
 	}
 }
