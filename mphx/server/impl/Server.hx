@@ -89,7 +89,7 @@ class Server implements IServer
 		this.blocking = blocking;
 	}
 
-	private function update(timeout:Float=0):Void
+	public function update(timeout:Float=0):Void
 	{
 		var protocol : IConnection;
 		var bytesReceived:Int;
