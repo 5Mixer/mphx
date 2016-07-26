@@ -6,3 +6,4 @@ export
 *.zip
 *.txt
 example/basic/simple/client/out/
+tests/report/
