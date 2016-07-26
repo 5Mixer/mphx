@@ -82,14 +82,14 @@ class Server implements IServer
 		}
 	}
 
-	private function listen(maxPendingConnection : Int = 1, blocking : Bool = true)
+	public function listen(maxPendingConnection : Int = 1, blocking : Bool = true)
 	{
 		listener.bind(new Host(host), port);
 		listener.listen(1);
 		this.blocking = blocking;
 	}
 
-	private function update(timeout:Float=0):Void
+	public function update(timeout:Float=0):Void
 	{
 		var protocol : IConnection;
 		var bytesReceived:Int;
