@@ -49,7 +49,7 @@ class PlayState extends FlxState
 			id: "player"+Math.random()*10000
 		};
 
-		player = new Player(playerData);
+		player = new Player(playerData, true);
 		allPlayers.add(player);
 		players.set(playerData.id,player);
 
@@ -80,8 +80,8 @@ class PlayState extends FlxState
 			var player = players.get(data.id);
 			player.data = data;
 
-			player.x = player.data.x;
-			player.y = player.data.y;
+			player.targetx = player.data.x;
+			player.targety = player.data.y;
 		});
 	}
 
@@ -89,32 +89,39 @@ class PlayState extends FlxState
 	/**
 	 * Function that is called once every frame.
 	 */
-	 var i = 0;
+	var i = 0;
+	var needsUpdating = false;
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+		i++;
 
 		clientSocket.update();
 
 		if (FlxG.keys.pressed.UP)
 		{
 			player.y -= 5;
-			clientSocket.send("Player Move",player.data);
+			needsUpdating = true;
 		}
 		if (FlxG.keys.pressed.DOWN)
 		{
 			player.y += 5;
-			clientSocket.send("Player Move",player.data);
+			needsUpdating = true;
 		}
 		if (FlxG.keys.pressed.LEFT)
 		{
 			player.x -= 5;
-			clientSocket.send("Player Move",player.data);
+			needsUpdating = true;
 		}
 		if (FlxG.keys.pressed.RIGHT)
 		{
 			player.x += 5;
+			needsUpdating = true;
+		}
+
+		if (i%3 == 0 && needsUpdating){ //Once every three frames
 			clientSocket.send("Player Move",player.data);
+
 		}
 	}
 }
