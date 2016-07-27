@@ -15,32 +15,30 @@ import sys.net.Socket;
 class Server implements IServer
 {
 	private var readSockets:Array<Socket>;
-
 	private var clients:Map<Socket, NetSock>;
-
 	private var listener:Socket;
-
 	private var buffer:Bytes;
 
 	public var host(default, null):String;
-
 	public var port(default, null):Int;
 
 	public var blocking(default, set):Bool = true;
 
 	public var onConnectionAccepted : String->IConnection->Void;
-
 	public var onConnectionClose : String->IConnection->Void;
 
 	public var events : ServerEventManager;
-
 	public var rooms:Array<Room>;
 
 	private var connectionTemplate : IConnection;
-
 	private var serializer : ISerializer;
 
 	public var maximumBufferSize = 10240;
+
+	//Send data from output immediently, don't wait for it to queue
+	//...will not always be suitable/linked to lower lag!
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ listener.setFastSend(newValue); return newValue; }
 
 	/**
 	 * @param	hostname
@@ -106,6 +104,7 @@ class Server implements IServer
 				//allocate a new netsock/protocol for this client to be processed with.
 
 				var client = listener.accept();
+				client.setFastSend(fastSend);
 				var netsock = new NetSock(client);
 
 				readSockets.push(client);

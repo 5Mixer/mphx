@@ -27,6 +27,11 @@ class TcpClient implements IClient
 	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
 	public var onConnectionEstablished:Void->Void;
 
+	//Send data from output immediently, don't wait for it to queue
+	//...will not always be suitable/linked to lower lag!
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ client.setFastSend(newValue); return newValue; }
+
 	var port:Int;
 	var ip:String;
 
