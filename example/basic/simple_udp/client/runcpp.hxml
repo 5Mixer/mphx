@@ -1,0 +1,6 @@
+-lib mphx
+-main Main
+
+-cpp out
+-cmd "cd out"
+-cmd Main.exe
