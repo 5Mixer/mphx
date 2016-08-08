@@ -15,6 +15,8 @@ There are examples in the examples folder, for different libraries. (Basic has n
 
 This library is not be dependent on any 'graphical' library (eg. Haxeflixel, Open FL or Luxe). If you want to, you can make a text based multiplayer game that runs in the terminal!
 
+Please raise issues if you find issues, however also check other issues to see if they can help. Thanks!
+
 [![Join the chat at https://gitter.im/5Mixer/mphx](https://badges.gitter.im/5Mixer/mphx.svg)](https://gitter.im/5Mixer/mphx?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 -------------
@@ -34,6 +36,11 @@ Server
 - [x] Neko
 - [ ] Node JS
 
+###Warnings
+
+
+ - mphx is currently **not compatible with haxe version 3.3.0** as a core part of networking code is broken in **haxe 3.3.0**. Versions before/after should be corrected, however, due to the nature of versioning, **haxe 3.3.0 will always be broken**. 
+ - performance tests have not really been evaluated, and some issues with lag still exist. This will be part of the refining mphx is *slowly* working though.
 
 --------------
 

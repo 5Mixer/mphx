@@ -38,6 +38,11 @@ class TcpFlashClient implements IClient
 
     var ready = false;
 
+    //Send data from output immediently, don't wait for it to queue
+	//...will not always be suitable/linked to lower lag!
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ client.setFastSend(newValue); return newValue; }
+
     public function new(host:String, port :Int, _serializer : ISerializer = null, _blocking : Bool = false)
     {
         events = new ClientEventManager();
@@ -66,7 +71,7 @@ class TcpFlashClient implements IClient
 	{
 		Timer.delay(onFlashConnectEvent.bind(e), 100);
 	}
-	
+
     private function onFlashConnectEvent(event : Event) : Void
     {
         trace("Connection established on : " + host +":" + port);

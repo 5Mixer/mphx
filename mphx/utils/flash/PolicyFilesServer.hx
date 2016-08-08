@@ -14,6 +14,12 @@ class PolicyFilesServer
 	private var domainAllowed : String = "*";
 	private var toPort : String = "*";
 
+	//Send data from output immediently, don't wait for it to queue
+	//...will not always be suitable/linked to lower lag!
+	//This will probably not be used with the policy files server, but good to have the option.
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ socket.setFastSend(newValue); return newValue; }
+
 	public function new(host : String, domainAllowed : String = "*", toPort : String = "*")
 	{
 		this.host = host;
@@ -35,6 +41,7 @@ class PolicyFilesServer
 			socket.bind(new Host(host), port);
 			socket.listen(1);
 			socket.setBlocking(false);
+			socket.setFastSend(fastSend);
 		} catch (e:Dynamic)
 		{
 			trace("PolicyFileServer : start failed on : " + host + ":" + port + " because : " + e);
@@ -62,10 +69,10 @@ class PolicyFilesServer
 			cnx.waitForRead();
 			var read = "";
 			var error = "";
-			
+
 			while (true)
 			{
-				
+
 				try
 				{
 					read += cnx.input.readString(1);
@@ -75,9 +82,9 @@ class PolicyFilesServer
 					error += e;
 					break;
 				}
-				
+
 			}
-			
+
 			//trace("PolicyfilesServer read : " + read);
 			//trace("PolicyfilesServer error : " + error);
 
@@ -88,7 +95,7 @@ class PolicyFilesServer
 				cnx.output.writeString(result);
 				cnx.output.flush();
 			}
-			
+
 			Sys.sleep(0.05);//wait before close for flush
 			cnx.close();
 		}
