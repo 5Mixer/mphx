@@ -13,7 +13,7 @@ class Main extends luxe.Game {
     var myPlayerId :String;
     var joined :Bool;
 
-    override function config(config :luxe.AppConfig) {
+    override function config(config :luxe.GameConfig) {
         config.render.antialiasing = 2;
         return config;
     }
