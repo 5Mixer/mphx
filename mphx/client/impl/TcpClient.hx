@@ -1,17 +1,13 @@
-package mphx.client;
+package mphx.client.impl;
 
-#if flash
-import flash.net.Socket;
-#else
+import haxe.io.Bytes;
+import haxe.io.Input;
+import mphx.connection.NetSock;
+import mphx.serialization.impl.HaxeSerializer;
+import mphx.serialization.ISerializer;
+import mphx.utils.event.impl.ClientEventManager;
 import sys.net.Host;
 import sys.net.Socket;
-#end
-import haxe.io.Bytes;
-import haxe.io.BytesInput;
-import haxe.io.Input;
-import mphx.tcp.IConnection;
-import mphx.tcp.NetSock;
-import mphx.serialization.ISerializer;
 
 //The TCP client class that is used on native targets.
 //This should not be created by the user! For ultimate cross compatibility
@@ -19,88 +15,85 @@ import mphx.serialization.ISerializer;
 
 class TcpClient implements IClient
 {
-
-	public var blocking(default, set):Bool = true;
-	public var connected(get, never):Bool;
-
+	public var blocking(default, set):Bool;
+	public var connected:Bool;
 	public var serializer:ISerializer;
-
 	public var cnx:NetSock;
+	public var events:ClientEventManager;
+	private var client:Socket;
+	private var readSockets:Array<Socket>;
 
-	public var events:mphx.client.EventManager;
-	public var onConnectionError :Void->Void;
-	public var onConnectionEstablished :Void->Void;
+	public var onConnectionError:String->Void;
+	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
+	public var onConnectionEstablished:Void->Void;
+
+	//Send data from output immediently, don't wait for it to queue
+	//...will not always be suitable/linked to lower lag!
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ client.setFastSend(newValue); return newValue; }
 
 	var port:Int;
 	var ip:String;
 
-	public function new(_ip:String,_port:Int)
+	public function new(_ip:String, _port:Int, _serializer : ISerializer = null, _blocking : Bool = false)
 	{
-		events = new mphx.client.EventManager();
-
-		serializer = new mphx.serialization.HaxeSerializer();
-
-		buffer = Bytes.alloc(8192);
-
 		port = _port;
 		ip = _ip;
+		events = new ClientEventManager();
 
-		blocking = false;
+		if (_serializer != null)
+			serializer = _serializer;
+		else
+			serializer = new HaxeSerializer();
+
+		this.blocking = _blocking;
 	}
 
 	public function connect()
 	{
 		client = new Socket();
-		try {
-#if flash
-		client.connect(ip, port);
-#else
-		if (ip == null) ip = Host.localhost();
-		client.connect(new Host(ip), port);
-		client.setBlocking(blocking);
-#end
-		} catch (e :Dynamic) {
-			if (onConnectionError != null) onConnectionError();
+		try
+		{
+			if (ip == null)
+				ip = Host.localhost();
+
+			client.connect(new Host(ip), port);
+			client.setBlocking(this.blocking);
+			connected = true;
+
+		}
+		catch (e :Dynamic)
+		{
+			if (onConnectionError != null)
+				onConnectionError("error : " + e);
 			return;
 		}
 		// prevent recreation of array on every update
 		readSockets = [client];
 		cnx = new NetSock(client);
 
-		if (onConnectionEstablished != null) onConnectionEstablished();
+		if (onConnectionEstablished != null)
+			onConnectionEstablished();
 	}
 
 	public function update(timeout:Float=0)
 	{
 		if (!connected) return;
 
-#if flash
-		readSocket(client);
-#else
 		if (blocking)
-		{
 			dataReceived(client.input);
-		}
 		else
 		{
 			var select = Socket.select(readSockets, null, null, timeout);
+
 			for (socket in select.read)
-			{
 				readSocket(socket);
-			}
 		}
-#end
 	}
 
-	public function recieve(line:String){
-		//Transfer the Input data to a string
-
-		//Then convert the string to a Dynamic object.
+	public function recieve(line:String)
+	{
 		var msg = serializer.deserialize(line);
-
-		//The message will have a propety of T
-		//This is the event name/type. It is t to reduce wasted banwidth.
-		//call an event called 't' with the msg data.
 		events.callEvent(msg.t,msg.data);
 	}
 
@@ -130,16 +123,21 @@ class TcpClient implements IClient
 	{
 		trace("Client disconnected with code: "+reason);
 		if (cnx != null){
-			cnx.close();
+			cnx.clean();
 			this.cnx = null;
 		}
+		connected = false;
+
+		//This is a user set function var, so it may not be overridden.
+		if (onConnectionClose != null)
+			onConnectionClose(reason);
 	}
 
 	public function close()
 	{
 		client.close();
 		if (cnx != null){
-			cnx.close();
+			cnx.clean();
 			this.cnx = null;
 		}
 		client = null;
@@ -155,23 +153,12 @@ class TcpClient implements IClient
 		var result = cnx.writeBytes(Bytes.ofString(serialiseObject + "\r\n"));
 	}
 
-
-	private inline function get_connected():Bool
-	{
-		return client != null;
-	}
+	private inline function get_connected() : Bool{ return client != null;}
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
-
 
 	private function set_blocking(value:Bool):Bool
 	{
 		if (blocking == value) return value;
-#if !flash
-		if (client != null) client.setBlocking(value);
-#end
 		return blocking = value;
 	}
-	private var client:Socket;
-	private var readSockets:Array<Socket>;
-	private var buffer:Bytes;
 }

@@ -10,12 +10,12 @@ typedef PlayerData = {
 
 
 class Main {
-	var server:mphx.server.Server;
+	var server:mphx.server.impl.Server;
 	public function new ()
 	{
-		server = new mphx.server.Server("10.0.0.31",8000);
+		server = new mphx.server.impl.Server("10.0.0.31",8000);
 
-		server.events.on("Join", function(data:Dynamic,sender:mphx.tcp.IConnection)
+		server.events.on("Join", function(data:Dynamic,sender:mphx.connection.IConnection)
 		{
 			trace("Player: "+data.id+" has joined!");
 
@@ -28,12 +28,12 @@ class Main {
 			};
 			server.broadcast("Join",data);
 		});
-		server.events.on("Update",function(data:Dynamic,sender:mphx.tcp.IConnection)
+		server.events.on("Update",function(data:Dynamic,sender:mphx.connection.IConnection)
 		{
 			sender.data = data;
 			server.broadcast("Update",data);
 		});
-		server.events.on("Shoot",function(data:Dynamic,sender:mphx.tcp.IConnection)
+		server.events.on("Shoot",function(data:Dynamic,sender:mphx.connection.IConnection)
 		{
 			server.broadcast("NB",data);
 		});

@@ -1,6 +1,6 @@
 package ;
 
-class GameRoom extends mphx.server.Room {
+class GameRoom extends mphx.server.room.Room {
 
 	public var ball:Ball;
 	var server:Main; //This is bad. Rooms should easily be able to store player data

@@ -1,0 +1,5 @@
+-lib mphx
+-main Main
+
+-js main.js
+-cmd index.html

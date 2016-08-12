@@ -1,3 +1,12 @@
 package mphx.client;
 
-typedef Client = #if js WebsocketClient; #elseif flash TcpFlashClient; #else TcpClient; #end
+#if js
+import mphx.client.impl.WebsocketClient;
+typedef Client = WebsocketClient;
+#elseif flash
+import mphx.client.impl.TcpFlashClient;
+typedef Client = TcpFlashClient;
+#else
+import mphx.client.impl.TcpClient;
+typedef Client = TcpClient;
+#end

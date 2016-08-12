@@ -1,4 +1,4 @@
-package mphx.client;
+package mphx.client.impl ;
 
 import mphx.serialization.ISerializer;
 
@@ -8,7 +8,7 @@ class WebsocketClient implements IClient
 
 	var websocket : js.html.WebSocket;
 
-	public var events:mphx.client.EventManager;
+	public var events:mphx.utils.event.impl.ClientEventManager;
 	public var serializer:ISerializer;
 
 	var port:Int;
@@ -20,11 +20,15 @@ class WebsocketClient implements IClient
 	public var onConnectionError :Void->Void;
 	public var onConnectionEstablished :Void->Void;
 
+	//WEBSOCKET API FOR HAXE DOES NOT HAVE setFastSend
+	public var fastSend(default, set) = true;
+	function set_fastSend(newValue){ console.log("[warning] setFastSend is not implement for websockets"); return false; }
+
 	public function new(_ip:String,_port:Int)
 	{
-		events = new mphx.client.EventManager();
+		events = new mphx.utils.event.impl.ClientEventManager();
 
-		serializer = new mphx.serialization.HaxeSerializer();
+		serializer = new mphx.serialization.impl.HaxeSerializer();
 
 		ip = _ip;
 		port = _port;
