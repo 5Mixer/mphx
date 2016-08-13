@@ -17,7 +17,7 @@ class Main extends luxe.Game {
     var symbol :String;
     var gameOver :Bool = false;
 
-    override function config(config :luxe.AppConfig) {
+    override function config(config :luxe.GameConfig) {
         config.render.antialiasing = 2;
         return config;
     }
@@ -103,7 +103,7 @@ class Main extends luxe.Game {
         });
 
         var retry_timer = null;
-        client.onConnectionError = function() {
+        client.onConnectionError = function(reason :String) {
             var wait_seconds = 5;
             statusText.text = 'Connection error!\nRetrying in $wait_seconds... ';
             if (retry_timer != null) retry_timer.stop();
