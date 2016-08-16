@@ -37,7 +37,7 @@ class Main
 			pongs++;
 
 			if (pongs <= expectedPongs){
-				clientSocket.send("Ping",{id:"some setoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo amount of data here."});
+				clientSocket.send("Ping",{id:"some set amount of data here."});
 			}else{
 				trace("Completed "+expectedPongs+" pings, with a ping taking "+((haxe.Timer.stamp()-startTime)/expectedPongs)+" seconds on average.");
 			}
