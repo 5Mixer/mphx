@@ -159,10 +159,10 @@ class Server implements IServer
 						// end of stream
 						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
 						{
+							protocol.loseConnection("close connection");
 							readSockets.remove(socket);
 							clients.remove(socket);
 							error = true;
-							protocol.loseConnection("close connection");
 
 							break;
 						}else if (e == haxe.io.Error.Blocked)
