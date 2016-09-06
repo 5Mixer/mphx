@@ -17,12 +17,13 @@ class WebsocketClient implements IClient
 	var ready = false;
 	var messageQueue:Array<Dynamic>;
 
-	public var onConnectionError :Void->Void;
+	public var onConnectionClose :String->Void; //Server close the connection (with the reason)
+	public var onConnectionError :String->Void;
 	public var onConnectionEstablished :Void->Void;
 
 	//WEBSOCKET API FOR HAXE DOES NOT HAVE setFastSend
 	public var fastSend(default, set) = true;
-	function set_fastSend(newValue){ console.log("[warning] setFastSend is not implement for websockets"); return false; }
+	function set_fastSend(newValue){ trace("[warning] setFastSend is not implemented for websockets"); return false; }
 
 	public function new(_ip:String,_port:Int)
 	{
@@ -41,7 +42,7 @@ class WebsocketClient implements IClient
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
 		websocket.onerror = function(e) {
-			if (onConnectionError != null) onConnectionError();
+			if (onConnectionError != null) onConnectionError(e);
 		}
 
 		websocket.onopen = function() {
@@ -68,6 +69,11 @@ class WebsocketClient implements IClient
 
 	public function send(event:String, ?data:Dynamic)
 	{
+		if (isConnected() == false){
+			("Cannot sent event "+event+" as client is not connected to a server.");
+			return;
+		}
+
 		var object = {
 			t: event,
 			data:data
@@ -89,7 +95,10 @@ class WebsocketClient implements IClient
 		//JS Websockets don't need to be updated.
 	}
 
+	public function isConnected():Bool { return websocket != null; }
+
 	public function close (){
 		websocket.close();
+		if (onConnectionClose != null) onConnectionClose("Connection shut by server.");
 	}
 }

@@ -20,20 +20,30 @@ class Main
 
 		clientSocket = new Client(ip, 8000);
 		clientSocket.connect();
-		for (i in 0...200)
-			clientSocket.send("Hello",123);
+		clientSocket.send("Ping");
 
-		clientSocket.events.on("Direct Message",function (data){
-			trace("Server sent a 'Direct message' with data " +data);
+		var pings = 1;
+
+		var pongs = 0;
+		var expectedPongs = 1000;
+
+		var startTime:Float = haxe.Timer.stamp();
+
+		clientSocket.events.on("Pong",function (data){
+			if (pongs % 200 == 0){
+				trace("Pong " + pongs);
+			}
+
+			pongs++;
+
+			if (pongs <= expectedPongs){
+				clientSocket.send("Ping",{id:"some set amount of data here."});
+			}else{
+				trace("Completed "+expectedPongs+" pings, with a ping taking "+((haxe.Timer.stamp()-startTime)/expectedPongs)+" seconds on average.");
+			}
 		});
 
-		clientSocket.events.on("Server wide broadcast",function (data){
-			trace("server broadcasted a server wide message. Data was "+data);
-		});
-
-		#if js
-		//nothingSpecial
-		#elseif flash
+		#if flash
 		Lib.current.stage.addEventListener(Event.ENTER_FRAME, function(e: Event)
 		{
 			clientSocket.update();

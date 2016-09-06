@@ -144,6 +144,10 @@ class TcpClient implements IClient
 	}
 
 	public function send(event:String, ?data:Dynamic){
+		if (isConnected() == false){
+			("Cannot sent event "+event+" as client is not connected to a server.");
+			return;
+		}
 		var object = {
 			t: event,
 			data:data
