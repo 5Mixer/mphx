@@ -40,8 +40,9 @@ class TcpFlashClient implements IClient
 
 	//Send data from output immediently, don't wait for it to queue
 	//...will not always be suitable/linked to lower lag!
+	//not necessery for flash (maybe delay socket.flush() but client.setFastSend doesn't exist in flash)
 	public var fastSend(default, set) = true;
-	function set_fastSend(newValue){ client.setFastSend(newValue); return newValue; }
+	function set_fastSend(newValue){ fastSend = newValue; return newValue; }
 
 	public function new(host:String, port :Int, _serializer : ISerializer = null, _blocking : Bool = false)
 	{
