@@ -52,18 +52,22 @@ class TcpFlashClient implements IClient
 		serializer = _serializer == null ? new HaxeSerializer() : _serializer;
 	}
 
-	public function isConnected():Bool
+	/*public function isConnected():Bool
 	{
 		return client!=null && client.connected;
-	}
+	}*/
 
 	public function connect():Void
 	{
 		client = new Socket();
 		//add specific handler for connection
+		
 		client.addEventListener(Event.CONNECT, onFlashConnectEvent);
 		client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEventConnect);
-		client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
+		
+		if(!client.hasEventListener(SecurityErrorEvent.SECURITY_ERROR))
+			client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
+			
 		client.connect(host, port);
 	}
 
@@ -87,6 +91,7 @@ class TcpFlashClient implements IClient
 		client.addEventListener(Event.CLOSE, onFlashServerClose);
 		client.addEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEvent);
 		client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEvent);
+		//maybe add : client.addEventListener(ProgressEvent.SOCKET_DATA, *insertCallbackHere* ); but actually, done by update()
 
 		ready = true;
 
@@ -115,10 +120,11 @@ class TcpFlashClient implements IClient
 
 	private function onFlashSecurityErrorEventConnect(event : SecurityErrorEvent) : Void
 	{
-		trace("Connection failed on : " + host + ":" + port + " error : " + event.toString());
-		client.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
-		if (onConnectionError != null)
-			onConnectionError("error:"+event.toString());
+		trace("Flash security error on connection : " + host + ":" + port + " error : " + event.toString());
+		//not necessary to call onConnectionError here Because onFlashIoErrorEventConnect was call too on a connection Failed. 
+		// Only manage Security error to avoid app crash on connection.
+		//if (onConnectionError != null)
+			//onConnectionError("error:"+event.toString());
 	}
 
 	private function onFlashIoErrorEvent(event : IOErrorEvent) : Void
@@ -133,12 +139,13 @@ class TcpFlashClient implements IClient
 
 	public function send(event:String, ?data:Dynamic):Void
 	{
-		if (isConnected() == false){
+		if (isConnected() == false)
+		{
 			("Cannot sent event "+event+" as client is not connected to a server.");
 			return;
 		}
-
-		var object = {
+		var object =
+		{
 			t: event,
 			data:data
 		};
@@ -222,14 +229,16 @@ class TcpFlashClient implements IClient
 				recieve(line);
 			}
 
-		} catch ( e : EOFError ) {
+		} catch ( e : EOFError )
+		{
 			done = true;
-		} catch (e : Dynamic) {
+		} catch (e : Dynamic)
+		{
 			done = true;
 			trace("unknown error : " + e);
 		}
 	}
-
+	
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
 
 	public function recieve(line:String) : Void
