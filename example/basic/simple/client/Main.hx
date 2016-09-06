@@ -20,7 +20,8 @@ class Main
 
 		clientSocket = new Client(ip, 8000);
 		clientSocket.connect();
-		clientSocket.send("Hello",123);
+		for (i in 0...200)
+			clientSocket.send("Hello",123);
 
 		clientSocket.events.on("Direct Message",function (data){
 			trace("Server sent a 'Direct message' with data " +data);

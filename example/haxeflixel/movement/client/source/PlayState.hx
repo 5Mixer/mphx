@@ -35,11 +35,26 @@ class PlayState extends FlxState
 		allPlayers = new FlxGroup();
 		add(allPlayers);
 
+		var error = false;
+
+
+
 		try{
 			clientSocket = new mphx.client.Client(GameData.ip,GameData.port);
+
+			clientSocket.onConnectionError = function (s){
+				error = true;
+			}
+
 			clientSocket.connect();
 		}catch(e:Dynamic){
 			trace(e);
+			error = true;
+		}
+
+		if (error){
+			FlxG.switchState(new MenuState());
+			return;
 		}
 
 
