@@ -20,16 +20,25 @@ class Main
 
 		clientSocket = new Client(ip, 8000);
 		clientSocket.connect();
-		for (i in 0...200)
-			clientSocket.send("Hello",123);
 
-		clientSocket.events.on("Direct Message",function (data){
-			trace("Server sent a 'Direct message' with data " +data);
+		clientSocket.send("Hello",123);
+
+		clientSocket.events.on("DM",function (data){
+			trace("Server sent a direct message with data '" +data+"'");
 		});
 
 		clientSocket.events.on("Server wide broadcast",function (data){
-			trace("server broadcasted a server wide message. Data was "+data);
+			trace("server broadcasted a server wide message. Data was '"+data+"'");
 		});
+
+		clientSocket.events.on("SomeoneDisconnected", function (data){
+			trace("Someone (else) disconnected from the server. You're still connected though!");
+		});
+
+		clientSocket.onConnectionClose = function (reason:String){
+		    trace("The client disconnected because "+reason+". Check your internet and try again soon.");
+		}
+
 
 		#if js
 		//nothingSpecial

@@ -26,13 +26,16 @@ class Main {
 
 			sender.send("DM","This is a direct response to the message sender");
 			s.broadcast("Server wide broadcast","This is a message sent to all connections.");
+
 			//sender.putInRoom(room);
 			//room.broadcast("This is a room wide broadcast!",null);
 		});
 
-		s.events.on("Player Move",function (data,connection){
-			//A connection sent a "Player Move" event.
-		});
+		s.onConnectionClose = function (reason, connection:IConnection){
+			trace("A client disconnected from the game.");
+			s.broadcast("SomeoneDisconnected","but you and the server are still fine.");
+		}
+
 
 		//Start the server. Connections won't actually be accepted until start is called.
 		s.start();
