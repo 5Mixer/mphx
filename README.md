@@ -41,6 +41,7 @@ Server
 
  - mphx is currently **not compatible with haxe version 3.3.0** as a core part of networking code is broken in **haxe 3.3.0**. Versions before/after should be corrected, however, due to the nature of versioning, **haxe 3.3.0 will always be broken**. 
  - performance tests have not really been evaluated, and some issues with lag still exist. This will be part of the refining mphx is *slowly* working though.
+ - be aware of code flow. If `client.connect` is called before error handlers (`client.onConnectionError = function()`) are setup, the error functions won't throw.
 
 --------------
 
