@@ -11,6 +11,7 @@ import mphx.server.room.Room;
 import mphx.utils.event.impl.ServerEventManager;
 import sys.net.Host;
 import sys.net.Socket;
+import mphx.utils.Log;
 
 class Server implements IServer
 {
@@ -71,7 +72,7 @@ class Server implements IServer
 
 	public function start (maxPendingConnection : Int = 1, blocking : Bool = true)
 	{
-		trace("Server active on "+host+":"+port+". Code after server.start() will not run. ");
+		Log.message(DebugLevel.Info,"Server active on "+host+":"+port+". Code after server.start() will not run. ");
 		listen(maxPendingConnection, blocking);
 		while (true)
 		{

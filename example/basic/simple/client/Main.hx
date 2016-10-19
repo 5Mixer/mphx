@@ -19,9 +19,7 @@ class Main
 		#end
 
 		clientSocket = new Client(ip, 8000);
-		clientSocket.connect();
 
-		clientSocket.send("Hello",123);
 
 		clientSocket.events.on("DM",function (data){
 			trace("Server sent a direct message with data '" +data+"'");
@@ -35,10 +33,15 @@ class Main
 			trace("Someone (else) disconnected from the server. You're still connected though!");
 		});
 
-		clientSocket.onConnectionClose = function (reason:String){
+		clientSocket.onConnectionClose = function (reason:mphx.utils.Error.ClientError){
 		    trace("The client disconnected because "+reason+". Check your internet and try again soon.");
 		}
+		clientSocket.onConnectionError = function (reason:mphx.utils.Error.ClientError){
+		    trace("Error: "+reason);
+		}
 
+		clientSocket.connect();
+		clientSocket.send("Hello",123);
 
 		#if js
 		//nothingSpecial

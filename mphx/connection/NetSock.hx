@@ -6,17 +6,17 @@ import flash.net.Socket;
 import sys.net.Socket;
 #end
 import haxe.io.Bytes;
+import mphx.utils.Log;
 
 //The netsock class is a handeler for the haxe Socket class.
 //Pretty much just for a raw socket that is cross platform.
 class NetSock
 {
 	public var socket:Socket;
-	
+
 	public function new(socket:Socket)
 	{
 		this.socket = socket;
-		
 	}
 
 	public function isOpen()
@@ -38,17 +38,18 @@ class NetSock
 		}
 		catch (e:Dynamic)
 		{
-			trace("Error writing to socket: " + e);
+			Log.message(DebugLevel.Errors,"Failed writing to socket: "+e);
+
 			return false;
 		}
 		return true;
 	}
-	
+
 	public function readByte() : Int
 	{
 		#if flash
 			return socket.readByte();
-		#else 
+		#else
 			return socket.input.readByte();
 		#end
 	}
@@ -57,7 +58,7 @@ class NetSock
 	{
 		socket = null;
 	}
-	
+
 	public function peerToString() : String
 	{
 		#if!flash
@@ -66,7 +67,7 @@ class NetSock
 		#else
 		//See : http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/Socket.html#localAddress
 		return "Flash socket can't tell the peer host/port unless the adobe Air runtime";
-		
+
 		#end
 	}
 }

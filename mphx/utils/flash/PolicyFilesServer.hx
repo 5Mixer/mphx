@@ -3,7 +3,7 @@ import haxe.macro.Expr.Error;
 import sys.net.Host;
 import sys.net.Socket;
 import mphx.utils.flash.PolicyFilesProvider;
-
+import mphx.utils.Log;
 
 class PolicyFilesServer
 {
@@ -31,7 +31,7 @@ class PolicyFilesServer
 	{
 		if (host == null || host == "")
 		{
-			trace("PolicyFilesServer : can't start because of invalid host");
+			Log.message(DebugLevel.Errors,"PolicyFilesServer : can't start because of invalid host");
 			return;
 		}
 
@@ -44,11 +44,11 @@ class PolicyFilesServer
 			socket.setFastSend(fastSend);
 		} catch (e:Dynamic)
 		{
-			trace("PolicyFileServer : start failed on : " + host + ":" + port + " because : " + e);
+			Log.message(DebugLevel.Errors,"PolicyFileServer : start failed on : " + host + ":" + port + " because : " + e);
 			return;
 		}
 
-		trace("PolicyFileServer : start on : " + host + ":" + port);
+		Log.message(DebugLevel.Info,"PolicyFileServer : start on : " + host + ":" + port);
 	}
 
 	public function update() : Void
