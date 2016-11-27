@@ -238,10 +238,10 @@ class TcpFlashClient implements IClient
 	{
 		var msg = serializer.deserialize(line);
 
-		if (msg.t != null && msg.data != null)
+		if (msg.t != null)
 			events.callEvent(msg.t, msg.data);
 		else
-			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Could call event, invalid data received.");
+			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Could call event, invalid data received. Data: "+msg);
 	}
 }
 #end

@@ -11,7 +11,7 @@ class Main {
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
 		//var s = new FlashServer(ip, 8000); // use this if you use a flash connection (using an policy files servers for flash socket)
-		var s = new Server(ip, 8000);
+		var s = new FlashServer(ip, 8000);
 
 		s.onConnectionAccepted = onConnectOrDisconnect;
 		s.onConnectionClose = onConnectOrDisconnect;
@@ -33,7 +33,7 @@ class Main {
 
 		s.onConnectionClose = function (reason, connection:IConnection){
 			trace("A client disconnected from the game.");
-			s.broadcast("SomeoneDisconnected","but you and the server are still fine.");
+			s.broadcast("SomeoneDisconnected");
 		}
 
 

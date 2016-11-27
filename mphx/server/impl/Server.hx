@@ -134,7 +134,7 @@ class Server implements IServer
 				{
 					if (bytesReceived == len - 1){
 						if (bytesReceived > maximumBufferSize){
-							trace("Attention: A client has exceeded maximum memory. This could be an attack on the server. The server can be allowed more space by increasing it's maximumBufferSize. Client disconnected.");
+							Log.message(DebugLevel.Warnings,"Attention: A client has exceeded maximum memory. This could be an attack on the server. The server can be allowed more space by increasing it's maximumBufferSize. Client disconnected.");
 							protocol.loseConnection("Connection exceeded allocated memory");
 							readSockets.remove(socket);
 							clients.remove(socket);
@@ -143,7 +143,8 @@ class Server implements IServer
 							break; //Continue to recieve messages from other clients
 						}
 						//We have reached maximum buffer size! We have not allocated enough buffer space.
-						trace('Warning: Recieved message too large to fit into buffer; Automatically increasing buffer size to '+len+1024);
+						Log.message(DebugLevel.Warnings,'Recieved message too large to fit into buffer; Automatically increasing buffer size to '+len+1024);
+						
 						var oldBuffer = buffer;
 						buffer = Bytes.alloc(len + 1024); //Add an extra 1024 bytes space.
 						buffer.blit(0,oldBuffer,0,len);
@@ -171,7 +172,8 @@ class Server implements IServer
 							//End of message. Not an error - This is still a connected, valid client.
 							break;
 						}else{
-							trace(e);
+							Log.message(DebugLevel.Warnings,e);
+							
 						}
 					}
 					buffer.set(bytesReceived, byte);

@@ -40,15 +40,19 @@ class WebsocketClient implements IClient
 	}
 
 	public function connect() {
+		Log.message(DebugLevel.Info,"Attempting to connect on: "+ip+":"+port);
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
 		websocket.onerror = function(e) {
 			if (onConnectionError != null) onConnectionError(e);
+			Log.message(DebugLevel.Errors,"Connection error: "+e);
 		}
 
 		websocket.onopen = function() {
 			if (onConnectionEstablished != null) onConnectionEstablished();
 			ready = true;
+
+			Log.message(DebugLevel.Info,"Connected on: "+ip+":"+port);
 
 			for (message in messageQueue){
 				send(message.t,message.data);

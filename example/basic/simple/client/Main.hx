@@ -14,12 +14,13 @@ class Main
 	{
 		var ip = "127.0.0.1";
 
-		#if !flash
+		#if sys
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 		#end
 
 		clientSocket = new Client(ip, 8000);
 
+		var quit = false;
 
 		clientSocket.events.on("DM",function (data){
 			trace("Server sent a direct message with data '" +data+"'");
@@ -34,10 +35,12 @@ class Main
 		});
 
 		clientSocket.onConnectionClose = function (reason:mphx.utils.Error.ClientError){
-		    trace("The client disconnected because "+reason+". Check your internet and try again soon.");
+			//Custom error handling...
+			quit = true;
 		}
 		clientSocket.onConnectionError = function (reason:mphx.utils.Error.ClientError){
-		    trace("Error: "+reason);
+			//Custom error handling...
+			quit = true;
 		}
 
 		clientSocket.connect();
@@ -52,7 +55,7 @@ class Main
 		});
 
 		#else
-		var quit = false;
+		
 		while (quit == false){
 			clientSocket.update();
 			Sys.sleep(0.01); // wait for 1 ms
