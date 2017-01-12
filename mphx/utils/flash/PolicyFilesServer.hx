@@ -82,7 +82,7 @@ class PolicyFilesServer
 			//sending by default by adobe on Flash.net.socket.connect();
 			if (result.indexOf("<policy-file-request/>") != -1)
 			{
-				Log.message(DebugLevel.Info,"PolicyFileServer : send policyFile);
+				Log.message(DebugLevel.Info,"PolicyFileServer : send policyFile");
 				cnx.output.writeString(this.policyFile);
 				cnx.output.writeByte(0);
 				cnx.output.flush();
