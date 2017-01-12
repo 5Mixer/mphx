@@ -1,6 +1,7 @@
 package mphx.client.impl ;
 
 import mphx.serialization.ISerializer;
+import mphx.utils.Log;
 
 //The client class that is used with JS websockets.
 class WebsocketClient implements IClient
@@ -17,13 +18,13 @@ class WebsocketClient implements IClient
 	var ready = false;
 	var messageQueue:Array<Dynamic>;
 
-	public var onConnectionClose :String->Void; //Server close the connection (with the reason)
-	public var onConnectionError :String->Void;
+	public var onConnectionClose :mphx.utils.Error.ClientError->Void; //Server close the connection (with the reason)
+	public var onConnectionError :mphx.utils.Error.ClientError->Void;
 	public var onConnectionEstablished :Void->Void;
 
 	//WEBSOCKET API FOR HAXE DOES NOT HAVE setFastSend
 	public var fastSend(default, set) = true;
-	function set_fastSend(newValue){ trace("[warning] setFastSend is not implemented for websockets"); return false; }
+	function set_fastSend(newValue){ Log.message(DebugLevel.Warnings,"SetFastSend is not implemented for web sockets."); return false; }
 
 	public function new(_ip:String,_port:Int)
 	{
@@ -39,15 +40,19 @@ class WebsocketClient implements IClient
 	}
 
 	public function connect() {
+		Log.message(DebugLevel.Info,"Attempting to connect on: "+ip+":"+port);
 		websocket = new js.html.WebSocket("ws://"+ip+":"+port);
 
 		websocket.onerror = function(e) {
 			if (onConnectionError != null) onConnectionError(e);
+			Log.message(DebugLevel.Errors,"Connection error: "+e);
 		}
 
 		websocket.onopen = function() {
 			if (onConnectionEstablished != null) onConnectionEstablished();
 			ready = true;
+
+			Log.message(DebugLevel.Info,"Connected on: "+ip+":"+port);
 
 			for (message in messageQueue){
 				send(message.t,message.data);
@@ -70,7 +75,7 @@ class WebsocketClient implements IClient
 	public function send(event:String, ?data:Dynamic)
 	{
 		if (isConnected() == false){
-			("Cannot sent event "+event+" as client is not connected to a server.");
+			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Cannot sent event "+event+" as client is not connected to a server.");
 			return;
 		}
 
@@ -99,6 +104,6 @@ class WebsocketClient implements IClient
 
 	public function close (){
 		websocket.close();
-		if (onConnectionClose != null) onConnectionClose("Connection shut by server.");
+		if (onConnectionClose != null) onConnectionClose(mphx.utils.Error.ClientError.DroppedConnection);
 	}
 }

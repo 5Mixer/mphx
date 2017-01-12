@@ -1,11 +1,13 @@
 package mphx.utils.event.impl ;
 
+import mphx.utils.Log;
+
 typedef EventFunction = Dynamic->Void;
 
 class ClientEventManager
 {
 	public var callEvent : String->Dynamic->Void;
-	
+
 	var eventMap:Map<String,EventFunction>;
 
 	public function new()
@@ -24,14 +26,14 @@ class ClientEventManager
 	{
 		eventMap.set(eventName, event);
 	}
-	
+
 	/**
 	 * Remove an event if exist
 	 * @param	eventName
 	 */
 	public function remove(eventName:String)
 	{
-		if (eventMap.exists(eventName)) 
+		if (eventMap.exists(eventName))
 		{
 			eventMap.set(eventName,null);
 			eventMap.remove(eventName);
@@ -47,11 +49,14 @@ class ClientEventManager
 	public function callEventCallback(eventName:String, data:Dynamic)
 	{
 		//If an event with that name exists.
-		if (eventMap.exists(eventName)) 
+		if (eventMap.exists(eventName))
 		{
 			//See if the event should be called with or without the sender.
-			if(eventMap.get(eventName) != null)
+			if(eventMap.get(eventName) != null){
 				eventMap.get(eventName)(data);
+			}else{
+				Log.message(DebugLevel.Info | DebugLevel.Networking,"mphx recieved event type "+eventName+" however no event listener was registered for it.");
+			}
 		}
 	}
 }

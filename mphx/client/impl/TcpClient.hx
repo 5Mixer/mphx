@@ -8,7 +8,7 @@ import mphx.serialization.ISerializer;
 import mphx.utils.event.impl.ClientEventManager;
 import sys.net.Host;
 import sys.net.Socket;
-
+import mphx.utils.Log;
 //The TCP client class that is used on native targets.
 //This should not be created by the user! For ultimate cross compatibility
 //Just create a new 'Client'. It will create this class on native targets.
@@ -23,8 +23,8 @@ class TcpClient implements IClient
 	private var client:Socket;
 	private var readSockets:Array<Socket>;
 
-	public var onConnectionError:String->Void;
-	public var onConnectionClose:String->Void; //String arg is the reason for termination. May or not be useful.
+	public var onConnectionError:mphx.utils.Error.ClientError->Void;
+	public var onConnectionClose:mphx.utils.Error.ClientError->Void; //String arg is the reason for termination. May or not be useful.
 	public var onConnectionEstablished:Void->Void;
 
 	//Send data from output immediently, don't wait for it to queue
@@ -51,6 +51,7 @@ class TcpClient implements IClient
 
 	public function connect()
 	{
+		Log.message(DebugLevel.Info,"Attempting to connect on: "+ip+":"+port);
 		client = new Socket();
 		try
 		{
@@ -64,13 +65,18 @@ class TcpClient implements IClient
 		}
 		catch (e :Dynamic)
 		{
+			connected = false;
+			Log.message(DebugLevel.Errors,"Failed to connect. Error: "+e);
+
 			if (onConnectionError != null)
-				onConnectionError("error : " + e);
+				onConnectionError(e);
 			return;
 		}
 		// prevent recreation of array on every update
 		readSockets = [client];
 		cnx = new NetSock(client);
+
+		Log.message(DebugLevel.Info,"Connected on: "+ip+":"+port);
 
 		if (onConnectionEstablished != null)
 			onConnectionEstablished();
@@ -103,8 +109,9 @@ class TcpClient implements IClient
 		var line = "";
 		try{
 			line = input.readLine();
+
 		}catch(e:Dynamic){
-			loseConnection("Lost connection to server");
+			loseConnection(mphx.utils.Error.ClientError.DroppedConnection);
 			return;
 		}
 		recieve(line);
@@ -116,12 +123,12 @@ class TcpClient implements IClient
 		{
 			dataReceived(socket.input);
 		}catch(e:haxe.io.Eof){
-			loseConnection("Lost connection to server");
+			loseConnection(mphx.utils.Error.ClientError.DroppedConnection);
 		}
 	}
-	public function loseConnection(?reason:String)
+	public function loseConnection(?error:mphx.utils.Error.ClientError)
 	{
-		trace("Client disconnected with code: "+reason);
+		Log.message(DebugLevel.Info,"Client disconnected. "+error);
 		if (cnx != null){
 			cnx.clean();
 			this.cnx = null;
@@ -130,7 +137,7 @@ class TcpClient implements IClient
 
 		//This is a user set function var, so it may not be overridden.
 		if (onConnectionClose != null)
-			onConnectionClose(reason);
+			onConnectionClose(error);
 	}
 
 	public function close()
@@ -145,7 +152,7 @@ class TcpClient implements IClient
 
 	public function send(event:String, ?data:Dynamic){
 		if (isConnected() == false){
-			("Cannot sent event "+event+" as client is not connected to a server.");
+			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Cannot sent event "+event+" as client is not connected to a server.");
 			return;
 		}
 		var object = {

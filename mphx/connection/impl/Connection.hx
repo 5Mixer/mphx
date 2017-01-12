@@ -10,6 +10,7 @@ import mphx.server.IServer;
 import mphx.server.room.Room;
 import mphx.utils.event.impl.ServerEventManager;
 import haxe.io.Error;
+import mphx.utils.Log;
 
 class Connection implements IConnection
 {
@@ -77,7 +78,7 @@ class Connection implements IConnection
 
 	public function loseConnection(?reason:String)
 	{
-		trace("Client disconnected with code: " + reason);
+		Log.message(DebugLevel.Networking,"Client disconnected with code: " + reason);
 		if (server.onConnectionClose != null)
 			server.onConnectionClose(reason, this);
 
@@ -128,8 +129,7 @@ class Connection implements IConnection
 				}
 				catch (e:Dynamic)
 				{
-					trace("CRITICAL - can't use data : " + data);
-					trace("because : " + e);
+					Log.message(DebugLevel.Errors | DebugLevel.Networking,"Can't use data: " + data + " because: "+e );
 					throw Error.Blocked;
 				}
 			}
@@ -143,9 +143,7 @@ class Connection implements IConnection
 			}
 			catch (e:Dynamic)
 			{
-				trace("CRITICAL - data can't be read");
-				trace("" + e);
-				trace("Skip Data");
+				Log.message(DebugLevel.Errors | DebugLevel.Networking,"Data can't be read because: "+e+". Skipping.");
 			}
 		}
 	}

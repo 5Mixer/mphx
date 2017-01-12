@@ -2,13 +2,9 @@
 	"name": "mphx",
 	"license": "MIT",
 	"tags": ["cross","network","Multiplayer"],
-	"description": "mphx allows for easy creation of MP games.",
+	"description": "mphx allows for easy creation of multiplayer games.",
 	"contributors": ["5Mixer"],
-	"releasenote": "Large flash and structural changes. Some stability improvements.",
-	"version": "0.2.3",
-	"url": "https://github.com/5Mixer/mphx",
-	"dependencies":
-	{
-		"msgpack-haxe" : "1.15.1"
-	}
+	"releasenote": "Complete change to error and log managment. Breaking changes!",
+	"version": "0.2.5",
+	"url": "https://github.com/5Mixer/mphx"
 }

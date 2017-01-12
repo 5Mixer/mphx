@@ -12,7 +12,7 @@ import mphx.connection.NetSock;
 import mphx.serialization.impl.HaxeSerializer;
 import mphx.serialization.ISerializer;
 import mphx.utils.event.impl.ClientEventManager;
-
+import mphx.utils.Log;
 
 /**
  * yannsucc
@@ -28,10 +28,10 @@ class TcpFlashClient implements IClient
 	var messageQueue:Array<Dynamic> = new Array<Dynamic>();
 
 	// all handler for different case (ConnectError, Connect, Server Close, Connection lost for any reason)
-	public var onConnectionError : String->Void;
 	public var onConnectionEstablished : Void->Void;
-	public var onConnectionClose:String->Void; //Server close the connection (with the reason)
-	public var onConnectionLost : String->Void; //Client lost the connexion (with the reason)
+	public var onConnectionError : mphx.utils.Error.ClientError->Void;
+	public var onConnectionClose: mphx.utils.Error.ClientError->Void; //Server close the connection (with the reason)
+	public var onConnectionLost : mphx.utils.Error.ClientError->Void; //Client lost the connexion (with the reason)
 
 	private var host:String;
 	private var port:Int;
@@ -54,8 +54,13 @@ class TcpFlashClient implements IClient
 
 	/*public function isConnected():Bool
 	{
+<<<<<<< HEAD
 		return client!=null && client.connected;
 	}*/
+=======
+		return client!=null && client.connected && cnx != null && cnx.isOpen();
+	}
+>>>>>>> refs/remotes/5Mixer/master
 
 	public function connect():Void
 	{
@@ -69,6 +74,8 @@ class TcpFlashClient implements IClient
 			client.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
 			
 		client.connect(host, port);
+
+		Log.message(DebugLevel.Info,"Attempting to connect on: "+host+":"+port);
 	}
 
 	//temporisation to wait the policyFiles from the server
@@ -79,7 +86,7 @@ class TcpFlashClient implements IClient
 
 	private function onFlashConnectEvent(event : Event) : Void
 	{
-		trace("Connection established on : " + host +":" + port);
+		Log.message(DebugLevel.Info,"Connected on: "+host+":"+port);
 		cnx = new NetSock(client);
 
 		//remove specific handler for connection
@@ -108,23 +115,30 @@ class TcpFlashClient implements IClient
 
 	private function onFlashIoErrorEventConnect(event : IOErrorEvent) : Void
 	{
-		trace("Connection failed on : " + host + ":" + port + " error : " + event.toString());
+		Log.message(DebugLevel.Errors,"Failed to connect on: " + host + ":" + port + ". Error: " + event.toString());
 
 		//remove specific handler for connection
 		client.removeEventListener(Event.CONNECT, onFlashConnectEvent);
 		client.removeEventListener(IOErrorEvent.IO_ERROR, onFlashIoErrorEventConnect);
 
 		if (onConnectionError != null)
-			onConnectionError("error:"+event.toString());
+			onConnectionError(mphx.utils.Error.ClientError.Other("error: "+event.toString()));
 	}
 
 	private function onFlashSecurityErrorEventConnect(event : SecurityErrorEvent) : Void
 	{
+<<<<<<< HEAD
 		trace("Flash security error on connection : " + host + ":" + port + " error : " + event.toString());
 		//not necessary to call onConnectionError here Because onFlashIoErrorEventConnect was call too on a connection Failed. 
 		// Only manage Security error to avoid app crash on connection.
 		//if (onConnectionError != null)
 			//onConnectionError("error:"+event.toString());
+=======
+		Log.message(DebugLevel.Errors,"Failed to connect on: " + host + ":" + port + ". Error: " + event.toString());
+		client.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
+		if (onConnectionError != null)
+			onConnectionError(mphx.utils.Error.ClientError.Other("error:"+event.toString()));
+>>>>>>> refs/remotes/5Mixer/master
 	}
 
 	private function onFlashIoErrorEvent(event : IOErrorEvent) : Void
@@ -139,9 +153,14 @@ class TcpFlashClient implements IClient
 
 	public function send(event:String, ?data:Dynamic):Void
 	{
+<<<<<<< HEAD
 		if (isConnected() == false)
 		{
 			("Cannot sent event "+event+" as client is not connected to a server.");
+=======
+		if (isConnected() == false){
+			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Cannot sent event "+event+" as client is not connected to a server.");
+>>>>>>> refs/remotes/5Mixer/master
 			return;
 		}
 		var object =
@@ -152,7 +171,7 @@ class TcpFlashClient implements IClient
 
 		if (!ready)
 		{
-			trace("Stock message : " + object);
+			Log.message(DebugLevel.Networking,"Put "+event+" into message queue. Not ready to send yet.");
 			messageQueue.push(object);
 			return;
 		}
@@ -163,20 +182,21 @@ class TcpFlashClient implements IClient
 
 	private function onFlashServerClose(event : Event) : Void
 	{
-		trace("server close connection : " + event.toString());
+		Log.message(DebugLevel.Networking,"Server closed connection with event "+event.toString());
 		this.close();
 
 		if (onConnectionClose != null)
-			onConnectionClose("Flash connection shut by server.");
+			onConnectionClose(mphx.utils.Error.ClientError.Other("Flash connection shut by server."));
 	}
 
 	private function loseConnection(reason:String = "") : Void
 	{
-		trace("Client disconnected with code : " + reason);
+		Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Client disconnected with reason " + reason);
+
 		this.close();
 
 		if (onConnectionLost != null)
-			onConnectionLost(reason);
+			onConnectionLost(mphx.utils.Error.ClientError.Other(reason));
 	}
 
 	public function close():Void
@@ -194,7 +214,7 @@ class TcpFlashClient implements IClient
 			}
 			catch (e : Dynamic)
 			{
-				trace("Warning, can't close correctly NetSock object : " + e);
+				Log.message(DebugLevel.Warnings,"Couldn't close NetSock object gracefully :" + e);
 			}
 		}
 	}
@@ -235,20 +255,24 @@ class TcpFlashClient implements IClient
 		} catch (e : Dynamic)
 		{
 			done = true;
-			trace("unknown error : " + e);
+			Log.message(DebugLevel.Warnings,"Unknown problem reading socket "+e);
 		}
 	}
+<<<<<<< HEAD
 	
 	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
+=======
+
+>>>>>>> refs/remotes/5Mixer/master
 
 	public function recieve(line:String) : Void
 	{
 		var msg = serializer.deserialize(line);
 
-		if (msg.t != null && msg.data != null)
+		if (msg.t != null)
 			events.callEvent(msg.t, msg.data);
 		else
-			trace("can't call event with invalid data");
+			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Could call event, invalid data received. Data: "+msg);
 	}
 }
 #end

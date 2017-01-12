@@ -11,7 +11,7 @@ class Main {
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
 		//var s = new FlashServer(ip, 8000); // use this if you use a flash connection (using an policy files servers for flash socket)
-		var s = new Server(ip, 8000);
+		var s = new FlashServer(ip, 8000);
 
 		s.onConnectionAccepted = onConnectOrDisconnect;
 		s.onConnectionClose = onConnectOrDisconnect;
@@ -26,13 +26,16 @@ class Main {
 
 			sender.send("DM","This is a direct response to the message sender");
 			s.broadcast("Server wide broadcast","This is a message sent to all connections.");
+
 			//sender.putInRoom(room);
 			//room.broadcast("This is a room wide broadcast!",null);
 		});
 
-		s.events.on("Player Move",function (data,connection){
-			//A connection sent a "Player Move" event.
-		});
+		s.onConnectionClose = function (reason, connection:IConnection){
+			trace("A client disconnected from the game.");
+			s.broadcast("SomeoneDisconnected");
+		}
+
 
 		//Start the server. Connections won't actually be accepted until start is called.
 		s.start();

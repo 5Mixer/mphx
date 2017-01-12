@@ -8,6 +8,7 @@ import haxe.io.Input;
 import mphx.serialization.ISerializer;
 import mphx.server.IServer;
 import mphx.utils.event.impl.ServerEventManager;
+import mphx.utils.Log;
 
 
 #if neko
@@ -62,10 +63,10 @@ class WebsocketProtocol extends Connection
 
 	public function new ()
 	{
-		super();	
+		super();
 	}
-	
-	override public function configure(_events:ServerEventManager, _server:IServer, _serializer:ISerializer = null):Void 
+
+	override public function configure(_events:ServerEventManager, _server:IServer, _serializer:ISerializer = null):Void
 	{
 		super.configure(_events, _server, _serializer);
 		_headers = [];

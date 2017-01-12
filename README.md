@@ -36,11 +36,20 @@ Server
 - [x] Neko
 - [ ] Node JS
 
+###Alternatives.
+mphx isn't the only library of it's kind in the haxe ecosystem. I'm pretty slow to make changes, sometimes I forget what I was doing, etc etc. If I've said I'll do something and it's still not in, just remind me, I probably forgot it. That said, these libraries do networking a bit different from me, in a way you might prefer.
+ - [HxNet](https://github.com/MattTuttle/hxnet). Hasn't been updated for a while, but was the base for this project.
+ - [HxBit](https://github.com/ncannasse/hxbit). A very very new project by the creator of haxe that uses macros.
+ - [Extention-networking](https://github.com/wikiti/extension-networking). Seems to function in a similar manner to mphx, however seems somewhat(?) tied to OpenFL.
+ - [ECS Networking](https://github.com/Dvergar/ECS-Networking-Haxe). Seems to focus on networking with components/entities in mind.
+ - Libraries such as [heaps](https://github.com/ncannasse/heaps/tree/master/hxd/net) and [kha](https://github.com/KTXSoftware/Kha/tree/master/Sources/kha/network) have built in networking code.
+
 ###Warnings
 
 
  - mphx is currently **not compatible with haxe version 3.3.0** as a core part of networking code is broken in **haxe 3.3.0**. Versions before/after should be corrected, however, due to the nature of versioning, **haxe 3.3.0 will always be broken**. 
  - performance tests have not really been evaluated, and some issues with lag still exist. This will be part of the refining mphx is *slowly* working though.
+ - be aware of code flow. If `client.connect` is called before error handlers (`client.onConnectionError = function()`) are setup, the error functions won't throw.
 
 --------------
 
