@@ -39,7 +39,6 @@ class NetSock
 		catch (e:Dynamic)
 		{
 			Log.message(DebugLevel.Errors,"Failed writing to socket: "+e);
-
 			return false;
 		}
 		return true;
@@ -61,13 +60,19 @@ class NetSock
 
 	public function peerToString() : String
 	{
-		#if!flash
-		var peer = this.socket.peer();
-		return "[" + peer.host + ":" + peer.port + "]";
-		#else
-		//See : http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/Socket.html#localAddress
-		return "Flash socket can't tell the peer host/port unless the adobe Air runtime";
-
-		#end
+		try{
+			#if!flash
+			var peer = this.socket.peer();
+			return "[" + peer.host + ":" + peer.port + "]";
+			#else
+			//See : http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/net/Socket.html#localAddress
+			return "Flash socket can't tell the peer host/port unless the adobe Air runtime";
+			
+			#end
+		}
+		catch (e : Dynamic) // in case of the socket was close before call this function
+		{
+			return "[unknow, unknow] (peer data lost)";
+		}
 	}
 }

@@ -13,6 +13,7 @@ import mphx.server.room.Room;
 import mphx.utils.event.impl.ServerEventManager;
 import mphx.utils.flash.PolicyFilesProvider;
 import mphx.utils.Log;
+
 /**
  * A modified mphx.tcp.connection for managing flash policy files security
  * see : http://help.adobe.com/fr_FR/as3/dev/WS5b3ccc516d4fbf351e63e3d118a9b90204-7c60.html#WS5b3ccc516d4fbf351e63e3d118a9b90204-7c63
@@ -121,14 +122,14 @@ class FlashConnection implements IConnection
 	{
 		//flash specific, if we receive this, we need to return the policy files
 		//trace("my line = " + line);
-
+		
 		if (line.indexOf("<policy-file-request/>")!=-1)
 		{
-			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(domainAccept,Std.string(portAccept)).toString());
+			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(PermittedMode.checkAllPort, domainAccept,Std.string(portAccept)).toString());
 			cnx.socket.output.flush();
 			return;
 		}
-
+		
 		var msg = serializer.deserialize(line);
 		events.callEvent(msg.t,msg.data,this);
 	}

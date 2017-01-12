@@ -13,18 +13,19 @@ class PolicyFilesServer
 	private var port : Int = 843;
 	private var domainAllowed : String = "*";
 	private var toPort : String = "*";
+	private var m_extraAllowed : Map<String,String>;
+	private var m_fastSend : Bool;
+	
+	public var policyFile(default, null) : String;
 
-	//Send data from output immediently, don't wait for it to queue
-	//...will not always be suitable/linked to lower lag!
-	//This will probably not be used with the policy files server, but good to have the option.
-	public var fastSend(default, set) = true;
-	function set_fastSend(newValue){ socket.setFastSend(newValue); return newValue; }
-
-	public function new(host : String, domainAllowed : String = "*", toPort : String = "*")
+	public function new(host : String, domainAllowed : String = "*", toPort : String = "*", extraAllowed : Map<String, String> = null,  fastSend : Bool = false)
 	{
 		this.host = host;
 		this.domainAllowed = domainAllowed;
 		this.toPort = toPort;
+		m_extraAllowed = extraAllowed;
+		m_fastSend = false;
+		this.policyFile = PolicyFilesProvider.generateXmlPolicyFile(PermittedMode.masterOnly, domainAllowed, toPort, m_extraAllowed).toString();
 	}
 
 	public function start() : Void
@@ -35,13 +36,13 @@ class PolicyFilesServer
 			return;
 		}
 
-		socket = new Socket();
 		try
 		{
+			socket = new Socket();
 			socket.bind(new Host(host), port);
-			socket.listen(1);
+			socket.listen(10);
 			socket.setBlocking(false);
-			socket.setFastSend(fastSend);
+			socket.setFastSend(m_fastSend);
 		} catch (e:Dynamic)
 		{
 			Log.message(DebugLevel.Errors,"PolicyFileServer : start failed on : " + host + ":" + port + " because : " + e);
@@ -63,41 +64,31 @@ class PolicyFilesServer
 		{
 			cnx = null ;
 		}
-
 		if (cnx!=null)
 		{
-			cnx.waitForRead();
-			var read = "";
-			var error = "";
 
-			while (true)
+			var result = "";
+
+			try
 			{
-
-				try
-				{
-					read += cnx.input.readString(1);
-				}
-				catch (e : Dynamic)
-				{
-					error += e;
-					break;
-				}
-
+				result = cnx.input.readString(22);
+			}
+			catch (e : Dynamic)
+			{
+				Log.message(DebugLevel.Errors,"PolicyfilesServer error : " + e);
 			}
 
-			//trace("PolicyfilesServer read : " + read);
-			//trace("PolicyfilesServer error : " + error);
 
 			//sending by default by adobe on Flash.net.socket.connect();
-			if (read.indexOf("<policy-file-request/>") !=-1)
+			if (result.indexOf("<policy-file-request/>") != -1)
 			{
-				var result = PolicyFilesProvider.generateXmlPolicyFile(domainAllowed, toPort).toString();
-				cnx.output.writeString(result);
+				Log.message(DebugLevel.Info,"PolicyFileServer : send policyFile);
+				cnx.output.writeString(this.policyFile);
+				cnx.output.writeByte(0);
 				cnx.output.flush();
 			}
-
-			Sys.sleep(0.05);//wait before close for flush
-			cnx.close();
+			
+			//cnx.close(); // not necessary to close. The client do it after correctly reading the crossdomain.
 		}
 	}
 
