@@ -52,15 +52,10 @@ class TcpFlashClient implements IClient
 		serializer = _serializer == null ? new HaxeSerializer() : _serializer;
 	}
 
-	/*public function isConnected():Bool
+	public function isConnected():Bool
 	{
-<<<<<<< HEAD
-		return client!=null && client.connected;
-	}*/
-=======
 		return client!=null && client.connected && cnx != null && cnx.isOpen();
 	}
->>>>>>> refs/remotes/5Mixer/master
 
 	public function connect():Void
 	{
@@ -127,18 +122,11 @@ class TcpFlashClient implements IClient
 
 	private function onFlashSecurityErrorEventConnect(event : SecurityErrorEvent) : Void
 	{
-<<<<<<< HEAD
-		trace("Flash security error on connection : " + host + ":" + port + " error : " + event.toString());
+		Log.message(DebugLevel.Errors,"Failed to connect on: " + host + ":" + port + ". Error: " + event.toString());
 		//not necessary to call onConnectionError here Because onFlashIoErrorEventConnect was call too on a connection Failed. 
 		// Only manage Security error to avoid app crash on connection.
 		//if (onConnectionError != null)
 			//onConnectionError("error:"+event.toString());
-=======
-		Log.message(DebugLevel.Errors,"Failed to connect on: " + host + ":" + port + ". Error: " + event.toString());
-		client.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onFlashSecurityErrorEventConnect);
-		if (onConnectionError != null)
-			onConnectionError(mphx.utils.Error.ClientError.Other("error:"+event.toString()));
->>>>>>> refs/remotes/5Mixer/master
 	}
 
 	private function onFlashIoErrorEvent(event : IOErrorEvent) : Void
@@ -153,16 +141,12 @@ class TcpFlashClient implements IClient
 
 	public function send(event:String, ?data:Dynamic):Void
 	{
-<<<<<<< HEAD
 		if (isConnected() == false)
 		{
-			("Cannot sent event "+event+" as client is not connected to a server.");
-=======
-		if (isConnected() == false){
 			Log.message(DebugLevel.Warnings | DebugLevel.Networking,"Cannot sent event "+event+" as client is not connected to a server.");
->>>>>>> refs/remotes/5Mixer/master
 			return;
 		}
+		
 		var object =
 		{
 			t: event,
@@ -258,12 +242,6 @@ class TcpFlashClient implements IClient
 			Log.message(DebugLevel.Warnings,"Unknown problem reading socket "+e);
 		}
 	}
-<<<<<<< HEAD
-	
-	public function isConnected():Bool { return cnx != null && cnx.isOpen(); }
-=======
-
->>>>>>> refs/remotes/5Mixer/master
 
 	public function recieve(line:String) : Void
 	{
