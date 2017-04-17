@@ -1,12 +1,12 @@
-##Haxeflixel example.
+## Haxeflixel example.
 
 Here you can find the haxeflixel example project. 
 
-###Running on server
+### Running on server
 `cd /server/`
 `haxe main.hxml`
 
-###Running on client
+### Running on client
 `cd /client/`
 `lime test neko`
 
