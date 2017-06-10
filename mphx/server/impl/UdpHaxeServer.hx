@@ -27,7 +27,9 @@ typedef UdpConnection = {
 	var sock:UdpNetSock;
 }
 
-class UdpNativeServer implements IServer
+// Class used to host UDP servers on platforms where UDP sockets have been implemented in vanilla haxe.
+// So far haxe has minimal support for UDP. Neko works through this, but C++ etc doesn't.
+class UdpHaxeServer implements IServer
 {
 	public var onConnectionClose : String->IConnection->Void;
 	public var onConnectionAccepted : String->IConnection->Void;
@@ -71,11 +73,16 @@ class UdpNativeServer implements IServer
 		listener.bind(new Host(host),port);
 		listener.setBlocking(false);
 
+		trace("UDP server binded on "+host+":"+port);
+
 		//stores last remote Address
 		address = new Address();
+		address.host = 2130706433;
+		address.port = 8000;
 	}
 
 	public function start(maxPendingConnection : Int = 1, blocking : Bool = true) : Void{
+		trace("Started UDP server at "+listener.host());
 		while (true)
 		{
 			update();
@@ -83,14 +90,18 @@ class UdpNativeServer implements IServer
 		}
 	};
 	private function update(timeout:Float=0) {
+		//listener.sendTo(Bytes.ofString("Reply!"), 0, 6, address);
 		for (cnx in clients){
 
 		}
 		try {
+			trace("Listening from "+address);
 			var bytesReceived = listener.readFrom(buffer, 0, buffer.length, address);
+			trace("Listening from "+address);
 
 			//If data was received
 			if (bytesReceived > 0) {
+				trace("Got data"+buffer.getString(0,bytesReceived));
 				var input = new BytesInput(buffer, 0, bytesReceived);
 
 				var cnx:UdpConnection;

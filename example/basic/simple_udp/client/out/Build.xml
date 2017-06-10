@@ -2,6 +2,12 @@
 <set name="HXCPP_API_LEVEL" value="321" />
 <files id="haxe">
 <compilerflag value="-Iinclude"/>
+  <file name="src/sys/net/UdpSocket.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/sys/net/Address.h"/>
+   <depend name="include/sys/net/Socket.h"/>
+   <depend name="include/sys/net/UdpSocket.h"/>
+  </file>
   <file name="src/sys/net/Socket.cpp">
    <depend name="include/cpp/Lib.h"/>
    <depend name="include/haxe/io/Input.h"/>
@@ -13,15 +19,12 @@
   </file>
   <file name="src/sys/net/_Socket/SocketOutput.cpp">
    <depend name="include/cpp/Lib.h"/>
-   <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/Error.h"/>
    <depend name="include/haxe/io/Output.h"/>
    <depend name="include/sys/net/_Socket/SocketOutput.h"/>
   </file>
   <file name="src/sys/net/_Socket/SocketInput.cpp">
    <depend name="include/cpp/Lib.h"/>
-   <depend name="include/haxe/io/Eof.h"/>
-   <depend name="include/haxe/io/Error.h"/>
    <depend name="include/haxe/io/Input.h"/>
    <depend name="include/sys/net/_Socket/SocketInput.h"/>
   </file>
@@ -29,60 +32,54 @@
    <depend name="include/cpp/Lib.h"/>
    <depend name="include/sys/net/Host.h"/>
   </file>
-  <file name="src/mphx/tcp/NetSock.cpp">
-   <depend name="include/Std.h"/>
-   <depend name="include/haxe/Log.h"/>
-   <depend name="include/haxe/io/Bytes.h"/>
-   <depend name="include/haxe/io/Output.h"/>
-   <depend name="include/mphx/tcp/NetSock.h"/>
-   <depend name="include/sys/net/Socket.h"/>
+  <file name="src/sys/net/Address.cpp">
+   <depend name="include/sys/net/Address.h"/>
   </file>
-  <file name="src/mphx/tcp/IConnection.cpp">
-   <depend name="include/haxe/io/Input.h"/>
-   <depend name="include/mphx/server/Room.h"/>
-   <depend name="include/mphx/tcp/IConnection.h"/>
-   <depend name="include/mphx/tcp/NetSock.h"/>
+  <file name="src/mphx/utils/event/impl/ClientEventManager.cpp">
+   <depend name="include/haxe/IMap.h"/>
+   <depend name="include/haxe/ds/StringMap.h"/>
+   <depend name="include/mphx/utils/event/impl/ClientEventManager.h"/>
   </file>
-  <file name="src/mphx/server/Room.cpp">
-   <depend name="include/mphx/server/Room.h"/>
-   <depend name="include/mphx/tcp/IConnection.h"/>
-  </file>
-  <file name="src/mphx/serialization/HaxeSerializer.cpp">
+  <file name="src/mphx/serialization/impl/HaxeSerializer.cpp">
    <depend name="include/haxe/Serializer.h"/>
    <depend name="include/haxe/Unserializer.h"/>
-   <depend name="include/mphx/serialization/HaxeSerializer.h"/>
    <depend name="include/mphx/serialization/ISerializer.h"/>
+   <depend name="include/mphx/serialization/impl/HaxeSerializer.h"/>
   </file>
   <file name="src/mphx/serialization/ISerializer.cpp">
    <depend name="include/mphx/serialization/ISerializer.h"/>
   </file>
-  <file name="src/mphx/client/TcpClient.cpp">
+  <file name="src/mphx/connection/UdpNetSock.cpp">
+   <depend name="include/Std.h"/>
+   <depend name="include/haxe/Log.h"/>
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesOutput.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+   <depend name="include/mphx/connection/UdpNetSock.h"/>
+   <depend name="include/mphx/serialization/ISerializer.h"/>
+   <depend name="include/mphx/serialization/impl/HaxeSerializer.h"/>
+   <depend name="include/sys/net/Address.h"/>
+   <depend name="include/sys/net/Socket.h"/>
+   <depend name="include/sys/net/UdpSocket.h"/>
+  </file>
+  <file name="src/mphx/client/impl/UdpClient.cpp">
+   <depend name="include/Std.h"/>
    <depend name="include/haxe/Log.h"/>
    <depend name="include/haxe/io/Bytes.h"/>
    <depend name="include/haxe/io/Eof.h"/>
-   <depend name="include/haxe/io/Input.h"/>
-   <depend name="include/mphx/client/EventManager.h"/>
-   <depend name="include/mphx/client/IClient.h"/>
-   <depend name="include/mphx/client/TcpClient.h"/>
-   <depend name="include/mphx/serialization/HaxeSerializer.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/mphx/client/impl/UdpClient.h"/>
+   <depend name="include/mphx/connection/UdpNetSock.h"/>
    <depend name="include/mphx/serialization/ISerializer.h"/>
-   <depend name="include/mphx/tcp/NetSock.h"/>
+   <depend name="include/mphx/serialization/impl/HaxeSerializer.h"/>
+   <depend name="include/mphx/utils/event/impl/ClientEventManager.h"/>
+   <depend name="include/sys/net/Address.h"/>
    <depend name="include/sys/net/Host.h"/>
    <depend name="include/sys/net/Socket.h"/>
+   <depend name="include/sys/net/UdpSocket.h"/>
   </file>
-  <file name="src/mphx/client/IClient.cpp">
-   <depend name="include/mphx/client/EventManager.h"/>
-   <depend name="include/mphx/client/IClient.h"/>
-  </file>
-  <file name="src/mphx/client/EventManager.cpp">
-   <depend name="include/haxe/IMap.h"/>
-   <depend name="include/haxe/ds/StringMap.h"/>
-   <depend name="include/mphx/client/EventManager.h"/>
-  </file>
-  <file name="src/haxe/io/Output.cpp">
-   <depend name="include/haxe/io/Bytes.h"/>
-   <depend name="include/haxe/io/Error.h"/>
-   <depend name="include/haxe/io/Output.h"/>
+  <file name="src/haxe/io/Input.cpp">
+   <depend name="include/haxe/io/Input.h"/>
   </file>
   <file name="src/haxe/io/Error.cpp">
    <depend name="include/haxe/io/Error.h"/>
@@ -90,10 +87,19 @@
   <file name="src/haxe/io/Eof.cpp">
    <depend name="include/haxe/io/Eof.h"/>
   </file>
-  <file name="src/haxe/io/Input.cpp">
-   <depend name="include/StringBuf.h"/>
-   <depend name="include/haxe/io/Eof.h"/>
-   <depend name="include/haxe/io/Input.h"/>
+  <file name="src/haxe/io/BytesOutput.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
+   <depend name="include/haxe/io/BytesOutput.h"/>
+   <depend name="include/haxe/io/Error.h"/>
+   <depend name="include/haxe/io/Output.h"/>
+  </file>
+  <file name="src/haxe/io/Output.cpp">
+   <depend name="include/haxe/io/Output.h"/>
+  </file>
+  <file name="src/haxe/io/BytesBuffer.cpp">
+   <depend name="include/haxe/io/Bytes.h"/>
+   <depend name="include/haxe/io/BytesBuffer.h"/>
   </file>
   <file name="src/haxe/io/Bytes.cpp">
    <depend name="include/haxe/io/Bytes.h"/>
@@ -179,9 +185,10 @@
    <depend name="include/Main.h"/>
    <depend name="include/Sys.h"/>
    <depend name="include/haxe/Log.h"/>
-   <depend name="include/mphx/client/EventManager.h"/>
-   <depend name="include/mphx/client/IClient.h"/>
-   <depend name="include/mphx/client/TcpClient.h"/>
+   <depend name="include/mphx/client/impl/UdpClient.h"/>
+   <depend name="include/mphx/serialization/ISerializer.h"/>
+   <depend name="include/mphx/utils/event/impl/ClientEventManager.h"/>
+   <depend name="include/sys/net/Address.h"/>
   </file>
   <file name="src/_List/ListIterator.cpp">
    <depend name="include/_List/ListIterator.h"/>

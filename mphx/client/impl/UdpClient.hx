@@ -22,7 +22,7 @@ class UdpClient {
 	private var client:UdpSocket;
 	private var buffer:Bytes;
 	// connection info
-	private var address:Address;
+	public var address:Address;
 	var host:String;
 	private var port:Int;
 
@@ -32,8 +32,6 @@ class UdpClient {
 
 		if (hostname == null)
 			hostname = Host.localhost();
-
-
 
 		this.host = hostname;
 		this.port = port;
@@ -53,22 +51,37 @@ class UdpClient {
 		return ((16777216 * Std.parseInt(parts[0])) + (65536 *  Std.parseInt(parts[1])) + (256 *  Std.parseInt(parts[2])) +  Std.parseInt(parts[3]));
 	}
 
-	public function connect()
+	public function connect(serverAddress:Address)
 	{
 		client = new UdpSocket();
 		// client.setBlocking(blocking);
-		address = new Address();
-		address.host = 2130706433;//dot2num("127.0.0.1");
-		address.port = port;
+		address = serverAddress;
 
 
 		client.bind(new Host("127.0.0.1"),port);
+		client.setBlocking(false);
+		trace("UDP client binded to "+this.host+":"+this.port);
 
 		connection = new UdpNetSock(client, address);
+
+		//client.sendTo(Bytes.ofString("Hi!"), 0, 3, address);
+
 	}
 
 	public function send(event:String, ?data:Dynamic){
 		connection.send(event,data);
+
+		var object = {
+			t: event,
+			data:data
+		}
+
+		var serialiseObject = 'connection.serializer.serialize(object)';
+
+		var b = Bytes.ofString(serialiseObject);
+
+		trace(address);
+		client.sendTo(b, 0, b.length, address);
 	}
 	public function close(){
 
@@ -76,10 +89,16 @@ class UdpClient {
 	public function update(timeout:Float=0){
 		// if (!connected) return;
 
+
 		var bytesReceived = 0;
 		try
 		{
+
+
 			bytesReceived = client.readFrom(buffer, 0, buffer.length, address);
+
+			//client.sendTo(Bytes.ofString("Hi!"), 0, 3, address);
+
 		}
 		catch (e:haxe.io.Eof)
 		{
@@ -91,10 +110,15 @@ class UdpClient {
 		catch (e:haxe.io.Error)
 		{
 			// End of stream
+
 		}
 
 		if (bytesReceived > 0)
 		{
+			trace(buffer.getString(0,bytesReceived));
+			send("Thx for sending me msg!");
+			client.sendTo(Bytes.ofString("Reply!"), 0, 6, address);
+
 			//protocol.dataReceived(new BytesInput(buffer, 0, bytesReceived));
 		}
 	}

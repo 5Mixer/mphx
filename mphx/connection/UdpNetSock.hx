@@ -7,16 +7,18 @@ import sys.net.Address;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
+//Used by both server and client (as really, at the low networking level, there is no difference with UDP.)
+//This could be used to represent clients on the server side, or the server on the client side.
 class UdpNetSock
 {
 	var socket:UdpSocket;
-	var address:Address;
-	var serializer:mphx.serialization.ISerializer;
+	var remoteAddress:Address;
+	public var serializer:mphx.serialization.ISerializer;
 
-	public function new(socket:UdpSocket, address:Address)
+	public function new(socket:UdpSocket, remoteAddress:Address)
 	{
 		this.socket = socket;
-		this.address = address.clone();
+		this.remoteAddress = remoteAddress.clone();
 		this.serializer = new mphx.serialization.impl.HaxeSerializer();
 	}
 
@@ -46,13 +48,16 @@ class UdpNetSock
 				out.writeBytes(bytes, 0, bytes.length);
 				bytes = out.getBytes();
 			}
-			socket.sendTo(bytes, 0, bytes.length, address);
+			//trace("Writing to "+remoteAddress+" from "+this.socket.host()+" *> "+bytes);
+			socket.sendTo(bytes, 0, bytes.length, remoteAddress);
+			//trace("Sent data to "+remoteAddress);
+
 		}
 		catch (e:Dynamic)
 		{
-			#if debug
-			trace("Error writing to udp socket: " + e);
-			#end
+			//#if debug
+			throw ("Error writing to udp socket: " + e);
+			//#end
 			return false;
 		}
 		return true;

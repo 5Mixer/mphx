@@ -1,7 +1,7 @@
 package ;
 import mphx.connection.IConnection;
 import mphx.server.impl.FlashServer; //Use if hosting flash policy files.
-import mphx.server.impl.UdpNativeServer;
+import mphx.server.UdpServer;
 import mphx.server.room.Room;
 
 class Main {
@@ -10,7 +10,7 @@ class Main {
 		var ip = "127.0.0.1";
 		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
-		var s = new UdpNativeServer(ip, 8000);
+		var s = new UdpServer(ip, 8000);
 
 		s.onConnectionAccepted = onConnectOrDisconnect;
 		s.onConnectionClose = onConnectOrDisconnect;
