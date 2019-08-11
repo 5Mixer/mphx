@@ -1,4 +1,4 @@
-mphx is alpha and has rough edges, but they're being refined.
+mphx is in alpha and has rough edges. It has not been updated or developed in some time - you might like to evaluate other haxe networking libraries that are under active maintenece.
 
 
 ![#mphx](Logo.png)
