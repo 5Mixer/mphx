@@ -127,6 +127,11 @@ class Connection implements IConnection
 				{
 					recieve(data);
 				}
+				catch (e:haxe.Exception)
+				{
+					Log.message(DebugLevel.Errors | DebugLevel.Networking,"Can't use data: " + data + " because: "+e.details() );
+					throw Error.Blocked;
+				}
 				catch (e:Dynamic)
 				{
 					Log.message(DebugLevel.Errors | DebugLevel.Networking,"Can't use data: " + data + " because: "+e );
