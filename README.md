@@ -25,6 +25,7 @@ Please raise issues if you find issues, however also check other issues to see i
 Client
 
 - [x] Native targets (C++)
+- [x] Hashlink
 - [x] Web (JS with websockets)
 - [x] Neko
 - [ ] Flash (In progress - See issues.)
@@ -33,6 +34,7 @@ Client
 Server
 
 - [x] Native targets (C++)
+- [x] Hashlink
 - [x] Neko
 - [ ] Node JS
 
