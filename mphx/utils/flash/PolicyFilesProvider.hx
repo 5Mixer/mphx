@@ -4,8 +4,6 @@ package mphx.utils.flash ;
  * @author yannsucc
  */
 
- 
- 
  /**
   * The permitted mode enum is necessary to set the "permitted-cross-domain-policy" of the socket cross domain
   * 

@@ -13,7 +13,6 @@ class Main {
 		players = new Map();
 
 		var ip = "127.0.0.1";
-		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
 		var s = new mphx.server.impl.Server(ip,8000);
 

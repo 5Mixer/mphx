@@ -6,9 +6,7 @@ import mphx.server.room.Room;
 
 class Main {
 	public function new (){
-		//Allow the changing of the server host IP through a command line argument.
 		var ip = "127.0.0.1";
-		if (Sys.args()[0] != null) ip = Sys.args()[0];
 
 		//var s = new FlashServer(ip, 8000); // use this if you use a flash connection (using an policy files servers for flash socket)
 		var s = new Server(ip, 8000);

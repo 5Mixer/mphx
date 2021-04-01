@@ -159,7 +159,7 @@ class Server implements IServer
 					catch (e:Dynamic)
 					{
 						// end of stream
-						if (Std.is(e, haxe.io.Eof) || e== haxe.io.Eof)
+						if (Std.isOfType(e, haxe.io.Eof) || e == haxe.io.Eof)
 						{
 							protocol.loseConnection("close connection");
 							readSockets.remove(socket);

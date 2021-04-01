@@ -72,7 +72,7 @@ class NetSock
 		}
 		catch (e : Dynamic) // in case of the socket was close before call this function
 		{
-			return "[unknow, unknow] (peer data lost)";
+			return "[unknown, unknown] (peer data lost)";
 		}
 	}
 }

@@ -13,7 +13,7 @@ class Main {
 	var server:mphx.server.impl.Server;
 	public function new ()
 	{
-		server = new mphx.server.impl.Server("10.0.0.31",8000);
+		server = new mphx.server.impl.Server("127.0.0.1",8000);
 
 		server.events.on("Join", function(data:Dynamic,sender:mphx.connection.IConnection)
 		{

@@ -121,9 +121,7 @@ class FlashConnection implements IConnection
 	public function recieve(line:String)
 	{
 		//flash specific, if we receive this, we need to return the policy files
-		//trace("my line = " + line);
-		
-		if (line.indexOf("<policy-file-request/>")!=-1)
+		if (line.indexOf("<policy-file-request/>") != -1)
 		{
 			cnx.socket.output.writeString(PolicyFilesProvider.generateXmlPolicyFile(PermittedMode.checkAllPort, domainAccept,Std.string(portAccept)).toString());
 			cnx.socket.output.flush();

@@ -46,6 +46,7 @@ class PolicyFilesServer
 		} catch (e:Dynamic)
 		{
 			Log.message(DebugLevel.Errors,"PolicyFileServer : start failed on : " + host + ":" + port + " because : " + e);
+			Log.message(DebugLevel.Errors,"The Flash PolicyFileServer requires port 843, which may require superuser permissions (on unix systems). Host the Policy file separately in production. Running the server as superuser works for development.");
 			return;
 		}
 
@@ -77,7 +78,6 @@ class PolicyFilesServer
 			{
 				Log.message(DebugLevel.Errors,"PolicyfilesServer error : " + e);
 			}
-
 
 			//sending by default by adobe on Flash.net.socket.connect();
 			if (result.indexOf("<policy-file-request/>") != -1)

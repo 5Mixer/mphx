@@ -30,19 +30,12 @@ class Log {
         if (printLocation)
             location = infos.fileName+":"+infos.lineNumber + " : ";
 
-        if (usePrintLn){
-
-            #if sys
-                if (debugLevel & level != 0)
-                    Sys.println(l + location + message);
-            #else
-                usePrintLn = false;
-                trace("Can't use print line on non sys targets.");
-            #end
-
-        }else{
+        #if sys
+            if (debugLevel & level != 0)
+                Sys.println(l + location + message);
+        #else
             if (debugLevel & level != 0)
                 trace(l + location + message);
-        }
+        #end
 	}
 }
